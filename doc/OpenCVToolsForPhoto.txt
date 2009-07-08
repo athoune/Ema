@@ -1,0 +1,142 @@
+Reference:
+file:///usr/share/doc/opencv-doc/ref/opencvref_cv.htm#cv_imgproc_histograms
+
+CvtColor
+
+Converts image from one color space to another
+
+void cvCvtColor( const CvArr* src, CvArr* dst, int code );
+
+src
+	The source 8-bit (8u), 16-bit (16u) or single-precision floating-point (32f) image.
+dst
+	The destination image of the same data type as the source one. The number of channels may be different.
+code
+	Color conversion operation that can be specifed using CV_<src_color_space>2<dst_color_space> constants (see below).
+
+The function cvCvtColor converts input image from one color space to another. The function ignores colorModel and channelSeq fields of IplImage header, so the source image color space should be specified correctly (including order of the channels in case of RGB space, e.g. BGR means 24-bit format with B0 G0 R0 B1 G1 R1 ... layout, whereas RGB means 24-bit format with R0 G0 B0 R1 G1 B1 ... layout).
+
+[...]
+
+RGB<=>HSV (CV_BGR2HSV, CV_RGB2HSV, CV_HSV2BGR, CV_HSV2RGB)
+
+
+// In case of 8-bit and 16-bit images
+// R, G and B are converted to floating-point format and scaled to fit 0..1 range
+
+V <- max(R,G,B)
+S <- (V-min(R,G,B))/V   if V≠0, 0 otherwise
+
+		 (G - B)*60/S,  if V=R
+H <- 180+(B - R)*60/S,  if V=G
+	 240+(R - G)*60/S,  if V=B
+
+if H<0 then H<-H+360
+
+On output 0≤V≤1, 0≤S≤1, 0≤H≤360.
+The values are then converted to the destination data type:
+	8-bit images:
+		V <- V*255, S <- S*255, H <- H/2 (to fit to 0..255)
+	16-bit images (currently not supported):
+		V <- V*65535, S <- S*65535, H <- H
+	32-bit images:
+		H, S, V are left as is
+
+==========================================================================
+
+CornerHarris
+
+Harris edge detector
+
+void cvCornerHarris( const CvArr* image, CvArr* harris_responce,
+					 int block_size, int aperture_size=3, double k=0.04 );
+
+image
+	Input image.
+harris_responce
+	Image to store the Harris detector responces. Should have the same size as image
+block_size
+	Neighborhood size (see discussion of cvCornerEigenValsAndVecs).
+aperture_size
+	Aperture parameter for Sobel operator (see cvSobel). format. In the case of floating-point input format this parameter is the number of the fixed float filter used for differencing.
+k
+	Harris detector free parameter. See the formula below.
+
+==========================================================================
+
+Sobel
+
+Calculates first, second, third or mixed image derivatives using extended Sobel operator
+
+void cvSobel( const CvArr* src, CvArr* dst, int xorder, int yorder, int aperture_size=3 );
+
+src
+	Source image.
+dst
+	Destination image.
+xorder
+	Order of the derivative x .
+yorder
+	Order of the derivative y .
+aperture_size
+	Size of the extended Sobel kernel, must be 1, 3, 5 or 7. In all cases except 1, aperture_size ×aperture_size separable kernel will be used to calculate the derivative. For aperture_size=1 3x1 or 1x3 kernel is used (Gaussian smoothing is not done). There is also special value CV_SCHARR (=-1) that corresponds to 3x3 Scharr filter that may give more accurate results than 3x3 Sobel. Scharr aperture is:
+
+	| -3 0  3|
+	|-10 0 10|
+	| -3 0  3|
+
+	for x-derivative or transposed for y-derivative.
+
+The function cvSobel calculates the image derivative by convolving the image with the appropriate kernel:
+
+dst(x,y) = dxorder+yodersrc/dxxorder•dyyorder |(x,y)
+
+The Sobel operators combine Gaussian smoothing and differentiation so the result is more or less robust to the noise. Most often, the function is called with (xorder=1, yorder=0, aperture_size=3) or (xorder=0, yorder=1, aperture_size=3) to calculate first x- or y- image derivative. The first case corresponds to
+
+  |-1  0  1|
+  |-2  0  2|
+  |-1  0  1|
+
+kernel and the second one corresponds to
+
+  |-1 -2 -1|
+  | 0  0  0|
+  | 1  2  1|
+or
+  | 1  2  1|
+  | 0  0  0|
+  |-1 -2 -1|
+
+kernel, depending on the image origin (origin field of IplImage structure). No scaling is done, so the destination image usually has larger by absolute value numbers than the source image. To avoid overflow, the function requires 16-bit destination image if the source image is 8-bit. The result can be converted back to 8-bit using cvConvertScale or cvConvertScaleAbs functions. Besides 8-bit images the function can process 32-bit floating-point images. Both source and destination must be single-channel images of equal size or ROI size.
+Laplace
+
+Calculates Laplacian of the image
+
+void cvLaplace( const CvArr* src, CvArr* dst, int aperture_size=3 );
+
+src
+	Source image.
+dst
+	Destination image.
+aperture_size
+	Aperture size (it has the same meaning as in cvSobel).
+
+The function cvLaplace calculates Laplacian of the source image by summing second x- and y- derivatives calculated using Sobel operator:
+
+dst(x,y) = d2src/dx2 + d2src/dy2
+
+Specifying aperture_size=1 gives the fastest variant that is equal to convolving the image with the following kernel:
+
+|0  1  0|
+|1 -4  1|
+|0  1  0|
+
+Similar to cvSobel function, no scaling is done and the same combinations of input and output formats are supported.
+
+
+==========================================================================
+
+==========================================================================
+
+==========================================================================
+
