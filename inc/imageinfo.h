@@ -43,6 +43,7 @@ public:
 
 	/** @brief Return colored histogram */
 	IplImage * getColorHistogram() { return m_ColorHistoImage; };
+	IplImage * getSharpnessImage() { return m_sharpnessImage; };
 
 private:
 	/** @brief Initialization function */
@@ -61,11 +62,22 @@ private:
 	IplImage * hsvImage;
 	IplImage * h_plane;
 	IplImage * s_plane;
+
+	/** @brief Sharpness image */
+	IplImage * m_sharpnessImage;
+
 	/** @brief purge scaled images */
 	void purgeScaled();
 
 	/** @brief Process HSV analysis */
 	int processHSV();
+
+
+	/** @brief Process sharpness analysis */
+	int processSharpness();
+
+
+
 #define H_MAX	180
 #define S_MAX	255
 	IplImage * m_HSHistoImage;

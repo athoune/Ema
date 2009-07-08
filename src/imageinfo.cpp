@@ -40,7 +40,8 @@ ImageInfo::~ImageInfo() {
 }
 void ImageInfo::init() {
 	m_originalImage = m_scaledImage = m_grayImage = m_HSHistoImage =
-	m_ColorHistoImage = hsvImage = h_plane = s_plane = NULL;
+	m_ColorHistoImage = hsvImage = h_plane = s_plane =
+	m_sharpnessImage = NULL;
 }
 
 void ImageInfo::purge() {
@@ -110,6 +111,9 @@ int ImageInfo::loadFile(char * filename) {
 
 	// process color analysis
 	processHSV();
+
+	// then sharpness
+	processSharpness();
 
 	return 0;
 }
@@ -231,4 +235,13 @@ The values are then converted to the destination data type:
 	return 0;
 }
 
+int ImageInfo::processSharpness() {
+	tmReleaseImage(&m_sharpnessImage);
+	// Process sobel
+	m_sharpnessImage = tmCreateImage( cvGetSize(m_grayImage), IPL_DEPTH_8U, 1 );
+
+	cvSobel(m_grayImage, m_sharpnessImage, 1, 1, 5);
+
+	return 0;
+}
 

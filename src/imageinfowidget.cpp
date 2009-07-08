@@ -364,6 +364,19 @@ void ImageInfoWidget::setImageFile(const QString &  imagePath) {
 		QImage img = iplImageToQImage(colHisto, false, false);
 		m_ui->globalImageLabel->setPixmap(QPixmap::fromImage(img));
 	}
+
+	// And sharpness
+	IplImage * sharpMask = m_imgProc->getSharpnessImage();
+	if(sharpMask) {
+		// Display in label
+		QImage img = iplImageToQImage(sharpMask, false, false).scaled(
+				m_ui->sharpnessImageLabel->width(),
+				m_ui->sharpnessImageLabel->height(),
+
+				Qt::KeepAspectRatio
+				);
+		m_ui->sharpnessImageLabel->setPixmap(QPixmap::fromImage(img));
+	}
 }
 
 void ImageInfoWidget::changeEvent(QEvent *e)
