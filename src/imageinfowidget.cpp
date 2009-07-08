@@ -93,7 +93,7 @@ QImage iplImageToQImage(IplImage * iplImage, bool false_colors, bool red_only ) 
 	if((orig_width % 2) == 1)
 		orig_width--;
 
-	QImage qImage(orig_width, iplImage->height, 8*depth);
+	QImage qImage(orig_width, iplImage->height, depth>0 ? QImage::Format_RGB32 : QImage::Format_Indexed8);
 	memset(qImage.bits(), 0, orig_width*iplImage->height*depth);
 
 	/*
