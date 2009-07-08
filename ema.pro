@@ -6,6 +6,14 @@ TEMPLATE = app
 # Use lowercase name for Linux
 TARGET = ema
 
+
+# icon
+# reference : file:///usr/share/qt4/doc/html/appicon.html
+#mac::ICON = icon/Ema.icns
+/bin/bash: q: command not found
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
+
+
 # and an uppercase first letter for Mac & Windows
 mac::TARGET = Ema
 win32::TARGET = Ema
