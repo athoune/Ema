@@ -1,2 +1,4 @@
 Makefile
 Ema.app
+.obj-simple
+.DS_Store
