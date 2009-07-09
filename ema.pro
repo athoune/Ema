@@ -6,6 +6,7 @@ TEMPLATE = app
 # Use lowercase name for Linux
 TARGET = ema
 
+CONFIG += debug
 
 # icon
 # reference : file:///usr/share/qt4/doc/html/appicon.html

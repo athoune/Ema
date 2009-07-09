@@ -30,8 +30,20 @@ void EmaMainWindow::on_zoomx2Button_clicked()
 {
 
 }
+void EmaMainWindow::on_filesShowButton_toggled(bool on) {
+	if(on)
+		ui->filesTreeWidget->show();
+	else
+		ui->filesTreeWidget->hide();
 
-void EmaMainWindow::on_loadButton_clicked()
+}
+void EmaMainWindow::on_filesClearButton_clicked() {
+	m_imageList.clear();
+	ui->filesTreeWidget->clear();
+//	ui->scrollAreaWidgetContents->layout()->removeWidget();
+}
+
+void EmaMainWindow::on_filesLoadButton_clicked()
 {
 	QStringList list =  QFileDialog::getOpenFileNames(this,
 					 tr("Open Image"),

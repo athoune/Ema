@@ -96,6 +96,7 @@ void MainImageWidget::on_globalImageLabel_signalMousePressEvent(QMouseEvent * e)
 	if(m_zoom_scale == 0) // toggle view
 	{
 		m_zoom_scale = 1;
+		m_mouse_has_moved = true;
 
 		int x = e->pos().x(), y =  e->pos().y();
 		x *= m_fullImage.width() / m_displayImage.width();
