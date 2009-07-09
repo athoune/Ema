@@ -29,7 +29,7 @@
 
 
 
-u8 g_debug_ImageInfo = 0;
+u8 g_debug_ImageInfo = 1;
 
 /******************************************************************************/
 ImageInfo::ImageInfo() {
@@ -39,8 +39,11 @@ ImageInfo::~ImageInfo() {
 	purge();
 }
 void ImageInfo::init() {
-	m_originalImage = m_scaledImage = m_grayImage = m_HSHistoImage =
-	m_ColorHistoImage = hsvImage = h_plane = s_plane =
+	m_originalImage = NULL;
+
+	m_scaledImage = m_grayImage = m_HSHistoImage =
+	m_ColorHistoImage = hsvImage = h_plane = s_plane = NULL;
+
 	m_sharpnessImage = NULL;
 }
 
@@ -56,7 +59,9 @@ void ImageInfo::purgeScaled() {
 		tmReleaseImage(&m_grayImage);
 	}
 
+
 	tmReleaseImage(&m_scaledImage);
+	tmReleaseImage(&m_sharpnessImage);
 	tmReleaseImage(&m_HSHistoImage);
 	tmReleaseImage(&hsvImage);
 	tmReleaseImage(&h_plane);
@@ -80,8 +85,8 @@ int ImageInfo::loadFile(char * filename) {
 			m_originalImage->width, m_originalImage->height,
 			m_originalImage->nChannels );
 
-#define IMGINFO_WIDTH	800
-#define IMGINFO_HEIGHT	800
+#define IMGINFO_WIDTH	400
+#define IMGINFO_HEIGHT	400
 
 	// Scale to analysis size
 //		cvResize(tmpDisplayImage, new_displayImage, CV_INTER_LINEAR );
@@ -237,10 +242,62 @@ The values are then converted to the destination data type:
 
 int ImageInfo::processSharpness() {
 	tmReleaseImage(&m_sharpnessImage);
-	// Process sobel
-	m_sharpnessImage = tmCreateImage( cvGetSize(m_grayImage), IPL_DEPTH_8U, 1 );
 
-	cvSobel(m_grayImage, m_sharpnessImage, 1, 1, 5);
+	// Process sobel
+	CvSize size = cvGetSize(m_grayImage);
+	IplImage * sobelImage = tmCreateImage( size, IPL_DEPTH_16S, 1 );
+
+	int sc = 16;
+	size.width /= sc+1;
+	size.height /= sc;
+
+	IplImage * sharpImage = tmCreateImage( size, IPL_DEPTH_32F, 1 );
+	m_sharpnessImage = tmCreateImage( size, IPL_DEPTH_8U, 1 );
+
+	float valmax = 1.f;
+	for(int pass=0; pass<2; pass++) {
+		cvSobel(m_grayImage, sobelImage, pass, 1-pass, 3);
+
+
+		for(int r=0; r< sobelImage->height; r++) {
+			short * sobelline = (short *)(sobelImage->imageData +
+									r * sobelImage->widthStep);
+			int sc_r = r / sc;
+			float * sharpline32f = (float *)(sharpImage->imageData +
+									sc_r * sharpImage->widthStep);
+
+			for(int c=0; c<sobelImage->width; c++) {
+				if(abs(sobelline[c])>20) {
+					int sc_c = c/sc;
+
+					sharpline32f[ sc_c ] ++;
+					if(sharpline32f[ sc_c ] > valmax) valmax = sharpline32f[ sc_c ];
+				}
+			}
+		}
+	}
+
+	// Scale image
+	float scale = 255.f / valmax;
+
+	for(int sc_r=0; sc_r< sharpImage->height; sc_r++) {
+		float * sharpline32f = (float *)(sharpImage->imageData +
+								sc_r * sharpImage->widthStep);
+		u8 * sharpline = (u8 *)(m_sharpnessImage->imageData +
+								sc_r * m_sharpnessImage->widthStep);
+		for(int sc_c=0; sc_c<sharpImage->width; sc_c++) {
+			float val = scale * sharpline32f[sc_c];
+			if(val >= 255.f) val = 255.f;
+			sharpline[sc_c] = (u8)( val );
+		}
+	}
+
+	if(g_debug_ImageInfo) {
+		tmSaveImage(TMP_DIRECTORY "sharpImage.pgm", m_sharpnessImage);
+	}
+
+	cvReleaseImage(&sobelImage);
+	cvReleaseImage(&sharpImage);
 
 	return 0;
 }

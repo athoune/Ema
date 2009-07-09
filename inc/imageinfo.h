@@ -29,8 +29,6 @@
 
 
 
-IplImage * imCreateImage(CvSize size, int depth, int channels);
-void imReleaseImage(IplImage ** img);
 
 /** @brief Image processing analyse class
   */

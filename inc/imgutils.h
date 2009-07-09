@@ -104,6 +104,13 @@ IMGUTILS_EXTERN u8 g_debug_savetmp IMGUTILS_NULL;
 // Gray level difference for _very_ visually different pixels
 #define VISIBLE_DIFF	40
 
+/** @brief H,S,V => BGR32 32bit */
+u32 tmHSV2BGR32(float H, float S, float V);
+/** @brief H,S,V => R,G,B */
+void tmHSV2RGB(float H, float S, float V,
+			   float * pR, float *pG, float *pB);
+
+
 
 /** @brief Print image properties */
 void tmPrintProperties(IplImage * img);

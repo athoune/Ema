@@ -25,6 +25,8 @@ ImageInfoWidget::~ImageInfoWidget()
 
 static u32 * grayToBGR32 = NULL;
 static u32 * grayToBGR32False = NULL;
+static u32 * grayToBGR32Thermal = NULL;
+
 static u32 * grayToBGR32Red = NULL;
 
 static void init_grayToBGR32()
@@ -35,30 +37,21 @@ static void init_grayToBGR32()
 
 	grayToBGR32 = new u32 [256];
 	grayToBGR32False = new u32 [256];
-	grayToBGR32Red = new u32 [256];
+	grayToBGR32Thermal = new u32 [256];
 	for(int c = 0; c<256; c++) {
 		int Y = c;
 		u32 B = Y;// FIXME
 		u32 G = Y;
 		u32 R = Y;
-		grayToBGR32[c] = grayToBGR32Red[c] =
+		grayToBGR32[c] =
 			grayToBGR32False[c] = (R << 16) | (G<<8) | (B<<0);
+
+		float H = // H in HSV: 240 = blue, 0 = red
+				( 255.f - (float)c ) * 240.f/255.f;
+
+		grayToBGR32Thermal[c]  = tmHSV2BGR32(H, 255.f, 255.f);
 	}
 
-	// Add false colors
-	grayToBGR32[COLORMARK_CORRECTED] = // GREEN
-		grayToBGR32False[COLORMARK_CORRECTED] = (255 << 8);
-		//mainImage.setColor(COLORMARK_CORRECTED, qRgb(0,255,0));
-	// YELLOW
-	grayToBGR32False[COLORMARK_REFUSED] = (255 << 8) | (255 << 16);
-				//mainImage.setColor(COLORMARK_REFUSED, qRgb(255,255,0));
-	grayToBGR32False[COLORMARK_FAILED] =
-			grayToBGR32Red[COLORMARK_FAILED] = (255 << 16);
-				//mainImage.setColor(COLORMARK_FAILED, qRgb(255,0,0));
-	grayToBGR32False[COLORMARK_CURRENT] = // BLUE
-	//		grayToBGR32Red[COLORMARK_CURRENT] =
-										(255 << 0);
-				//mainImage.setColor(COLORMARK_CURRENT, qRgb(0,0,255));
 }
 
 QImage iplImageToQImage(IplImage * iplImage, bool false_colors, bool red_only ) {
@@ -76,6 +69,7 @@ QImage iplImageToQImage(IplImage * iplImage, bool false_colors, bool red_only ) 
 
 	u32 * grayToBGR32palette = grayToBGR32;
 	bool gray_to_bgr32 = false;
+
 	if(depth == 1) {// GRAY is obsolete on Qt => use 32bit instead
 		depth = 4;
 		gray_to_bgr32 = true;
@@ -83,10 +77,12 @@ QImage iplImageToQImage(IplImage * iplImage, bool false_colors, bool red_only ) 
 		init_grayToBGR32();
 		if(!false_colors)
 			grayToBGR32palette = grayToBGR32;
-		else if(red_only)
+		else
+			grayToBGR32palette = grayToBGR32Thermal ;
+		/*else if(red_only)
 			grayToBGR32palette = grayToBGR32Red;
 		else
-			grayToBGR32palette = grayToBGR32False;
+			grayToBGR32palette = grayToBGR32False;*/
 	}
 
 	int orig_width = iplImage->width;
@@ -372,11 +368,11 @@ void ImageInfoWidget::setImageFile(const QString &  imagePath) {
 		QImage img = iplImageToQImage(sharpMask, false, false).scaled(
 				m_ui->sharpnessImageLabel->width(),
 				m_ui->sharpnessImageLabel->height(),
-
 				Qt::KeepAspectRatio
 				);
 		m_ui->sharpnessImageLabel->setPixmap(QPixmap::fromImage(img));
 	}
+
 }
 
 void ImageInfoWidget::changeEvent(QEvent *e)

@@ -2095,3 +2095,52 @@ void tmSaveImage(const char * filename, IplImage * src) {
 		cvSaveImage(filename, src);
 	}
 }
+
+u32 tmHSV2BGR32(float H, float S, float V) {
+	float r, g, b;
+
+	tmHSV2RGB(H,S,V, &r, &g, &b);
+
+	u32 R = (u32)r;
+	u32 G = (u32)g;
+	u32 B = (u32)b;
+	// concatenate
+	u32 bgr32 = (R << 16) | (G<<8) | (B<<0);
+}
+
+void tmHSV2RGB(float H, float S, float V,
+			   float * pR, float *pG, float *pB) {
+	float r, g, b;
+	int i;
+	float f, p, q, t, hTemp;
+
+	float h = H;
+	float s = S / 255.f;
+	float v = V / 255.f;
+
+	if (s == 0.f || h == -1.f) { // s==0? Totally unsaturated = grey
+		*pR = *pG= *pB = V;
+		return;
+	}
+
+	hTemp = h / 60.f;
+	i = (int) floor(hTemp);                 // which sector
+	f = hTemp - (float)i;                      // how far through sector
+	p = v * ( 1.f - s );
+	q = v * ( 1.f - s * f );
+	t = v * ( 1.f - s * ( 1.f - f ) );
+
+	switch (i) {
+	case 0: r = v; g = t; b = p; break;
+	case 1: r = q; g = v; b = p; break;
+	case 2: r = p; g = v; b = t; break;
+	case 3: r = p; g = q; b = v; break;
+	case 4: r = t; g = p; b = v; break;
+	case 5: r = v; g = p; b = q; break;
+	default: r=0 ; g=0 ; b=0 ; break ; // Should never occur
+	}
+
+	*pR = r * 255.f;
+	*pG = g * 255.f;
+	*pB = b * 255.f;
+}
