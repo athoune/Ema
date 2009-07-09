@@ -20,7 +20,6 @@ protected:
 	virtual void changeEvent(QEvent *e);
 
 private:
-	QImage m_displayImage;
 	QString m_imagePath;
 	Ui::ThumbImageFrame *m_ui;
 
