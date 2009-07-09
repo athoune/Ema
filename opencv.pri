@@ -16,7 +16,6 @@ win32::DEFINES += VERSION_YY="2009" \
 
 linux-g++:TMAKE_CXXFLAGS += -Wall \
 	-g \
-	-O2 \
 	-fexceptions \
 	-Wimplicit \
 	-Wreturn-type \

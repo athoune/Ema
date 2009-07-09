@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Ema</string>
+   <string>Ema - 私の写真片付ける</string>
   </property>
   <property name="toolTip">
    <string>Exclude this criterion</string>
@@ -66,7 +66,7 @@
               <x>0</x>
               <y>0</y>
               <width>194</width>
-              <height>368</height>
+              <height>359</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -289,8 +289,8 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>281</width>
-                  <height>18</height>
+                  <width>296</width>
+                  <height>26</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout"/>
@@ -637,7 +637,7 @@
                <x>0</x>
                <y>0</y>
                <width>149</width>
-               <height>122</height>
+               <height>134</height>
               </rect>
              </property>
              <attribute name="label">
@@ -848,8 +848,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>100</width>
-               <height>30</height>
+               <width>96</width>
+               <height>26</height>
               </rect>
              </property>
              <attribute name="label">
@@ -861,8 +861,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>172</width>
-               <height>180</height>
+               <width>149</width>
+               <height>195</height>
               </rect>
              </property>
              <attribute name="label">
@@ -1055,8 +1055,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>129</width>
-               <height>108</height>
+               <width>144</width>
+               <height>114</height>
               </rect>
              </property>
              <attribute name="label">
@@ -1111,8 +1111,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>169</width>
-               <height>108</height>
+               <width>194</width>
+               <height>114</height>
               </rect>
              </property>
              <attribute name="label">
@@ -1224,7 +1224,7 @@
      <x>0</x>
      <y>0</y>
      <width>799</width>
-     <height>26</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

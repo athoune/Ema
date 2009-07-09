@@ -27,7 +27,7 @@ public slots:
 	void on_thumbImage_clicked(QString fileName);
 
 private slots:
-	void on_filesShowButton_toggled(bool);
+	void on_filesShowCheckBox_stateChanged(int);
 	void on_filesLoadButton_clicked();
 	void on_filesClearButton_clicked();
 	void on_zoomx2Button_clicked();
