@@ -43,6 +43,8 @@ public:
 	IplImage * getColorHistogram() { return m_ColorHistoImage; };
 	IplImage * getSharpnessImage() { return m_sharpnessImage; };
 
+	float getSharpness() { return m_sharpness; };
+
 private:
 	/** @brief Initialization function */
 	void init();
@@ -63,6 +65,8 @@ private:
 
 	/** @brief Sharpness image */
 	IplImage * m_sharpnessImage;
+	/** @brief Sharpness factor */
+	float m_sharpness;
 
 	/** @brief purge scaled images */
 	void purgeScaled();

@@ -16,6 +16,16 @@ EmaMainWindow::~EmaMainWindow()
 	delete ui;
 }
 
+void EmaMainWindow::on_gridButton_clicked() {
+	//
+	ui->stackedWidget->setCurrentIndex(1);
+}
+void EmaMainWindow::on_imgButton_clicked() {
+	//
+	ui->stackedWidget->setCurrentIndex(0);
+}
+
+
 void EmaMainWindow::on_groupBox_7_clicked()
 {
 
@@ -30,11 +40,13 @@ void EmaMainWindow::on_zoomx2Button_clicked()
 {
 
 }
-void EmaMainWindow::on_filesShowButton_toggled(bool on) {
-	if(on)
+
+void EmaMainWindow::on_filesShowCheckBox_stateChanged(int state) {
+	if(state == Qt::Checked)
 		ui->filesTreeWidget->show();
 	else
 		ui->filesTreeWidget->hide();
+
 
 }
 void EmaMainWindow::on_filesClearButton_clicked() {
@@ -75,8 +87,15 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 			newThumb->setImageFile(fileName);
 			ui->scrollAreaWidgetContents->layout()->addWidget(newThumb);
 
+			ThumbImageFrame * newThumb2 = new ThumbImageFrame(
+					//ui->imageScrollArea);
+					ui->gridScrollAreaWidgetContents);
+			newThumb2->setImageFile(fileName);
+			ui->gridScrollAreaWidgetContents->layout()->addWidget(newThumb2);
+
 			// connect this signal
 			connect(newThumb, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
+			connect(newThumb2, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
 		}
 }
 
@@ -92,4 +111,5 @@ void EmaMainWindow::on_thumbImage_clicked(QString fileName) {
 
 void EmaMainWindow::on_globalNavImageWidget_signalZoomOn(int x, int y, int scale) {
 	ui->mainImageWidget->zoomOn(x,y,scale);
+	ui->stackedWidget->setCurrentIndex(0);
 }

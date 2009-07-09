@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Ema - 私の写真片付ける</string>
+   <string>Ema - Sort your pictures</string>
   </property>
   <property name="toolTip">
    <string>Exclude this criterion</string>
@@ -56,7 +56,13 @@
           </widget>
          </item>
          <item>
-          <widget class="QScrollArea" name="scrollArea_2">
+          <widget class="QScrollArea" name="leftScrollArea">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
@@ -65,8 +71,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>194</width>
-              <height>359</height>
+              <width>198</width>
+              <height>352</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -182,7 +188,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QGroupBox" name="groupBox_3">
+       <widget class="QGroupBox" name="mainGroupBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -208,21 +214,52 @@
          <bool>false</bool>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_10">
+         <property name="margin">
+          <number>2</number>
+         </property>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <layout class="QHBoxLayout" name="mainDisplayHorizontalLayout">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetFixedSize</enum>
+           </property>
            <property name="bottomMargin">
             <number>2</number>
            </property>
            <item>
-            <widget class="QToolButton" name="toolButton_4">
-             <property name="text">
-              <string>P</string>
+            <widget class="QPushButton" name="gridButton">
+             <property name="maximumSize">
+              <size>
+               <width>32</width>
+               <height>16777215</height>
+              </size>
              </property>
-             <property name="checkable">
+             <property name="toolTip">
+              <string>Show grid</string>
+             </property>
+             <property name="text">
+              <string>G</string>
+             </property>
+             <property name="flat">
               <bool>true</bool>
              </property>
-             <property name="toolButtonStyle">
-              <enum>Qt::ToolButtonTextOnly</enum>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="imgButton">
+             <property name="maximumSize">
+              <size>
+               <width>32</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Show grid</string>
+             </property>
+             <property name="text">
+              <string>I</string>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -259,7 +296,7 @@
          <item>
           <widget class="QStackedWidget" name="stackedWidget">
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page0">
             <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -271,7 +308,7 @@
            <widget class="QWidget" name="page_2">
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
-              <widget class="QScrollArea" name="scrollArea">
+              <widget class="QScrollArea" name="gridScrollArea">
                <property name="minimumSize">
                 <size>
                  <width>300</width>
@@ -284,16 +321,23 @@
                <property name="widgetResizable">
                 <bool>true</bool>
                </property>
-               <widget class="QWidget" name="scrollAreaWidgetContents_2">
+               <widget class="QWidget" name="gridScrollAreaWidgetContents">
                 <property name="geometry">
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>296</width>
-                  <height>26</height>
+                  <width>310</width>
+                  <height>332</height>
                  </rect>
                 </property>
-                <layout class="QGridLayout" name="gridLayout"/>
+                <layout class="QFormLayout" name="formLayout">
+                 <property name="fieldGrowthPolicy">
+                  <enum>QFormLayout::ExpandingFieldsGrow</enum>
+                 </property>
+                 <property name="rowWrapPolicy">
+                  <enum>QFormLayout::WrapAllRows</enum>
+                 </property>
+                </layout>
                </widget>
               </widget>
              </item>
@@ -637,7 +681,7 @@
                <x>0</x>
                <y>0</y>
                <width>149</width>
-               <height>134</height>
+               <height>122</height>
               </rect>
              </property>
              <attribute name="label">
@@ -848,8 +892,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>96</width>
-               <height>26</height>
+               <width>100</width>
+               <height>30</height>
               </rect>
              </property>
              <attribute name="label">
@@ -861,8 +905,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>149</width>
-               <height>195</height>
+               <width>172</width>
+               <height>180</height>
               </rect>
              </property>
              <attribute name="label">
@@ -1055,8 +1099,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>144</width>
-               <height>114</height>
+               <width>129</width>
+               <height>108</height>
               </rect>
              </property>
              <attribute name="label">
@@ -1111,8 +1155,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>194</width>
-               <height>114</height>
+               <width>169</width>
+               <height>108</height>
               </rect>
              </property>
              <attribute name="label">
@@ -1190,7 +1234,7 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>100</height>
+         <height>120</height>
         </size>
        </property>
        <property name="maximumSize">
@@ -1198,6 +1242,15 @@
          <width>16777215</width>
          <height>200</height>
         </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
        </property>
        <property name="widgetResizable">
         <bool>true</bool>
@@ -1207,8 +1260,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>777</width>
-          <height>96</height>
+          <width>779</width>
+          <height>118</height>
          </rect>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_3"/>
@@ -1224,7 +1277,7 @@
      <x>0</x>
      <y>0</y>
      <width>799</width>
-     <height>29</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

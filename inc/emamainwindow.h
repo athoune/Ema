@@ -34,6 +34,10 @@ private slots:
 	void on_zoomx1Button_clicked();
 	void on_groupBox_7_clicked();
 
+
+	void on_gridButton_clicked();
+	void on_imgButton_clicked();
+
 	//
 	void on_globalNavImageWidget_signalZoomOn(int, int, int);
 

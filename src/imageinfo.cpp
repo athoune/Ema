@@ -345,7 +345,7 @@ int ImageInfo::processSharpness() {
 	// Scale image
 	//float scale = 255.f / valmax;
 	float scale = 1.f; //255.f / 64.f;
-
+	m_sharpness = 0.f;
 	for(int sc_r=0; sc_r< sharpImage->height; sc_r++) {
 		float * sharpline32f = (float *)(sharpImage->imageData +
 								sc_r * sharpImage->widthStep);
@@ -354,9 +354,14 @@ int ImageInfo::processSharpness() {
 		for(int sc_c=0; sc_c<sharpImage->width; sc_c++) {
 			float val = scale * sharpline32f[sc_c];
 			if(val >= 255.f) val = 255.f;
+			m_sharpness += sharpline32f[sc_c];
 			sharpline[sc_c] = (u8)( val );
 		}
 	}
+
+	m_sharpness = 100.f * (float)(m_sharpnessImage->width * m_sharpnessImage->height)
+				  / 255.f;
+
 	if(g_debug_ImageInfo) {
 		tmSaveImage(TMP_DIRECTORY "sharpImage.pgm", m_sharpnessImage);
 	}

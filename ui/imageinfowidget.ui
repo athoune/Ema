@@ -27,8 +27,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>324</width>
-        <height>364</height>
+        <width>96</width>
+        <height>26</height>
        </rect>
       </property>
       <attribute name="label">
@@ -40,8 +40,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>324</width>
-        <height>364</height>
+        <width>96</width>
+        <height>26</height>
        </rect>
       </property>
       <attribute name="label">
@@ -54,7 +54,7 @@
         <x>0</x>
         <y>0</y>
         <width>324</width>
-        <height>364</height>
+        <height>373</height>
        </rect>
       </property>
       <attribute name="label">
@@ -96,7 +96,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="sharpnessLabel">
             <property name="text">
              <string>Sharpness : -- %</string>
             </property>

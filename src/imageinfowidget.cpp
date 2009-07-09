@@ -371,6 +371,9 @@ void ImageInfoWidget::setImageFile(const QString &  imagePath) {
 				Qt::KeepAspectRatio
 				);
 		m_ui->sharpnessImageLabel->setPixmap(QPixmap::fromImage(img));
+		float sh = m_imgProc->getSharpness();
+		QString percent;
+		m_ui->sharpnessLabel->setText(tr("Sharpness ") + percent.sprintf("%g %%", sh));
 	}
 
 }
