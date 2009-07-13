@@ -66,6 +66,7 @@ private:
 	IplImage * hsvImage;
 	IplImage * h_plane;
 	IplImage * s_plane;
+	IplImage * rgb_plane[4];
 
 	/** @brief Sharpness image */
 	IplImage * m_sharpnessImage;
@@ -78,6 +79,8 @@ private:
 	/** @brief Process HSV analysis */
 	int processHSV();
 
+	/** @brief Process RGB histogram analysis */
+	int processRGB();
 
 	/** @brief Process sharpness analysis */
 	int processSharpness();
