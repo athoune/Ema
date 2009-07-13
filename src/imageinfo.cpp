@@ -42,13 +42,14 @@ void ImageInfo::init() {
 	m_originalImage = NULL;
 
 	m_scaledImage = m_grayImage = m_HSHistoImage =
-	m_ColorHistoImage = hsvImage = h_plane = s_plane = NULL;
+	m_HistoImage = m_ColorHistoImage = hsvImage = h_plane = s_plane = NULL;
 
 	m_sharpnessImage = NULL;
 }
 
 void ImageInfo::purge() {
 	tmReleaseImage(&m_originalImage);
+	tmReleaseImage(&m_HistoImage); // Delete only at the end, because it's always the same size
 	purgeScaled();
 }
 
@@ -62,12 +63,12 @@ void ImageInfo::purgeScaled() {
 	tmReleaseImage(&m_scaledImage);
 	tmReleaseImage(&m_sharpnessImage);
 	tmReleaseImage(&m_HSHistoImage);
+	tmReleaseImage(&m_HistoImage);
 	tmReleaseImage(&hsvImage);
 	tmReleaseImage(&h_plane);
 	tmReleaseImage(&s_plane);
 	tmReleaseImage(&m_ColorHistoImage);
 }
-
 
 
 int ImageInfo::loadFile(char * filename) {
@@ -260,6 +261,40 @@ The values are then converted to the destination data type:
 	}
 	tmReleaseImage(&hsvOutImage);
 
+	// Compute gray histogram
+	u32 grayHisto[256];
+	memset(grayHisto, 0, sizeof(u32)*256);
+	for(int r=0; r<m_grayImage->height; r++) {
+		u8 * grayline = (u8 *)(m_grayImage->imageData + r*m_grayImage->widthStep);
+		//
+		for(int c = 0; c<m_grayImage->width; c++) {
+			grayHisto[ grayline[c] ]++;
+		}
+	}
+
+	u32 hmax = 0;
+	for(int h=0; h<256; h++) {
+		if(grayHisto[h]>hmax) { hmax = grayHisto[h] ; }
+	}
+
+	// Draw histogram image
+	if(!m_HistoImage) {
+		m_HistoImage = tmCreateImage(cvSize(256, 100), IPL_DEPTH_8U, 1);
+	} else {
+		cvZero(m_HistoImage);
+	}
+	float divlogmax = 100.f / log((float)hmax) ;
+	for(int h = 0; h< 256; h++) {
+		if(grayHisto[h]) {
+			int val = 100 - log((float)grayHisto[h]) * divlogmax;
+			if(val < 100) {
+				cvLine(m_HistoImage, cvPoint(h, 100),
+					   cvPoint(h, val),
+					   cvScalarAll(255), 1);
+			}
+		}
+	}
+
 	return 0;
 }
 
@@ -359,8 +394,8 @@ int ImageInfo::processSharpness() {
 		}
 	}
 
-	m_sharpness = 100.f * (float)(m_sharpnessImage->width * m_sharpnessImage->height)
-				  / 255.f;
+	m_sharpness = m_sharpness * 100.f/255.f
+				  / (float)(m_sharpnessImage->width * m_sharpnessImage->height);
 
 	if(g_debug_ImageInfo) {
 		tmSaveImage(TMP_DIRECTORY "sharpImage.pgm", m_sharpnessImage);

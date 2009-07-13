@@ -40,6 +40,7 @@ public:
 	int loadFile(char * filename);
 
 	/** @brief Return colored histogram */
+	IplImage * getHistogram() { return m_HistoImage; };
 	IplImage * getColorHistogram() { return m_ColorHistoImage; };
 	IplImage * getSharpnessImage() { return m_sharpnessImage; };
 
@@ -53,6 +54,9 @@ private:
 
 	/** @brief Original image */
 	IplImage * m_originalImage;
+
+	/** @brief Histogram */
+	IplImage * m_HistoImage;
 
 	/** @brief Scaled version of original image */
 	IplImage * m_scaledImage;

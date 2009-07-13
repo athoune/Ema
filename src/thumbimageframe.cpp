@@ -1,5 +1,15 @@
+/***************************************************************************
+ *  thumbimageframe - Thumb display picture
+ *
+ *  Jul 2 21:10:56 2009
+ *  Copyright  2007  Christophe Seyve
+ *  Email cseyve@free.fr
+ ****************************************************************************/
+
+
 #include "thumbimageframe.h"
 #include "ui_thumbimageframe.h"
+#include <QToolTip>
 
 ThumbImageFrame::ThumbImageFrame(QWidget *parent) :
 	QFrame(parent),
@@ -44,6 +54,9 @@ void ThumbImageFrame::setImageFile(const QString & imagePath)
 								Qt::KeepAspectRatio );
 	}
 	m_ui->globalImageLabel->setPixmap(QPixmap::fromImage(l_displayImage));
+
+	QToolTip::add(m_ui->globalImageLabel, imagePath);
+
 }
 
 void ThumbImageFrame::on_globalImageLabel_signalMousePressEvent(QMouseEvent * e) {

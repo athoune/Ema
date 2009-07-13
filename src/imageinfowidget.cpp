@@ -375,7 +375,16 @@ void ImageInfoWidget::setImageFile(const QString &  imagePath) {
 		QString percent;
 		m_ui->sharpnessLabel->setText(tr("Sharpness ") + percent.sprintf("%g %%", sh));
 	}
-
+	IplImage * histo = m_imgProc->getHistogram();
+	if(histo) {
+		// Display in label
+		QImage img = iplImageToQImage(histo, false, false).scaled(
+				m_ui->sharpnessImageLabel->width(),
+				m_ui->sharpnessImageLabel->height(),
+				Qt::KeepAspectRatio
+				);
+		m_ui->histoImageLabel->setPixmap(QPixmap::fromImage(img));
+	}
 }
 
 void ImageInfoWidget::changeEvent(QEvent *e)
