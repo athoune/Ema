@@ -5,19 +5,18 @@ TEMPLATE = app
 
 # Use lowercase name for Linux
 TARGET = ema
-
 CONFIG += debug
 
 # icon
 # reference : file:///usr/share/qt4/doc/html/appicon.html
-#mac::ICON = icon/Ema.icns
+# mac::ICON = icon/Ema.icns
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
-
 
 # and an uppercase first letter for Mac & Windows
 mac::TARGET = Ema
 win32::TARGET = Ema
 include(opencv.pri)
+LIBS += -lexiv2
 DEPENDPATH += . \
     inc \
     src \
@@ -39,7 +38,8 @@ SOURCES += src/main.cpp \
     src/emamainwindow.cpp \
     src/thumbimageframe.cpp \
     src/imageinfo.cpp \
-    src/imgutils.cpp
+    src/imgutils.cpp \
+    exifdisplayscrollarea.cpp
 HEADERS += inc/navimagewidget.h \
     inc/thumbimagewidget.h \
     inc/searchcriterionwidget.h \
@@ -49,14 +49,16 @@ HEADERS += inc/navimagewidget.h \
     inc/emamainwindow.h \
     inc/thumbimageframe.h \
     inc/imageinfo.h \
-    inc/imgutils.h
+    inc/imgutils.h \
+    exifdisplayscrollarea.h
 FORMS += ui/navimagewidget.ui \
     ui/thumbimagewidget.ui \
     ui/searchcriterionwidget.ui \
     ui/imageinfowidget.ui \
     ui/mainimagewidget.ui \
     ui/emamainwindow.ui \
-    ui/thumbimageframe.ui
+    ui/thumbimageframe.ui \
+    exifdisplayscrollarea.ui
 RESOURCES += ema.qrc
 
 # # INSTALLATION

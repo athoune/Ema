@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Ema - Sort your pictures</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../ema.qrc">
+    <normaloff>:/icons/icons/ema-icon.png</normaloff>:/icons/icons/ema-icon.png</iconset>
+  </property>
   <property name="toolTip">
    <string>Exclude this criterion</string>
   </property>
@@ -399,7 +403,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tabSearch">
          <attribute name="title">
@@ -585,10 +589,20 @@
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
                 </property>
-                <widget class="QGroupBox" name="exifGroupBox">
-                 <property name="title">
-                  <string>EXIF</string>
+                <widget class="ExifDisplayScrollArea" name="exifScrollArea">
+                 <property name="widgetResizable">
+                  <bool>true</bool>
                  </property>
+                 <widget class="QWidget" name="scrollAreaWidgetContents_4">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>177</width>
+                    <height>255</height>
+                   </rect>
+                  </property>
+                 </widget>
                 </widget>
                </widget>
               </item>
@@ -882,8 +896,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>100</width>
-               <height>30</height>
+               <width>96</width>
+               <height>26</height>
               </rect>
              </property>
              <attribute name="label">
@@ -1317,7 +1331,15 @@
    <header location="global">mainimagewidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>ExifDisplayScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>exifdisplayscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../ema.qrc"/>
+ </resources>
  <connections/>
 </ui>

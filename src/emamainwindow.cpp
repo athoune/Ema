@@ -5,6 +5,9 @@
 
 #include <QFileDialog>
 
+
+
+
 EmaMainWindow::EmaMainWindow(QWidget *parent)
 	: QMainWindow(parent), ui(new Ui::EmaMainWindow)
 {
@@ -120,6 +123,8 @@ void EmaMainWindow::on_thumbImage_clicked(QString fileName) {
 		ui->mainImageWidget->setImageFile(fileName);
 
 		ui->imageInfoWidget->setImageFile(fileName);
+
+		ui->exifScrollArea->setImageFile(fileName);
 	}
 }
 
