@@ -42,13 +42,16 @@ void ImageInfo::init() {
 	m_originalImage = NULL;
 
 	m_scaledImage = m_grayImage = m_HSHistoImage =
-	m_ColorHistoImage = hsvImage = h_plane = s_plane = NULL;
+	m_HistoImage = m_ColorHistoImage = hsvImage = h_plane = s_plane = NULL;
+	for(int rgb=0; rgb<4; rgb++)
+		rgb_plane[rgb] = 0;
 
 	m_sharpnessImage = NULL;
 }
 
 void ImageInfo::purge() {
 	tmReleaseImage(&m_originalImage);
+	tmReleaseImage(&m_HistoImage); // Delete only at the end, because it's always the same size
 	purgeScaled();
 }
 
@@ -60,14 +63,17 @@ void ImageInfo::purgeScaled() {
 	}
 
 	tmReleaseImage(&m_scaledImage);
+	for(int rgb=0; rgb<4; rgb++)
+		tmReleaseImage(&rgb_plane[rgb]);
+
 	tmReleaseImage(&m_sharpnessImage);
 	tmReleaseImage(&m_HSHistoImage);
+	tmReleaseImage(&m_HistoImage);
 	tmReleaseImage(&hsvImage);
 	tmReleaseImage(&h_plane);
 	tmReleaseImage(&s_plane);
 	tmReleaseImage(&m_ColorHistoImage);
 }
-
 
 
 int ImageInfo::loadFile(char * filename) {
@@ -129,6 +135,9 @@ int ImageInfo::loadFile(char * filename) {
 	fprintf(stderr, "\nImageInfo::%s:%d : processHSV(m_scaledImage=%dx%d)\n", __func__, __LINE__,
 			m_scaledImage->width, m_scaledImage->height);fflush(stderr);
 
+	// process RGB histogram
+	processRGB();
+
 	// process color analysis
 	processHSV();
 
@@ -165,6 +174,8 @@ The values are then converted to the destination data type:
 		V <- V*255, S <- S*255, H <- H/2 (to fit to 0..255)
 
   */
+
+
 	if(!hsvImage)
 		hsvImage = tmCreateImage(
 			cvSize(m_scaledImage->width, m_scaledImage->height),
@@ -198,7 +209,8 @@ The values are then converted to the destination data type:
 	}
 	if(!m_HSHistoImage) {
 		m_HSHistoImage = tmCreateImage(cvSize(H_MAX, S_MAX), IPL_DEPTH_8U, 1);
-	}
+	} else
+		cvZero(m_HSHistoImage);
 
 	// Then process histogram
 	for(int r=0; r<hsvImage->height; r++) {
@@ -247,11 +259,13 @@ The values are then converted to the destination data type:
 					//histoline[c1]>1 ? 255 : 64; //histoline[c1];
 		}
 	}
-	if(!m_ColorHistoImage)
+	if(!m_ColorHistoImage) {
 		m_ColorHistoImage = tmCreateImage(
 			cvSize(H_MAX, S_MAX),
 			IPL_DEPTH_8U,
 			3);
+	} else
+		cvZero(m_ColorHistoImage);
 
 	cvCvtColor(hsvOutImage, m_ColorHistoImage, CV_HSV2BGR);
 	//tmSaveImage(TMP_DIRECTORY "HSHistoColored.ppm", m_ColorHistoImage);
@@ -259,6 +273,75 @@ The values are then converted to the destination data type:
 		tmSaveImage(TMP_DIRECTORY "HSHistoHSV.ppm", hsvOutImage);
 	}
 	tmReleaseImage(&hsvOutImage);
+
+	return 0;
+}
+
+int ImageInfo::processRGB() {
+
+	IplImage * histo_plane[3] = {NULL, NULL, NULL};
+	// Compute RGB histogram
+	for(int rgb=0; rgb<m_scaledImage->nChannels; rgb++)  {
+		rgb_plane[rgb] = tmCreateImage(cvGetSize(m_scaledImage),
+									   IPL_DEPTH_8U, 1);
+		histo_plane[rgb] = tmCreateImage(cvSize(256, 100), IPL_DEPTH_8U, 1);
+	}
+
+	if(m_scaledImage->nChannels >= 3)
+		cvCvtPixToPlane( m_scaledImage, rgb_plane[0], rgb_plane[1], rgb_plane[2], 0 );
+	else
+		cvCopy(	m_scaledImage, rgb_plane[0]);
+
+	u32 hmax = 0;
+	u32 grayHisto[3][256];
+	for(int rgb=0; rgb<m_scaledImage->nChannels; rgb++)  {
+		memset(grayHisto[rgb], 0, sizeof(u32)*256);
+		for(int r=0; r<rgb_plane[rgb]->height; r++) {
+			u8 * grayline = (u8 *)(rgb_plane[rgb]->imageData + r*rgb_plane[rgb]->widthStep);
+
+			for(int c = 0; c<rgb_plane[rgb]->width; c++) {
+				grayHisto[rgb][ grayline[c] ]++;
+			}
+		}
+		for(int h=0; h<256; h++) {
+			if(grayHisto[rgb][h]>hmax) { hmax = grayHisto[rgb][h] ; }
+		}
+	}
+
+	// Draw histogram image
+	if(!m_HistoImage) {
+		m_HistoImage = tmCreateImage(cvSize(256, 100), IPL_DEPTH_8U, m_scaledImage->nChannels);
+	} else {
+		cvZero(m_HistoImage);
+	}
+	float divlogmax = 100.f / log((float)hmax) ;
+	for(int rgb=0; rgb<m_scaledImage->nChannels; rgb++)  {
+		cvZero(histo_plane[rgb]);
+
+		for(int h = 0; h< 256; h++) {
+			if(grayHisto[rgb][h]) {
+				int val = 100 - log((float)grayHisto[rgb][h]) * divlogmax;
+				if(val < 100) {
+					cvLine(histo_plane[rgb], cvPoint(h, 100),
+						   cvPoint(h, val),
+						   cvScalarAll(192), 1);
+					cvLine(histo_plane[rgb], cvPoint(h, val),
+						   cvPoint(h, val),
+						   cvScalarAll(255), 1);
+				}
+			}
+		}
+	}
+	// Mix R,G,B planes
+	if(m_scaledImage->nChannels >= 3)
+		cvCvtPlaneToPix( histo_plane[0], histo_plane[1], histo_plane[2], 0, m_HistoImage );
+	else
+		cvCopy(histo_plane[0], m_HistoImage);
+
+	for(int rgb=0; rgb<m_scaledImage->nChannels; rgb++)  {
+		tmReleaseImage(&rgb_plane[rgb]);
+		tmReleaseImage(&histo_plane[rgb]);
+	}
 
 	return 0;
 }
@@ -359,8 +442,8 @@ int ImageInfo::processSharpness() {
 		}
 	}
 
-	m_sharpness = 100.f * (float)(m_sharpnessImage->width * m_sharpnessImage->height)
-				  / 255.f;
+	m_sharpness = m_sharpness * 100.f/255.f
+				  / (float)(m_sharpnessImage->width * m_sharpnessImage->height);
 
 	if(g_debug_ImageInfo) {
 		tmSaveImage(TMP_DIRECTORY "sharpImage.pgm", m_sharpnessImage);

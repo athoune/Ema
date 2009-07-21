@@ -101,6 +101,7 @@ void MainImageWidget::on_globalImageLabel_signalMousePressEvent(QMouseEvent * e)
 		int x = e->pos().x(), y =  e->pos().y();
 		x *= m_fullImage.width() / m_displayImage.width();
 		y *= m_fullImage.height() / m_displayImage.height();
+		m_lastClick = QPoint(x,y);
 
 		zoomOn(x, y, m_zoom_scale);
 	}

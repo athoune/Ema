@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/icons" >
         <file>icons/japon054.jpg</file>
+        <file>icons/ema-icon.png</file>
+        <file>icons/ema-splash.png</file>
     </qresource>
 </RCC>

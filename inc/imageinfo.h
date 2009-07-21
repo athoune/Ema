@@ -40,6 +40,7 @@ public:
 	int loadFile(char * filename);
 
 	/** @brief Return colored histogram */
+	IplImage * getHistogram() { return m_HistoImage; };
 	IplImage * getColorHistogram() { return m_ColorHistoImage; };
 	IplImage * getSharpnessImage() { return m_sharpnessImage; };
 
@@ -54,6 +55,9 @@ private:
 	/** @brief Original image */
 	IplImage * m_originalImage;
 
+	/** @brief Histogram */
+	IplImage * m_HistoImage;
+
 	/** @brief Scaled version of original image */
 	IplImage * m_scaledImage;
 	/** @brief Scaled & grayscaled version of original image */
@@ -62,6 +66,7 @@ private:
 	IplImage * hsvImage;
 	IplImage * h_plane;
 	IplImage * s_plane;
+	IplImage * rgb_plane[4];
 
 	/** @brief Sharpness image */
 	IplImage * m_sharpnessImage;
@@ -74,6 +79,8 @@ private:
 	/** @brief Process HSV analysis */
 	int processHSV();
 
+	/** @brief Process RGB histogram analysis */
+	int processRGB();
 
 	/** @brief Process sharpness analysis */
 	int processSharpness();

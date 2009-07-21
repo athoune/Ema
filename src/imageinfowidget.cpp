@@ -352,14 +352,18 @@ void ImageInfoWidget::setImageFile(const QString &  imagePath) {
 
 	QByteArray arrStr = imagePath.toUtf8();
 	m_imgProc->loadFile( arrStr.data() );
-
-	// Then process histogram
-	IplImage * colHisto = m_imgProc->getColorHistogram();
-	if(colHisto) {
+	// RGB Histogram
+	IplImage * histo = m_imgProc->getHistogram();
+	if(histo) {
 		// Display in label
-		QImage img = iplImageToQImage(colHisto, false, false);
-		m_ui->globalImageLabel->setPixmap(QPixmap::fromImage(img));
+		QImage img = iplImageToQImage(histo, false, false).scaled(
+				m_ui->sharpnessImageLabel->width(),
+				m_ui->sharpnessImageLabel->height(),
+				Qt::KeepAspectRatio
+				);
+		m_ui->histoImageLabel->setPixmap(QPixmap::fromImage(img));
 	}
+
 
 	// And sharpness
 	IplImage * sharpMask = m_imgProc->getSharpnessImage();
@@ -371,11 +375,18 @@ void ImageInfoWidget::setImageFile(const QString &  imagePath) {
 				Qt::KeepAspectRatio
 				);
 		m_ui->sharpnessImageLabel->setPixmap(QPixmap::fromImage(img));
-		float sh = m_imgProc->getSharpness();
+		int sh = tmmin(100, m_imgProc->getSharpness());
 		QString percent;
-		m_ui->sharpnessLabel->setText(tr("Sharpness ") + percent.sprintf("%g %%", sh));
+		m_ui->sharpnessLabel->setText(tr("Sharpness ") + percent.sprintf("%3d %%", sh));
 	}
 
+	// Then process HSV histogram
+	IplImage * colHisto = m_imgProc->getColorHistogram();
+	if(colHisto) {
+		// Display in label
+		QImage img = iplImageToQImage(colHisto, false, false);
+		m_ui->globalImageLabel->setPixmap(QPixmap::fromImage(img));
+	}
 }
 
 void ImageInfoWidget::changeEvent(QEvent *e)

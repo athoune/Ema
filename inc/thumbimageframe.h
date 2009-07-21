@@ -1,3 +1,10 @@
+/***************************************************************************
+ *  thumbimageframe - Thumb display picture
+ *
+ *  Jul 2 21:10:56 2009
+ *  Copyright  2007  Christophe Seyve
+ *  Email cseyve@free.fr
+ ****************************************************************************/
 #ifndef THUMBIMAGEFRAME_H
 #define THUMBIMAGEFRAME_H
 

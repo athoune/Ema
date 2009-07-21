@@ -5,6 +5,9 @@
 
 #include <QFileDialog>
 
+
+
+
 EmaMainWindow::EmaMainWindow(QWidget *parent)
 	: QMainWindow(parent), ui(new Ui::EmaMainWindow)
 {
@@ -41,6 +44,8 @@ void EmaMainWindow::on_zoomx2Button_clicked()
 
 }
 
+
+/***************** FILE EXPLORER *********************/
 void EmaMainWindow::on_filesShowCheckBox_stateChanged(int state) {
 	if(state == Qt::Checked)
 		ui->filesTreeWidget->show();
@@ -75,6 +80,18 @@ void EmaMainWindow::on_filesLoadButton_clicked()
 	on_thumbImage_clicked(fileName);
 }
 
+
+void EmaMainWindow::on_collecShowCheckBox_stateChanged(int state) {
+	if(state == Qt::Checked)
+		ui->collecTreeWidget->show();
+	else
+		ui->collecTreeWidget->hide();
+}
+
+
+
+
+
 void EmaMainWindow::appendThumbImage(QString fileName) {
 	if(!m_imageList.contains(fileName)) {
 			// Append to managed pictures
@@ -106,6 +123,8 @@ void EmaMainWindow::on_thumbImage_clicked(QString fileName) {
 		ui->mainImageWidget->setImageFile(fileName);
 
 		ui->imageInfoWidget->setImageFile(fileName);
+
+		ui->exifScrollArea->setImageFile(fileName);
 	}
 }
 
