@@ -45,6 +45,9 @@ private slots:
 	//
 	void on_globalNavImageWidget_signalZoomOn(int, int, int);
 
+	void on_actionAbout_activated();
+
+
 };
 
 #endif // EmaMAINWINDOW_H

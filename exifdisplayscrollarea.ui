@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>ScrollArea</string>
   </property>
+  <property name="verticalScrollBarPolicy">
+   <enum>Qt::ScrollBarAlwaysOn</enum>
+  </property>
   <property name="widgetResizable">
    <bool>true</bool>
   </property>
@@ -21,33 +24,19 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>173</width>
+     <width>158</width>
      <height>296</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QGroupBox" name="groupBox">
-      <property name="title">
-       <string>EXIF</string>
-      </property>
-      <widget class="QLabel" name="exifLabel">
-       <property name="geometry">
-        <rect>
-         <x>40</x>
-         <y>40</y>
-         <width>59</width>
-         <height>18</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>EXIF</string>
-       </property>
-      </widget>
-     </widget>
+     <widget class="QLineEdit" name="exifDataLabel"/>
     </item>
     <item>
-     <widget class="QGroupBox" name="groupBox_2">
+     <widget class="QListWidget" name="listWidget"/>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_IPTC">
       <property name="title">
        <string>IPTC</string>
       </property>

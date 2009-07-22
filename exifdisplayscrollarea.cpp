@@ -34,6 +34,7 @@ void ExifDisplayScrollArea::changeEvent(QEvent *e)
 
 void ExifDisplayScrollArea::setImageFile(const QString & fileName) {
 	m_fileName = fileName;
+
 	// Read metadata
 	try {
 
@@ -51,6 +52,12 @@ void ExifDisplayScrollArea::setImageFile(const QString & fileName) {
 
 		QString displayStr;
 
+		Exiv2::Exifdatum& exifMaker = exifData["Exif.Image.Make"];
+		std::string str = exifMaker.toString();
+		displayStr = QString::fromStdString(str);
+		fprintf(stderr, "ExifDisplay::%s:%d : maker='%s'\n",
+				__func__, __LINE__, displayStr.ascii());
+		if(0)
 		for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i) {
 
 /*			str.sprintf("%d ", i->key());
@@ -77,7 +84,8 @@ void ExifDisplayScrollArea::setImageFile(const QString & fileName) {
 		}
 
 
-		//m_ui->exifLabel->setText(displayStr);
+//		m_ui->exifLabel->setText(displayStr);
+		//m_ui->exifDataLabel->setText(tr("Hello"));
 		return ;
 	}
 	catch (Exiv2::AnyError& e) {

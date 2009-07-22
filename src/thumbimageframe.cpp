@@ -40,8 +40,8 @@ void ThumbImageFrame::setImageFile(const QString & imagePath)
 	// "NavImageWidget::%s:%d ('%s')\n",
 	//		__func__, __LINE__,
 	//		imagePath);
-	QImage l_displayImage;// local only
-	QImage fullImage(imagePath);
+	QPixmap l_displayImage;// local only
+	QPixmap fullImage(imagePath);
 	if(fullImage.isNull()) {
 		l_displayImage.fill(127);
 		m_imagePath = "";
@@ -53,7 +53,7 @@ void ThumbImageFrame::setImageFile(const QString & imagePath)
 		l_displayImage = fullImage.scaled( wdisp, hdisp,
 								Qt::KeepAspectRatio );
 	}
-	m_ui->globalImageLabel->setPixmap(QPixmap::fromImage(l_displayImage));
+	m_ui->globalImageLabel->setPixmap( l_displayImage );
 
 	QToolTip::add(m_ui->globalImageLabel, imagePath);
 

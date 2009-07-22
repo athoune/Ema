@@ -585,39 +585,7 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
               <item>
-               <widget class="QSplitter" name="splitter">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <widget class="ExifDisplayScrollArea" name="exifScrollArea">
-                 <property name="widgetResizable">
-                  <bool>true</bool>
-                 </property>
-                 <widget class="QWidget" name="scrollAreaWidgetContents_4">
-                  <property name="geometry">
-                   <rect>
-                    <x>0</x>
-                    <y>0</y>
-                    <width>177</width>
-                    <height>255</height>
-                   </rect>
-                  </property>
-                 </widget>
-                </widget>
-               </widget>
-              </item>
-              <item>
-               <widget class="QGroupBox" name="groupBox_2">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="title">
-                 <string>IPTC</string>
-                </property>
-               </widget>
+               <widget class="MetadataWidget" name="exifScrollArea" native="true"/>
               </item>
              </layout>
             </widget>
@@ -896,8 +864,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>96</width>
-               <height>26</height>
+               <width>100</width>
+               <height>30</height>
               </rect>
              </property>
              <attribute name="label">
@@ -1294,6 +1262,7 @@
     <property name="title">
      <string>About</string>
     </property>
+    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -1308,6 +1277,11 @@
   <action name="actionPreferences">
    <property name="text">
     <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About Ema</string>
    </property>
   </action>
  </widget>
@@ -1332,9 +1306,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>ExifDisplayScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>exifdisplayscrollarea.h</header>
+   <class>MetadataWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">metadatawidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

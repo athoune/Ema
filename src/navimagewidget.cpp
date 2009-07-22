@@ -53,7 +53,7 @@ void NavImageWidget::setImageFile(const QString & imagePath)
 	//		__func__, __LINE__,
 	//		imagePath);
 
-	QImage fullImage(imagePath);
+	QPixmap fullImage(imagePath);
 	if(fullImage.isNull()) {
 		m_displayImage.fill(127);
 		m_fullRect = QRect(0, 0, 0, 0);
@@ -68,7 +68,7 @@ void NavImageWidget::setImageFile(const QString & imagePath)
 								Qt::KeepAspectRatio );
 
 	}
-	m_ui->globalImageLabel->setPixmap(QPixmap::fromImage(m_displayImage));
+	m_ui->globalImageLabel->setPixmap( m_displayImage );
 
 	on_zoomFitButton_clicked();
 

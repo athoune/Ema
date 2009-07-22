@@ -4,6 +4,7 @@
 #include "thumbimageframe.h"
 
 #include <QFileDialog>
+#include <QSplashScreen>
 
 
 
@@ -26,6 +27,46 @@ void EmaMainWindow::on_gridButton_clicked() {
 void EmaMainWindow::on_imgButton_clicked() {
 	//
 	ui->stackedWidget->setCurrentIndex(0);
+}
+
+
+QSplashScreen * g_splash = NULL;
+
+void EmaMainWindow::on_actionAbout_activated() {
+	QPixmap pix(":/icons/icons/ema-splash.png");
+	if(g_splash) {
+		g_splash->setPixmap(pix);
+	}
+	else {
+		g_splash = new QSplashScreen(pix, Qt::WindowStaysOnTopHint );
+	}
+
+	QString verstr, cmd = QString("Ctrl+");
+	QString item = QString("<li>"), itend = QString("</li>\n");
+	g_splash->showMessage( tr("<b>Ema</b> version: ")
+						  + verstr.sprintf("svn%04d%02d%02d", VERSION_YY, VERSION_MM, VERSION_DD)
+
+						  + QString("<br>Website & Wiki: <a href=\"http://tamanoir.googlecode.com/\">http://tamanoir.googlecode.com/</a><br><br>")
+						  + tr("Shortcuts :<br><ul>\n")
+							+ item + cmd + tr("O: Open a picture file") + itend
+							+ item + cmd + tr("S: Save corrected image") + itend
+							+ item + cmd + tr("H: Display version information") + itend
+							+ item + tr("M: Mark current crop area in red") + itend
+							+ item + tr("A: Apply proposed correction") + itend
+							+ item + tr("&rarr;: Go to next proposal") + itend
+							+ item + tr("&larr;: Go to previous proposal") + itend
+							+ item + tr("C: Switch to clone tool mode") + itend
+//							+ item + tr("") + itend
+//							+ item + cmd + tr("") + itend
+//							+ item + tr("") + itend
+//							+ item + cmd + tr("") + itend
+						+ QString("</ul>\n")
+							);
+	repaint();// to force display of splash
+
+	g_splash->show();
+	g_splash->raise(); // for full screen mode
+	g_splash->update();
 }
 
 

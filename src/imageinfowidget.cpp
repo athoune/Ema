@@ -86,10 +86,13 @@ QImage iplImageToQImage(IplImage * iplImage, bool false_colors, bool red_only ) 
 	}
 
 	int orig_width = iplImage->width;
-	if((orig_width % 2) == 1)
-		orig_width--;
+//	if((orig_width % 2) == 1)
+//		orig_width--;
 
-	QImage qImage(orig_width, iplImage->height, depth>0 ? QImage::Format_RGB32 : QImage::Format_Indexed8);
+
+	QImage qImage(orig_width, iplImage->height,
+				  8 * depth);
+				//  depth > 1 ? QImage::Format_RGB32 : QImage::Format_Indexed8);
 	memset(qImage.bits(), 0, orig_width*iplImage->height*depth);
 
 	/*
@@ -114,7 +117,8 @@ QImage iplImageToQImage(IplImage * iplImage, bool false_colors, bool red_only ) 
 				for(int r=0; r<iplImage->height; r++) {
 					// NO need to swap R<->B
 					memcpy(qImage.bits() + r*orig_width*depth,
-						iplImage->imageData + r*iplImage->widthStep, orig_width*depth);
+						iplImage->imageData + r*iplImage->widthStep,
+						orig_width*depth);
 				}
 			} else {
 				for(int r=0; r<iplImage->height; r++) {
@@ -122,7 +126,8 @@ QImage iplImageToQImage(IplImage * iplImage, bool false_colors, bool red_only ) 
 					u8 * buf_out = (u8 *)(qImage.bits()) + r*orig_width*depth;
 					u8 * buf_in = (u8 *)(iplImage->imageData) + r*iplImage->widthStep;
 					memcpy(qImage.bits() + r*orig_width*depth,
-						iplImage->imageData + r*iplImage->widthStep, orig_width*depth);
+						iplImage->imageData + r*iplImage->widthStep,
+						orig_width*depth);
 
 					for(int pos4 = 0 ; pos4<orig_width*depth; pos4+=depth,
 						buf_out+=4, buf_in+=depth
@@ -158,7 +163,7 @@ QImage iplImageToQImage(IplImage * iplImage, bool false_colors, bool red_only ) 
 			{
 				u32 * buffer4 = (u32 *)qImage.bits() + r*qImage.width();
 				u8 * bufferY = (u8 *)(iplImage->imageData + r*iplImage->widthStep);
-				for(int c=0; c<iplImage->width; c++) {
+				for(int c=0; c<orig_width; c++) {
 					buffer4[c] = grayToBGR32palette[ (int)bufferY[c] ];
 				}
 			}

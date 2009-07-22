@@ -28,8 +28,8 @@ private:
 
 	QRect m_fullRect;
 	QRect m_displayRect;
-	QImage m_inputImage;
-	QImage m_displayImage;
+	QPixmap m_inputImage;
+	QPixmap m_displayImage;
 
 	/** @brief Zoom on a part of input image at a specified scale */
 	void zoomOn(int x, int y, int scale);
