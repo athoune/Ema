@@ -32,6 +32,40 @@ void MetadataWidget::changeEvent(QEvent *e)
         break;
     }
 }
+QString rational(const QString & str) {
+	if(!(str.contains("/"))) return str;
+
+	QString fract = str;
+	// split
+	QStringList splitted = fract.split('/');
+	bool ok;
+	int num = splitted[0].toInt(&ok);
+	if(!ok) return fract;
+	int den = splitted[1].toInt(&ok);
+	if(!ok) return fract;
+
+	float val = (float)num / (float)den;
+
+	return fract.sprintf("%g", val);
+}
+
+QString rational_1_div(const QString & str) {
+	if(!(str.contains("/"))) return str;
+
+	QString fract = str;
+	// split
+	QStringList splitted = fract.split('/');
+	bool ok;
+	int num = splitted[0].toInt(&ok);
+	if(!ok) return fract;
+	int den = splitted[1].toInt(&ok);
+	if(!ok) return fract;
+
+	if(num == 0) return fract;
+	float val = (float)den / (float)num;
+
+	return fract.sprintf("1/%g", val);
+}
 
 void MetadataWidget::setImageFile(const QString & fileName) {
 	m_fileName = fileName;
@@ -68,7 +102,7 @@ void MetadataWidget::setImageFile(const QString & fileName) {
 		// DateTime
 		exifMaker = exifData["Exif.Photo.DateTimeOriginal"]; str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
-		m_ui->dateLineEdit->setText(displayStr);
+				m_ui->dateLineEdit->setText(displayStr);
 		// Aperture
 
 		exifMaker = exifData["Exif.Photo.FocalLengthIn35mmFilm"]; str = exifMaker.toString();
@@ -76,7 +110,9 @@ void MetadataWidget::setImageFile(const QString & fileName) {
 		if(QString::compare(displayStr, "0")) {
 			exifMaker = exifData["Exif.Photo.FocalLength"]; str = exifMaker.toString();
 			displayStr = QString::fromStdString(str);
+			displayStr = rational(displayStr);
 		} else {
+			displayStr = rational(displayStr);
 			displayStr += tr("eq. 35mm");
 		}
 		m_ui->focalLineEdit->setText(displayStr);
@@ -84,14 +120,17 @@ void MetadataWidget::setImageFile(const QString & fileName) {
 		// Aperture
 		exifMaker = exifData["Exif.Photo.FNumber"]; str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
+		displayStr = rational(displayStr);
 		m_ui->apertureLineEdit->setText(displayStr);
 		// Speed
 		exifMaker = exifData["Exif.Photo.ExposureTime"]; str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
+		displayStr = rational_1_div(displayStr);
 		m_ui->speedLineEdit->setText(displayStr);
 		// Speed
 		exifMaker = exifData["Exif.Photo.ISOSpeedRatings"]; str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
+		displayStr = rational(displayStr);
 		m_ui->isoLineEdit->setText(displayStr);
 
 

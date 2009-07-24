@@ -163,9 +163,9 @@ void EmaMainWindow::on_thumbImage_clicked(QString fileName) {
 		ui->globalNavImageWidget->setImageFile(fileName);
 		ui->mainImageWidget->setImageFile(fileName);
 
+		ui->exifScrollArea->setImageFile(fileName); // before image processing because it's faster
 		ui->imageInfoWidget->setImageFile(fileName);
 
-		ui->exifScrollArea->setImageFile(fileName);
 	}
 }
 

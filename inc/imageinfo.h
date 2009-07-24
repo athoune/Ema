@@ -27,8 +27,28 @@
 #include <cv.hpp>
 #include <highgui.h>
 
+#ifndef MAX_PATH_LEN
+#define MAX_PATH_LEN	512
+#endif
 
+#define MAX_EXIF_LEN	32
 
+/** @brief Useful information for sorting pictures*/
+typedef struct {
+	char filepath[MAX_PATH_LEN];
+	// EXIF TAGS
+	char maker[MAX_EXIF_LEN];	/*! Company wich produces this camera */
+	char model[MAX_EXIF_LEN];	/*! Model of this camera */
+
+	float focal_mm;				/*! Real focal in mm */
+	float focal_eq125_mm;		/*! 135mm equivalent focal in mm (if available) */
+	float aperture;				/*! F Number */
+	float speed_s;				/*! Speed = shutter opening time in seconds */
+	int ISO;					/*! ISO Sensitivity */
+
+	// IPTC TAGS
+
+} t_image_info_struct;
 
 /** @brief Image processing analyse class
   */
