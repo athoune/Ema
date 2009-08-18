@@ -27,6 +27,9 @@ public:
 	/** @brief Set the background image */
 	void setImageFile(const QString &  imagePath);
 
+	/** @brief Set image information of current image */
+	void setImageInfo(t_image_info_struct * pinfo);
+
 protected:
 	virtual void changeEvent(QEvent *e);
 
@@ -34,7 +37,6 @@ private:
 	Ui::ImageInfoWidget *m_ui;
 
 	ImageInfo * m_imgProc;
-
 };
 
 #endif // IMAGEINFOWIDGET_H

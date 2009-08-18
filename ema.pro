@@ -39,8 +39,9 @@ SOURCES += src/main.cpp \
     src/thumbimageframe.cpp \
     src/imageinfo.cpp \
     src/imgutils.cpp \
-    exifdisplayscrollarea.cpp \
-    metadatawidget.cpp
+	src/exifdisplayscrollarea.cpp \
+	src/metadatawidget.cpp \
+	src/emaimagemanager.cpp
 HEADERS += inc/navimagewidget.h \
     inc/thumbimagewidget.h \
     inc/searchcriterionwidget.h \
@@ -51,8 +52,9 @@ HEADERS += inc/navimagewidget.h \
     inc/thumbimageframe.h \
     inc/imageinfo.h \
     inc/imgutils.h \
-    exifdisplayscrollarea.h \
-    metadatawidget.h
+	inc/exifdisplayscrollarea.h \
+	inc/metadatawidget.h \
+	inc/emaimagemanager.h
 FORMS += ui/navimagewidget.ui \
     ui/thumbimagewidget.ui \
     ui/searchcriterionwidget.ui \
@@ -60,8 +62,8 @@ FORMS += ui/navimagewidget.ui \
     ui/mainimagewidget.ui \
     ui/emamainwindow.ui \
     ui/thumbimageframe.ui \
-    exifdisplayscrollarea.ui \
-    metadatawidget.ui
+	ui/exifdisplayscrollarea.ui \
+	ui/metadatawidget.ui
 RESOURCES += ema.qrc
 
 # # INSTALLATION

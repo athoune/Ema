@@ -66,6 +66,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QProgressBar" name="loadProgressBar">
+           <property name="value">
+            <number>24</number>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QScrollArea" name="leftScrollArea">
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
@@ -82,7 +89,7 @@
               <x>0</x>
               <y>0</y>
               <width>210</width>
-              <height>370</height>
+              <height>341</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -289,7 +296,7 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>Show grid</string>
+              <string>Show image only</string>
              </property>
              <property name="text">
               <string>I</string>
@@ -300,32 +307,17 @@
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="toolButton_5">
-             <property name="text">
-              <string>...</string>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QToolButton" name="toolButton_6">
-             <property name="text">
-              <string>...</string>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
              </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboBox">
-             <item>
-              <property name="text">
-               <string>-</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>By focus</string>
-              </property>
-             </item>
-            </widget>
+            </spacer>
            </item>
           </layout>
          </item>
@@ -334,15 +326,74 @@
            <property name="currentIndex">
             <number>1</number>
            </property>
-           <widget class="QWidget" name="page0">
+           <widget class="QWidget" name="page_mainIMage">
             <layout class="QVBoxLayout" name="verticalLayout_11">
              <item>
               <widget class="MainImageWidget" name="mainImageWidget" native="true"/>
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="page_2">
+           <widget class="QWidget" name="page_grid">
             <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <widget class="QWidget" name="criterionsWidget" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <property name="topMargin">
+                 <number>2</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>2</number>
+                </property>
+                <item>
+                 <widget class="QToolButton" name="addCriterionButton">
+                  <property name="text">
+                   <string>+</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="toolButton_6">
+                  <property name="text">
+                   <string>X</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="toolButton_7">
+                  <property name="text">
+                   <string>-</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="criterionComboBox">
+                  <item>
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>By focus</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="subCriterionComboBox">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
              <item>
               <widget class="QScrollArea" name="gridScrollArea">
                <property name="minimumSize">
@@ -363,7 +414,7 @@
                   <x>0</x>
                   <y>0</y>
                   <width>310</width>
-                  <height>332</height>
+                  <height>296</height>
                  </rect>
                 </property>
                 <layout class="QFormLayout" name="formLayout">
@@ -403,7 +454,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabSearch">
          <attribute name="title">
