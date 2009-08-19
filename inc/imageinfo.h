@@ -2,7 +2,7 @@
  *  imageinfo - Information about picture with image processing
  *
  *  Jul 2 21:10:56 2009
- *  Copyright  2007  Christophe Seyve
+ *  Copyright  2009  Christophe Seyve
  *  Email cseyve@free.fr
  ****************************************************************************/
 
@@ -33,22 +33,54 @@
 
 #define MAX_EXIF_LEN	32
 
+// Debug modes
+#define EMALOG_TRACE	5
+#define EMALOG_DEBUG	4
+#define EMALOG_INFO		-1
+#define EMALOG_WARNING	-2
+#define EMALOG_ERROR	-3
+
+#include <QImage>
+
+
+/** @breif Convert an OpenCV IplIMage to a QImage */
+QImage iplImageToQImage(IplImage * iplImage);
+
 /** @brief Useful information for sorting pictures*/
 typedef struct {
-	std::string filepath;
+	char filepath[MAX_PATH_LEN];	/*! Full path of image file */
+
+	unsigned char valid;		/*! Valid info flag */
+
 	// EXIF TAGS
 	std::string maker;	/*! Company wich produces this camera */
 	std::string model;	/*! Model of this camera */
 
+	char datetime[MAX_EXIF_LEN];	/*! Date/time of the shot */
+
+
+	char orientation;			/*! Image orientation : 0 for horizontal (landscape), 1 for vertical (portrait) */
 	float focal_mm;				/*! Real focal in mm */
-	float focal_eq125_mm;		/*! 135mm equivalent focal in mm (if available) */
+	float focal_eq135_mm;		/*! 135mm equivalent focal in mm (if available) */
 	float aperture;				/*! F Number */
 	float speed_s;				/*! Speed = shutter opening time in seconds */
 	int ISO;					/*! ISO Sensitivity */
 
 	// IPTC TAGS
 
+	// Image processing data
+	bool grayscaled;
+	float sharpness;			/*! Sharpness factor in [0..100] */
+
+	IplImage * thumbImage;		/*! Thumb image for faster display */
+	IplImage * sharpnessImage;	/*! Sharpness image for faster display */
+	IplImage * hsvImage;		/*! HSV histogram image for faster display */
+
+	float log_histogram[3][256];	/*! Log histogram */
+
 } t_image_info_struct;
+
+
 
 /** @brief Image processing analyse class
   */
@@ -64,7 +96,9 @@ public:
 	IplImage * getColorHistogram() { return m_ColorHistoImage; };
 	IplImage * getSharpnessImage() { return m_sharpnessImage; };
 
-	float getSharpness() { return m_sharpness; };
+	float getSharpness() { return m_image_info_struct.sharpness; };
+	/** @brief Get structure containing every image information needed for sorting */
+	t_image_info_struct getImageInfo() { return m_image_info_struct; };
 
 	t_image_info_struct getInfo() { return m_info; };
 
@@ -74,12 +108,11 @@ private:
 	/** @brief Desallocation function */
 	void purge();
 
+	/** @brief Read EXIF and IPTC metadata in image file */
+	int readMetadata(char * filename);
 
-	/** @brief Read metadata EXIF + IPTC */
-	void readMetadata();
-
-	/** @brief Information about image used to filter/search */
-	t_image_info_struct m_info;
+	/** @brief Structure containing every image information needed for sorting */
+	t_image_info_struct m_image_info_struct;
 
 	/** @brief Original image */
 	IplImage * m_originalImage;
@@ -91,16 +124,19 @@ private:
 	IplImage * m_scaledImage;
 	/** @brief Scaled & grayscaled version of original image */
 	IplImage * m_grayImage;
+
 	/** @brief Scaled & HSV version of original image */
 	IplImage * hsvImage;
+	/** @brief Scaled & HSV version of original image, H plane */
 	IplImage * h_plane;
+	/** @brief Scaled & HSV version of original image, S plane */
 	IplImage * s_plane;
+
+	/** @brief Scaled & RGB version of original image, RGBA planes array */
 	IplImage * rgb_plane[4];
 
 	/** @brief Sharpness image */
 	IplImage * m_sharpnessImage;
-	/** @brief Sharpness factor */
-	float m_sharpness;
 
 	/** @brief purge scaled images */
 	void purgeScaled();
@@ -123,4 +159,6 @@ private:
 
 //	unsigned long m_HSHistoImage[H_MAX][S_MAX];
 };
+
 #endif // IMAGEINFO_H
+

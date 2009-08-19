@@ -124,9 +124,11 @@ IplImage * tmCreateImage(CvSize size, int depth, int channels);
 void tmReleaseImage(IplImage ** img);
 
 
-/** @brief Copy an IplIMage into another */
+/** @brief Copy an IplImage into another */
 void tmCopyImage(IplImage * img_src, IplImage * img_dest);
 
+/** @brief Create/allocate a copy of an IplImage  */
+IplImage * tmClone(IplImage * img_src);
 
 /** @brief Fast conversion from color/16bit image to 8bit grayscale image */
 IplImage * tmFastConvertToGrayscale(IplImage * img);
@@ -317,6 +319,9 @@ IplConvKernel * tmCreateStructElt(int size=3);
 void tmCloseImage(IplImage * src, IplImage * dst, IplImage * tmp, int iterations);
 /** @brief Process an open morphology operation */
 void tmOpenImage(IplImage * src, IplImage * dst, IplImage * tmp, int iterations);
+
+/** @brief Draw a histogram image from histogram */
+IplImage * drawHistogram(float histo[3][256], bool grayscaled);
 
 #define FILM_UNDEFINED	0
 #define FILM_NEGATIVE	1

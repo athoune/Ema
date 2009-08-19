@@ -1,18 +1,63 @@
+/***************************************************************************
+ *            emamainwindow.cpp
+ *
+ *  Wed Jun 11 08:47:41 2009
+ *  Copyright  2009  Christophe Seyve
+ *  Email cseyve@free.fr
+ ****************************************************************************/
+
+/*
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+//#include <stdlib.h>
+//#include <stdio.h>
+
+
 #include "emamainwindow.h"
 #include "ui_emamainwindow.h"
 
+#include "emaimagemanager.h"
+
 #include "thumbimageframe.h"
+#include "imgutils.h"
+#include "imageinfo.h"
 
 #include <QFileDialog>
 #include <QSplashScreen>
 
 
+int g_EMAMW_debug_mode = EMALOG_DEBUG;
+
+#define EMAMW_printf(a,...)  { \
+				if(g_EMAMW_debug_mode>=(a)) { \
+					fprintf(stderr,"EmaMainWindow::%s:%d : ",__func__,__LINE__); \
+					fprintf(stderr,__VA_ARGS__); \
+					fprintf(stderr,"\n"); \
+				} \
+			}
 
 
 EmaMainWindow::EmaMainWindow(QWidget *parent)
 	: QMainWindow(parent), ui(new Ui::EmaMainWindow)
 {
 	ui->setupUi(this);
+	ui->loadProgressBar->hide();
+
+	connect(&m_timer, SIGNAL(timeout()),
+			this, SLOT(on_timer_timeout()));
 }
 
 EmaMainWindow::~EmaMainWindow()
@@ -20,10 +65,16 @@ EmaMainWindow::~EmaMainWindow()
 	delete ui;
 }
 
+void EmaMainWindow::on_appendNewPictureThumb(const QString & filename) {
+	// update progress
+	appendThumbImage(filename);
+}
+
 void EmaMainWindow::on_gridButton_clicked() {
 	//
 	ui->stackedWidget->setCurrentIndex(1);
 }
+
 void EmaMainWindow::on_imgButton_clicked() {
 	//
 	ui->stackedWidget->setCurrentIndex(0);
@@ -93,6 +144,8 @@ void EmaMainWindow::on_filesShowCheckBox_stateChanged(int state) {
 
 
 }
+
+
 void EmaMainWindow::on_filesClearButton_clicked() {
 	m_imageList.clear();
 	ui->filesTreeWidget->clear();
@@ -106,18 +159,70 @@ void EmaMainWindow::on_filesLoadButton_clicked()
 					 "", //"/home/cseyve",
 					 tr("Images (*.png *.p*m *.xpm *.jp* *.tif* *.bmp *.cr2"
 						"*.PNG *.P*M *.XPM *.JP* *.TIF* *.BMP *.CR2)"));
-	QStringList::Iterator it = list.begin();
+	appendFileList(list);
+}
 
+void EmaMainWindow::appendFileList(QStringList list) {
+	// Append to list
+	QStringList::Iterator it = list.begin();
 	QString fileName;
+	int nb = list.count();
+
 	while(it != list.end()) {
 		fileName = (*it);
 		++it;
 
-		appendThumbImage(fileName);
+		m_appendFileList.append( fileName );
 	}
 
-	on_thumbImage_clicked(fileName);
+	ui->loadProgressBar->setValue(0);
+	ui->loadProgressBar->show();
+
+	// load in manager
+	emaMngr()->appendFileList(list);
+
+	// start timer to update while processing
+	if(!m_timer.isActive()) {
+		m_timer.start(500, TRUE);
+	}
 }
+
+
+void EmaMainWindow::on_timer_timeout() {
+
+	int val = emaMngr()->getProgress();
+
+	EMAMW_printf(EMALOG_DEBUG, "Timeout => progress = %d", val)
+
+	if(val < 100) {
+		ui->loadProgressBar->setValue(val);
+
+		// update known files : appended files
+		QStringList::Iterator it = m_appendFileList.begin();
+
+		QString fileName;
+		int nb = m_appendFileList.count();
+		EMAMW_printf(EMALOG_DEBUG, "Test if we can append %d files...", nb)
+
+		while(it != m_appendFileList.end()) {
+			fileName = (*it);
+			++it;
+
+			appendThumbImage(fileName);
+		}
+	}
+
+	if(!m_appendFileList.isEmpty()) {
+		// next update in 500 ms
+		m_timer.start(500, TRUE);
+	}
+	else {
+		ui->loadProgressBar->hide();
+		m_timer.stop();
+	}
+
+}
+
 
 
 void EmaMainWindow::on_collecShowCheckBox_stateChanged(int state) {
@@ -132,42 +237,115 @@ void EmaMainWindow::on_collecShowCheckBox_stateChanged(int state) {
 
 
 void EmaMainWindow::appendThumbImage(QString fileName) {
-	if(!m_imageList.contains(fileName)) {
-			// Append to managed pictures
-			m_imageList.append(fileName);
 
-			// And display it
-			ThumbImageFrame * newThumb = new ThumbImageFrame(
-					//ui->imageScrollArea);
-					ui->scrollAreaWidgetContents);
-			newThumb->setImageFile(fileName);
-			ui->scrollAreaWidgetContents->layout()->addWidget(newThumb);
+	t_image_info_struct * pinfo = emaMngr()->getInfo(fileName);
 
-			ThumbImageFrame * newThumb2 = new ThumbImageFrame(
-					//ui->imageScrollArea);
-					ui->gridScrollAreaWidgetContents);
-			newThumb2->setImageFile(fileName);
-			ui->gridScrollAreaWidgetContents->layout()->addWidget(newThumb2);
+	if(!pinfo) {
+		EMAMW_printf(EMALOG_TRACE, "Image file '%s' is NOT YET  managed", fileName.ascii())
+	} else {
+		// image is already managed
+		EMAMW_printf(EMALOG_DEBUG, "Image file '%s' is now managed", fileName.ascii())
 
-			// connect this signal
-			connect(newThumb, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
-			connect(newThumb2, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
-		}
+		// Append to managed pictures
+		m_imageList.append(fileName);
+
+		// And remove it from files being waited for
+		m_appendFileList.remove(fileName);
+
+		// And display it
+		ThumbImageFrame * newThumb = new ThumbImageFrame(
+				//ui->imageScrollArea);
+				ui->scrollAreaWidgetContents);
+		newThumb->setImageFile(fileName, pinfo->thumbImage);
+		ui->scrollAreaWidgetContents->layout()->addWidget(newThumb);
+
+		ThumbImageFrame * newThumb2 = new ThumbImageFrame(
+				//ui->imageScrollArea);
+				ui->gridScrollAreaWidgetContents);
+		newThumb2->setImageFile(fileName, pinfo->thumbImage);
+		ui->gridScrollAreaWidgetContents->layout()->addWidget(newThumb2);
+
+		// connect this signal
+		connect(newThumb, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
+		connect(newThumb2, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
+	}
 }
 
-void EmaMainWindow::on_thumbImage_clicked(QString fileName) {
+void EmaMainWindow::on_thumbImage_clicked(QString fileName)
+{
 	QFileInfo fi(fileName);
 	if(fi.exists()) {
 		ui->globalNavImageWidget->setImageFile(fileName);
 		ui->mainImageWidget->setImageFile(fileName);
 
-		ui->exifScrollArea->setImageFile(fileName); // before image processing because it's faster
-		ui->imageInfoWidget->setImageFile(fileName);
-
+		t_image_info_struct * pinfo = emaMngr()->getInfo(fileName);
+		if(!pinfo) {
+			EMAMW_printf(EMALOG_WARNING, "File '%s' is not managed : reload and process file info\n", fileName.ascii())
+			ui->imageInfoWidget->setImageFile(fileName);
+		} else {
+			EMAMW_printf(EMALOG_DEBUG, "File '%s' is managed : use cache info\n", fileName.ascii())
+			ui->imageInfoWidget->setImageInfo(pinfo);
+			ui->exifScrollArea->setImageInfo(pinfo);
+		}
 	}
 }
+
 
 void EmaMainWindow::on_globalNavImageWidget_signalZoomOn(int x, int y, int scale) {
 	ui->mainImageWidget->zoomOn(x,y,scale);
 	ui->stackedWidget->setCurrentIndex(0);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static u32 * grayToBGR32 = NULL;
+static u32 * grayToBGR32False = NULL;
+static u32 * grayToBGR32Red = NULL;
+
+static void init_grayToBGR32()
+{
+	if(grayToBGR32) {
+		return;
+	}
+
+	grayToBGR32 = new u32 [256];
+	grayToBGR32False = new u32 [256];
+	grayToBGR32Red = new u32 [256];
+	for(int c = 0; c<256; c++) {
+		int Y = c;
+		u32 B = Y;// FIXME
+		u32 G = Y;
+		u32 R = Y;
+		grayToBGR32[c] = grayToBGR32Red[c] =
+			grayToBGR32False[c] = (R << 16) | (G<<8) | (B<<0);
+	}
+
+	// Add false colors
+	grayToBGR32[COLORMARK_CORRECTED] = // GREEN
+		grayToBGR32False[COLORMARK_CORRECTED] = (255 << 8);
+		//mainImage.setColor(COLORMARK_CORRECTED, qRgb(0,255,0));
+	// YELLOW
+	grayToBGR32False[COLORMARK_REFUSED] = (255 << 8) | (255 << 16);
+				//mainImage.setColor(COLORMARK_REFUSED, qRgb(255,255,0));
+	grayToBGR32False[COLORMARK_FAILED] =
+			grayToBGR32Red[COLORMARK_FAILED] = (255 << 16);
+				//mainImage.setColor(COLORMARK_FAILED, qRgb(255,0,0));
+	grayToBGR32False[COLORMARK_CURRENT] = // BLUE
+	//		grayToBGR32Red[COLORMARK_CURRENT] =
+										(255 << 0);
+				//mainImage.setColor(COLORMARK_CURRENT, qRgb(0,0,255));
+}
+

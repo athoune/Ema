@@ -591,6 +591,21 @@ void tmCloneRegionTopLeft(IplImage * origImage,
 	}
 }
 
+/* Create/allocate a copy of an IplImage  */
+IplImage * tmClone(IplImage * img_src)
+{
+	if(!img_src) return NULL;
+
+	IplImage * img_dest = tmCreateImage(
+			cvSize(img_src->width, img_src->height),
+			img_src->depth,
+			img_src->nChannels);
+	if(!img_dest) return NULL;
+
+	tmCopyImage(img_src, img_dest);
+	return img_dest;
+}
+
 /*
  * Copy an image in another
  */
@@ -2106,6 +2121,8 @@ u32 tmHSV2BGR32(float H, float S, float V) {
 	u32 B = (u32)b;
 	// concatenate
 	u32 bgr32 = (R << 16) | (G<<8) | (B<<0);
+
+	return bgr32 ;
 }
 
 void tmHSV2RGB(float H, float S, float V,
@@ -2144,3 +2161,60 @@ void tmHSV2RGB(float H, float S, float V,
 	*pG = g * 255.f;
 	*pB = b * 255.f;
 }
+
+
+IplImage * drawHistogram(float histo[3][256], bool grayscaled) {
+
+	IplImage * m_HistoImage =
+			tmCreateImage(cvSize(256, 100), IPL_DEPTH_8U,
+						  grayscaled ? 1 : 3);
+	IplImage * histo_plane[3] = {NULL, NULL, NULL};
+	// Compute RGB histogram
+	int nChannels = (grayscaled ? 1 : 3 );
+
+	for(int rgb=0; rgb<nChannels; rgb++)  {
+		histo_plane[rgb] = tmCreateImage(cvSize(256, 100), IPL_DEPTH_8U, 1);
+	}
+
+	float hmax = 0.f;
+	for(int rgb=0; rgb<nChannels; rgb++)  {
+		for(int h=0; h<256; h++) {
+			if(histo[rgb][h]>hmax)
+				hmax = histo[rgb][h];
+		}
+	}
+
+	float divlogmax = 100.f / ((float)hmax) ;
+	for(int rgb=0; rgb<nChannels ; rgb++)  {
+		cvZero(histo_plane[rgb]);
+
+		for(int h = 0; h< 256; h++) {
+			if(histo[rgb][h]) {
+				int val = 100 - (int)(histo[rgb][h] * divlogmax);
+
+				if(val < 100) {
+					cvLine(histo_plane[rgb], cvPoint(h, 100),
+						   cvPoint(h, val),
+						   cvScalarAll(192), 1);
+					cvLine(histo_plane[rgb], cvPoint(h, val),
+						   cvPoint(h, val),
+						   cvScalarAll(255), 1);
+				}
+			}
+		}
+	}
+	// Mix R,G,B planes
+	if(!grayscaled)
+		cvCvtPlaneToPix( histo_plane[0], histo_plane[1], histo_plane[2], 0, m_HistoImage );
+	else
+		cvCopy(histo_plane[0], m_HistoImage);
+
+
+	for(int rgb=0; rgb<nChannels; rgb++)  {
+		tmReleaseImage(&histo_plane[rgb]);
+	}
+
+	return m_HistoImage;
+}
+
+

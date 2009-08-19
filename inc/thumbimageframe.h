@@ -9,6 +9,7 @@
 #define THUMBIMAGEFRAME_H
 
 #include <QtGui/QFrame>
+#include "imageinfo.h"
 
 namespace Ui {
 	class ThumbImageFrame;
@@ -21,7 +22,7 @@ public:
 	explicit ThumbImageFrame(QWidget *parent = 0);
 	virtual ~ThumbImageFrame();
 	/** @brief Set the background image */
-	void setImageFile(const QString &  imagePath);
+	void setImageFile(const QString &  imagePath, IplImage * img = NULL);
 
 protected:
 	virtual void changeEvent(QEvent *e);

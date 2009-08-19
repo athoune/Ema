@@ -32,11 +32,6 @@ ImageInfoWidget::~ImageInfoWidget()
 
 
 static u32 * grayToBGR32 = NULL;
-static u32 * grayToBGR32False = NULL;
-static u32 * grayToBGR32Thermal = NULL;
-
-static u32 * grayToBGR32Red = NULL;
-
 static void init_grayToBGR32()
 {
 	if(grayToBGR32) {
@@ -44,25 +39,17 @@ static void init_grayToBGR32()
 	}
 
 	grayToBGR32 = new u32 [256];
-	grayToBGR32False = new u32 [256];
-	grayToBGR32Thermal = new u32 [256];
 	for(int c = 0; c<256; c++) {
 		int Y = c;
 		u32 B = Y;// FIXME
 		u32 G = Y;
 		u32 R = Y;
-		grayToBGR32[c] =
-			grayToBGR32False[c] = (R << 16) | (G<<8) | (B<<0);
-
-		float H = // H in HSV: 240 = blue, 0 = red
-				( 255.f - (float)c ) * 240.f/255.f;
-
-		grayToBGR32Thermal[c]  = tmHSV2BGR32(H, 255.f, 255.f);
+		grayToBGR32[c] = (R << 16) | (G<<8) | (B<<0);
 	}
 
 }
 
-QImage iplImageToQImage(IplImage * iplImage, bool false_colors, bool red_only ) {
+QImage iplImageToQImage(IplImage * iplImage) {
 	if(!iplImage)
 		return QImage();
 
@@ -83,40 +70,19 @@ QImage iplImageToQImage(IplImage * iplImage, bool false_colors, bool red_only ) 
 		gray_to_bgr32 = true;
 
 		init_grayToBGR32();
-		if(!false_colors)
-			grayToBGR32palette = grayToBGR32;
-		else
-			grayToBGR32palette = grayToBGR32Thermal ;
-		/*else if(red_only)
-			grayToBGR32palette = grayToBGR32Red;
-		else
-			grayToBGR32palette = grayToBGR32False;*/
+		grayToBGR32palette = grayToBGR32;
 	}
 
 	int orig_width = iplImage->width;
-//	if((orig_width % 2) == 1)
-//		orig_width--;
-
 
 	QImage qImage(orig_width, iplImage->height,
 				  8 * depth);
 				//  depth > 1 ? QImage::Format_RGB32 : QImage::Format_Indexed8);
 	memset(qImage.bits(), 0, orig_width*iplImage->height*depth);
 
-	/*
-	if(iplImage->nChannels == 4)
-	{
-		fprintf(stderr, "[TamanoirApp]::%s:%d : ORIGINAL DEPT IS RGBA depth = %d\n"
-				"\trgb24_to_bgr32=%c gray_to_bgr32=%c\n",
-				__func__, __LINE__, iplImage->nChannels,
-				rgb24_to_bgr32? 'T':'F',
-				gray_to_bgr32 ? 'T':'F'
-				);
-	}*/
-
 	switch(iplImage->depth) {
 	default:
-		fprintf(stderr, "[TamanoirApp]::%s:%d : Unsupported depth = %d\n", __func__, __LINE__, iplImage->depth);
+		fprintf(stderr, "imageinfowidget %s:%d : Unsupported depth = %d\n", __func__, __LINE__, iplImage->depth);
 		break;
 
 	case IPL_DEPTH_8U: {
@@ -295,7 +261,7 @@ QImage iplImageToQImage(IplImage * iplImage, bool false_colors, bool red_only ) 
 			}
 		}
 		else {
-			fprintf(stderr, "[TamanoirApp]::%s:%d : U16  depth = %d -> BGR32\n", __func__, __LINE__, iplImage->depth);
+			fprintf(stderr, "imageinfowidget %s:%d : U16  depth = %d -> BGR32\n", __func__, __LINE__, iplImage->depth);
 			u8 * buffer4 = (u8 *)qImage.bits();
 			if(depth == 3) {
 
@@ -341,19 +307,21 @@ QImage iplImageToQImage(IplImage * iplImage, bool false_colors, bool red_only ) 
 		qImage.setNumColors(256);
 
 		for(int c=0; c<256; c++) {
-			/* False colors
-			int R=c, G=c, B=c;
-			if(c<128) B = (255-2*c); else B = 0;
-			if(c>128) R = 2*(c-128); else R = 0;
-			G = abs(128-c)*2;
-
-			qImage.setColor(c, qRgb(R,G,B));
-			*/
 			qImage.setColor(c, qRgb(c,c,c));
 		}
 	}
 	return qImage;
 }
+
+/*
+t_image_info_struct ImageInfoWidget::getImageInfo() {
+	t_image_info_struct l_info;
+	memset(&l_info, 0, sizeof(t_image_info_struct));
+	if(m_imgProc) {
+		l_info = m_imgProc->getImageInfo();
+	}
+	return l_info;
+}*/
 
 
 /* Set the background image */
@@ -365,11 +333,12 @@ void ImageInfoWidget::setImageFile(const QString &  imagePath) {
 
 	QByteArray arrStr = imagePath.toUtf8();
 	m_imgProc->loadFile( arrStr.data() );
+
 	// RGB Histogram
 	IplImage * histo = m_imgProc->getHistogram();
 	if(histo) {
 		// Display in label
-		QImage img = iplImageToQImage(histo, false, false).scaled(
+		QImage img = iplImageToQImage(histo).scaled(
 				m_ui->sharpnessImageLabel->width(),
 				m_ui->sharpnessImageLabel->height(),
 				Qt::KeepAspectRatio
@@ -382,7 +351,7 @@ void ImageInfoWidget::setImageFile(const QString &  imagePath) {
 	IplImage * sharpMask = m_imgProc->getSharpnessImage();
 	if(sharpMask) {
 		// Display in label
-		QImage img = iplImageToQImage(sharpMask, false, false).scaled(
+		QImage img = iplImageToQImage(sharpMask).scaled(
 				m_ui->sharpnessImageLabel->width(),
 				m_ui->sharpnessImageLabel->height(),
 				Qt::KeepAspectRatio
@@ -397,10 +366,59 @@ void ImageInfoWidget::setImageFile(const QString &  imagePath) {
 	IplImage * colHisto = m_imgProc->getColorHistogram();
 	if(colHisto) {
 		// Display in label
-		QImage img = iplImageToQImage(colHisto, false, false);
+		QImage img = iplImageToQImage(colHisto);
 		m_ui->globalImageLabel->setPixmap(QPixmap::fromImage(img));
 	}
 }
+
+
+void ImageInfoWidget::setImageInfo(t_image_info_struct * pinfo) {
+	if(!pinfo) {
+		// FIXME : clear display
+
+		return ;
+	}
+
+
+	// RGB Histogram
+	IplImage * histo =
+			drawHistogram(pinfo->log_histogram, pinfo->grayscaled);
+
+	if(histo) {
+		// Display in label
+		QImage img = iplImageToQImage(histo).scaled(
+				m_ui->sharpnessImageLabel->width(),
+				m_ui->sharpnessImageLabel->height(),
+				Qt::KeepAspectRatio
+				);
+		m_ui->histoImageLabel->setPixmap(QPixmap::fromImage(img));
+	}
+
+	// And sharpness
+	IplImage * sharpMask = pinfo->sharpnessImage;
+	if(sharpMask) {
+		// Display in label
+		QImage img = iplImageToQImage(sharpMask).scaled(
+				m_ui->sharpnessImageLabel->width(),
+				m_ui->sharpnessImageLabel->height(),
+				Qt::KeepAspectRatio
+				);
+		m_ui->sharpnessImageLabel->setPixmap(QPixmap::fromImage(img));
+		int sh = tmmin(100, (int)pinfo->sharpness);
+		QString percent;
+		m_ui->sharpnessLabel->setText(tr("Sharpness ")
+									  + percent.sprintf("%3d %%", sh));
+	}
+
+	// Then process HSV histogram
+	IplImage * colHisto = pinfo->hsvImage;
+	if(colHisto) {
+		// Display in label
+		QImage img = iplImageToQImage(colHisto);
+		m_ui->globalImageLabel->setPixmap(QPixmap::fromImage(img));
+	}
+}
+
 
 void ImageInfoWidget::changeEvent(QEvent *e)
 {
