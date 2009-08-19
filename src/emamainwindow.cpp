@@ -43,19 +43,17 @@ void EmaMainWindow::on_actionAbout_activated() {
 
 	QString verstr, cmd = QString("Ctrl+");
 	QString item = QString("<li>"), itend = QString("</li>\n");
-	g_splash->showMessage( tr("<b>Ema</b> version: ")
+	g_splash->showMessage(	"<br><br><br><br><br><br><br><br><br>\n"
+							"<br><br><br><br><br><br><br><br><br><br><br><br><br>\n" +
+							tr("<b>Ema</b> version: ")
 						  + verstr.sprintf("svn%04d%02d%02d", VERSION_YY, VERSION_MM, VERSION_DD)
 
-						  + QString("<br>Website & Wiki: <a href=\"http://tamanoir.googlecode.com/\">http://tamanoir.googlecode.com/</a><br><br>")
-						  + tr("Shortcuts :<br><ul>\n")
+						  + QString("<br>Website & Wiki: <a href=\"http://github.com/athoune/Ema/\">http://github.com/athoune/Ema/</a><br><br>")
+						/*  + tr("Shortcuts :<br><ul>\n")
 							+ item + cmd + tr("O: Open a picture file") + itend
-							+ item + cmd + tr("S: Save corrected image") + itend
 							+ item + cmd + tr("H: Display version information") + itend
-							+ item + tr("M: Mark current crop area in red") + itend
-							+ item + tr("A: Apply proposed correction") + itend
-							+ item + tr("&rarr;: Go to next proposal") + itend
-							+ item + tr("&larr;: Go to previous proposal") + itend
-							+ item + tr("C: Switch to clone tool mode") + itend
+*/
+
 //							+ item + tr("") + itend
 //							+ item + cmd + tr("") + itend
 //							+ item + tr("") + itend

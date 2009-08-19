@@ -35,10 +35,10 @@
 
 /** @brief Useful information for sorting pictures*/
 typedef struct {
-	char filepath[MAX_PATH_LEN];
+	std::string filepath;
 	// EXIF TAGS
-	char maker[MAX_EXIF_LEN];	/*! Company wich produces this camera */
-	char model[MAX_EXIF_LEN];	/*! Model of this camera */
+	std::string maker;	/*! Company wich produces this camera */
+	std::string model;	/*! Model of this camera */
 
 	float focal_mm;				/*! Real focal in mm */
 	float focal_eq125_mm;		/*! 135mm equivalent focal in mm (if available) */
@@ -66,11 +66,20 @@ public:
 
 	float getSharpness() { return m_sharpness; };
 
+	t_image_info_struct getInfo() { return m_info; };
+
 private:
 	/** @brief Initialization function */
 	void init();
 	/** @brief Desallocation function */
 	void purge();
+
+
+	/** @brief Read metadata EXIF + IPTC */
+	void readMetadata();
+
+	/** @brief Information about image used to filter/search */
+	t_image_info_struct m_info;
 
 	/** @brief Original image */
 	IplImage * m_originalImage;

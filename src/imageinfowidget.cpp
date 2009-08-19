@@ -14,6 +14,14 @@ ImageInfoWidget::ImageInfoWidget(QWidget *parent) :
 	m_ui->setupUi(this);
 }
 
+// Read metadata
+#include <exiv2/image.hpp>
+#include <exiv2/exif.hpp>
+#include <iostream>
+#include <iomanip>
+#include <cassert>
+
+
 ImageInfoWidget::~ImageInfoWidget()
 {
 	delete m_ui;
