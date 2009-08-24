@@ -48,8 +48,9 @@ ImageInfo::~ImageInfo() {
 void ImageInfo::init() {
 	m_originalImage = NULL;
 
-	m_scaledImage = m_grayImage = m_HSHistoImage =
-	m_HistoImage = m_ColorHistoImage = hsvImage = h_plane = s_plane = NULL;
+	m_thumbImage = m_scaledImage = m_grayImage = m_HSHistoImage =
+	m_HistoImage = m_ColorHistoImage =
+	hsvImage = hsvOutImage = h_plane = s_plane = NULL;
 	for(int rgb=0; rgb<4; rgb++)
 		rgb_plane[rgb] = 0;
 
@@ -62,6 +63,7 @@ void ImageInfo::purge() {
 	memset(&m_image_info_struct, 0, sizeof(t_image_info_struct ));
 	tmReleaseImage(&m_originalImage);
 	tmReleaseImage(&m_HistoImage); // Delete only at the end, because it's always the same size
+	tmReleaseImage(&hsvOutImage);
 	purgeScaled();
 }
 
@@ -142,6 +144,7 @@ void ImageInfo::purgeScaled() {
 	}
 
 	tmReleaseImage(&m_scaledImage);
+	tmReleaseImage(&m_thumbImage);
 	for(int rgb=0; rgb<4; rgb++)
 		tmReleaseImage(&rgb_plane[rgb]);
 
@@ -178,19 +181,16 @@ int ImageInfo::readMetadata(char * filename) {
 		displayStr = QString::fromStdString(str);
 		exifMaker = exifData["Exif.Image.Model"];str = exifMaker.toString();
 		displayStr += " / " + QString::fromStdString(str);
-		//m_ui->makerLineEdit->setText(displayStr);
 		strcpy(m_image_info_struct.maker, displayStr.ascii());
 
 		// Orientation
 		exifMaker = exifData["Exif.Image.Orientation"]; str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
-		//m_ui->orientationLineEdit->setText(displayStr);
 		m_image_info_struct.orientation = (char)( displayStr.contains("0") ? 0 : 1);
 
 		// DateTime
 		exifMaker = exifData["Exif.Photo.DateTimeOriginal"]; str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
-		//		m_ui->dateLineEdit->setText(displayStr);
 		strcpy(m_image_info_struct.datetime, displayStr.ascii());
 
 		// Focal
@@ -210,35 +210,30 @@ int ImageInfo::readMetadata(char * filename) {
 
 			displayStr += QString("eq. 35mm");
 		}
-		fprintf(stderr, "Focal : '%s' => %g s %g 35mm\n",
+		if(g_debug_ImageInfo) {
+			fprintf(stderr, "Focal : '%s' => %g s %g 35mm\n",
 				displayStr.ascii(),
 				m_image_info_struct.focal_mm,
 				m_image_info_struct.focal_eq135_mm);
-
-		//m_ui->focalLineEdit->setText(displayStr);
-
+		}
 		// Aperture
 		exifMaker = exifData["Exif.Photo.FNumber"]; str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
 		m_image_info_struct.aperture = rational_to_float(displayStr);
-		//m_ui->apertureLineEdit->setText(displayStr);
 
 		// Speed
 		exifMaker = exifData["Exif.Photo.ExposureTime"]; str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
 		m_image_info_struct.speed_s = rational_to_float(displayStr);
-		fprintf(stderr, "Exposure time : '%s' => %g s\n",
+		if(g_debug_ImageInfo) {
+			fprintf(stderr, "Exposure time : '%s' => %g s\n",
 				displayStr.ascii(), m_image_info_struct.speed_s);
-		//m_ui->speedLineEdit->setText(displayStr);
+		}
 
 		// Speed
 		exifMaker = exifData["Exif.Photo.ISOSpeedRatings"]; str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
-//		displayStr = rational(displayStr);
 		m_image_info_struct.ISO = (int)rational_to_float(displayStr);
-
-//		m_ui->isoLineEdit->setText(displayStr);
-
 
 		if(0)
 		for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i) {
@@ -294,17 +289,19 @@ int ImageInfo::loadFile(char * filename) {
 	}
 	strcpy(m_image_info_struct.filepath, filename );
 
-	fprintf(stderr, "ImageInfo::%s:%d : loaded %dx%d x %d\n", __func__, __LINE__,
+	if(g_debug_ImageInfo) {
+		fprintf(stderr, "ImageInfo::%s:%d : loaded %dx%d x %d\n", __func__, __LINE__,
 			m_originalImage->width, m_originalImage->height,
 			m_originalImage->nChannels );
-
+	}
 	m_image_info_struct.grayscaled = (m_originalImage->depth == 1);
 
 	m_originalImage = tmAddBorder4x(m_originalImage); // it will purge originalImage
-	fprintf(stderr, "ImageInfo::%s:%d => pitchedx4: %dx%d x %d\n", __func__, __LINE__,
+	if(g_debug_ImageInfo) {
+		fprintf(stderr, "ImageInfo::%s:%d => pitchedx4: %dx%d x %d\n", __func__, __LINE__,
 			m_originalImage->width, m_originalImage->height,
 			m_originalImage->nChannels );
-
+	}
 
 #define IMGINFO_WIDTH	400
 #define IMGINFO_HEIGHT	400
@@ -339,12 +336,38 @@ int ImageInfo::loadFile(char * filename) {
 
 	cvResize(m_originalImage, m_scaledImage);
 
-	fprintf(stderr, "ImageInfo::%s:%d : scaled to %dx%d\n", __func__, __LINE__,
+#define IMGTHUMB_WIDTH	80
+#define IMGTHUMB_HEIGHT 80
+	// Scale rescaled to thumb size
+	if(!m_thumbImage) {
+		int th_w = IMGTHUMB_WIDTH;
+		int th_h = IMGTHUMB_HEIGHT;
+		float th_factor_w = (float)m_originalImage->width / (float)IMGTHUMB_WIDTH;
+		float th_factor_h = (float)m_originalImage->height / (float)IMGTHUMB_HEIGHT;
+		if(th_factor_w > th_factor_h) {
+			// limit w
+			th_w = m_originalImage->width * IMGTHUMB_HEIGHT/m_originalImage->height;
+		} else {
+			th_h = m_originalImage->height * IMGTHUMB_WIDTH/m_originalImage->width;
+		}
+
+		while((th_w % 4) != 0) { th_w++; }
+		while((th_h % 4) != 0) { th_h++; }
+		m_thumbImage = tmCreateImage( cvSize(th_w, th_h), IPL_DEPTH_8U, m_originalImage->nChannels);
+	}
+
+	cvResize(m_scaledImage, m_thumbImage);
+	m_image_info_struct.thumbImage = m_thumbImage;
+
+	if(g_debug_ImageInfo) {
+		fprintf(stderr, "ImageInfo::%s:%d : scaled to %dx%d\n", __func__, __LINE__,
 			m_scaledImage->width, m_scaledImage->height);
+		fprintf(stderr, "ImageInfo::%s:%d : thumb %dx%d\n", __func__, __LINE__,
+			m_thumbImage->width, m_thumbImage->height);
 
-	fprintf(stderr, "\nImageInfo::%s:%d : processHSV(m_scaledImage=%dx%d)\n", __func__, __LINE__,
+		fprintf(stderr, "\nImageInfo::%s:%d : processHSV(m_scaledImage=%dx%d)\n", __func__, __LINE__,
 			m_scaledImage->width, m_scaledImage->height);fflush(stderr);
-
+	}
 	// process RGB histogram
 	processRGB();
 
@@ -352,13 +375,16 @@ int ImageInfo::loadFile(char * filename) {
 	processHSV();
 
 	// then sharpness
-	fprintf(stderr, "ImageInfo::%s:%d : processSharpness(gray=%dx%d)\n", __func__, __LINE__,
+	if(g_debug_ImageInfo) {
+		fprintf(stderr, "ImageInfo::%s:%d : processSharpness(gray=%dx%d)\n", __func__, __LINE__,
 			m_grayImage->width, m_grayImage->height);fflush(stderr);
+	}
 	processSharpness();
 
-	fprintf(stderr, "ImageInfo::%s:%d : process done (gray=%dx%d)\n", __func__, __LINE__,
+	if(g_debug_ImageInfo) {
+		fprintf(stderr, "ImageInfo::%s:%d : process done (gray=%dx%d)\n", __func__, __LINE__,
 			m_grayImage->width, m_grayImage->height);fflush(stderr);
-
+	}
 	m_image_info_struct.valid = 1;
 	return 0;
 }
@@ -451,10 +477,13 @@ The values are then converted to the destination data type:
 		tmSaveImage(TMP_DIRECTORY "HSHisto.pgm", m_HSHistoImage);
 	}
 
-	IplImage * hsvOutImage = tmCreateImage(
+	if(!hsvOutImage) {
+		hsvOutImage = tmCreateImage(
 			cvSize(H_MAX, S_MAX),
 			IPL_DEPTH_8U,
 			3);
+	}
+
 	// Fill with H,S and use Value for highlighting colors
 	for(int r=0; r<hsvOutImage->height; r++) {
 		u8 * outline = (u8 *)(hsvOutImage->imageData
@@ -475,17 +504,16 @@ The values are then converted to the destination data type:
 			cvSize(H_MAX, S_MAX),
 			IPL_DEPTH_8U,
 			3);
-	} else
-		cvZero(m_ColorHistoImage);
+	} // else cvZero(m_ColorHistoImage); // don't need to clear, because always the same size
 
 	cvCvtColor(hsvOutImage, m_ColorHistoImage, CV_HSV2BGR);
+
 	m_image_info_struct.hsvImage = m_ColorHistoImage;
 
 	//tmSaveImage(TMP_DIRECTORY "HSHistoColored.ppm", m_ColorHistoImage);
 	if(g_debug_ImageInfo) {
 		tmSaveImage(TMP_DIRECTORY "HSHistoHSV.ppm", hsvOutImage);
 	}
-	tmReleaseImage(&hsvOutImage);
 
 	return 0;
 }

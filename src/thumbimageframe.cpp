@@ -68,3 +68,26 @@ void ThumbImageFrame::setImageFile(const QString & imagePath, IplImage * img )
 void ThumbImageFrame::on_globalImageLabel_signalMousePressEvent(QMouseEvent * e) {
 	emit signalThumbClicked(m_imagePath);
 }
+
+
+
+
+// Forward mouse events
+void ThumbImageFrame::mouseDoubleClickEvent ( QMouseEvent * event ) {
+	// forward double click
+	emit signal_mouseDoubleClickEvent ( event );
+
+	// signal that we selected one item
+	emit signal_mouseDoubleClickFile ( m_imagePath );
+}
+
+void ThumbImageFrame::mouseMoveEvent ( QMouseEvent * event ) {
+	emit signal_mouseMoveEvent ( event );
+}
+void ThumbImageFrame::mousePressEvent ( QMouseEvent * event ) {
+	emit signal_mousePressEvent ( event );
+}
+void ThumbImageFrame::mouseReleaseEvent ( QMouseEvent * event ) {
+	emit signal_mouseReleaseEvent ( event );
+}
+

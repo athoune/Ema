@@ -35,6 +35,22 @@ private slots:
 	void on_globalImageLabel_signalMousePressEvent(QMouseEvent * e);
 signals:
 	void signalThumbClicked(QString);
+
+private:
+	QString m_filename;
+protected:
+	virtual void mouseDoubleClickEvent ( QMouseEvent * event );
+	virtual void mouseMoveEvent ( QMouseEvent * event );
+	virtual void mousePressEvent ( QMouseEvent * event );
+	virtual void mouseReleaseEvent ( QMouseEvent * event );
+signals:
+//	void changeEvent(QEvent *e);
+	void signal_mouseDoubleClickFile ( QString filename );
+
+	void signal_mouseDoubleClickEvent ( QMouseEvent * event );
+	void signal_mouseMoveEvent ( QMouseEvent * event );
+	void signal_mousePressEvent ( QMouseEvent * event );
+	void signal_mouseReleaseEvent ( QMouseEvent * event );
 };
 
 #endif // THUMBIMAGEFRAME_H

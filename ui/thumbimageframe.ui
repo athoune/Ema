@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>102</width>
-    <height>102</height>
+    <width>92</width>
+    <height>92</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -51,9 +51,6 @@
      </property>
      <property name="toolTip">
       <string>Image display</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(93, 93, 93);</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>

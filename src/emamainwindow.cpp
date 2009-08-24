@@ -94,19 +94,25 @@ void EmaMainWindow::on_actionAbout_activated() {
 
 	QString verstr, cmd = QString("Ctrl+");
 	QString item = QString("<li>"), itend = QString("</li>\n");
-	g_splash->showMessage( tr("<b>Ema</b> version: ")
+	g_splash->showMessage(
+
+			QString("<br><br><br><br><br><br><br><br><br>") +
+			QString("<br><br><br><br><br><br><br><br><br>") +
+			QString("<br><br><br><br><br><br><br>") +
+			tr("<b>Ema</b> version: ")
+
 						  + verstr.sprintf("svn%04d%02d%02d", VERSION_YY, VERSION_MM, VERSION_DD)
 
-						  + QString("<br>Website & Wiki: <a href=\"http://tamanoir.googlecode.com/\">http://tamanoir.googlecode.com/</a><br><br>")
+						  + QString("<br>Website & Wiki: <a href=\"http://github.com/athoune/ema/\">http://github.com/athoune/ema/</a><br><br>")
 						  + tr("Shortcuts :<br><ul>\n")
-							+ item + cmd + tr("O: Open a picture file") + itend
-							+ item + cmd + tr("S: Save corrected image") + itend
-							+ item + cmd + tr("H: Display version information") + itend
-							+ item + tr("M: Mark current crop area in red") + itend
-							+ item + tr("A: Apply proposed correction") + itend
-							+ item + tr("&rarr;: Go to next proposal") + itend
-							+ item + tr("&larr;: Go to previous proposal") + itend
-							+ item + tr("C: Switch to clone tool mode") + itend
+//							+ item + cmd + tr("O: Open a picture file") + itend
+//							+ item + cmd + tr("S: Save corrected image") + itend
+//							+ item + cmd + tr("H: Display version information") + itend
+//							+ item + tr("M: Mark current crop area in red") + itend
+//							+ item + tr("A: Apply proposed correction") + itend
+//							+ item + tr("&rarr;: Go to next proposal") + itend
+//							+ item + tr("&larr;: Go to previous proposal") + itend
+//							+ item + tr("C: Switch to clone tool mode") + itend
 //							+ item + tr("") + itend
 //							+ item + cmd + tr("") + itend
 //							+ item + tr("") + itend
@@ -185,7 +191,7 @@ void EmaMainWindow::appendFileList(QStringList list) {
 
 	// start timer to update while processing
 	if(!m_timer.isActive()) {
-		m_timer.start(500, TRUE);
+		m_timer.start(500);
 	}
 }
 
@@ -197,7 +203,6 @@ void EmaMainWindow::on_timer_timeout() {
 	EMAMW_printf(EMALOG_DEBUG, "Timeout => progress = %d", val)
 
 	if(val < 100) {
-		ui->loadProgressBar->setValue(val);
 
 		// update known files : appended files
 		QStringList::Iterator it = m_appendFileList.begin();
@@ -209,14 +214,16 @@ void EmaMainWindow::on_timer_timeout() {
 		while(it != m_appendFileList.end()) {
 			fileName = (*it);
 			++it;
+			ui->loadProgressBar->setValue(emaMngr()->getProgress());
 
 			appendThumbImage(fileName);
 		}
+		ui->loadProgressBar->setValue(emaMngr()->getProgress());
 	}
 
 	if(!m_appendFileList.isEmpty()) {
 		// next update in 500 ms
-		m_timer.start(500, TRUE);
+		m_timer.start(500);
 	}
 	else {
 		ui->loadProgressBar->hide();
@@ -261,12 +268,23 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 		newThumb->setImageFile(fileName, pinfo->thumbImage);
 		ui->scrollAreaWidgetContents->layout()->addWidget(newThumb);
 
+		static int nb_item = 0;
+		int rowpos = nb_item / 3, colpos = nb_item % 3;
+		nb_item++;
 		ThumbImageFrame * newThumb2 = new ThumbImageFrame(
 				//ui->imageScrollArea);
 				ui->gridScrollAreaWidgetContents);
 		newThumb2->setImageFile(fileName, pinfo->thumbImage);
-		ui->gridScrollAreaWidgetContents->layout()->addWidget(newThumb2);
+/*
+		ui->gridScrollAreaWidgetContents->layout()->addWidget((QWidget *)newThumb2,
+															  rowpos, colpos, 0);
+*/
 
+//		ui->gridScrollAreaWidgetContents->layout()->addWidget(newThumb2);
+
+		QGridLayout * grid = (QGridLayout *)ui->gridScrollAreaWidgetContents->layout();
+		grid->addWidget(	newThumb2,
+							rowpos, colpos, 0);
 		// connect this signal
 		connect(newThumb, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
 		connect(newThumb2, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
