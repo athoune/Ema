@@ -15,7 +15,9 @@ QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
 # and an uppercase first letter for Mac & Windows
 mac::TARGET = Ema
 win32::TARGET = Ema
+
 include(opencv.pri)
+
 LIBS += -lexiv2
 DEPENDPATH += . \
     inc \
@@ -25,8 +27,7 @@ INCLUDEPATH += . \
     inc \
     ui
 OBJECTS_DIR = .obj-simple
-DEFINES += SIMPLE_VIEW \
-    QT3_SUPPORT
+DEFINES += QT3_SUPPORT
 TRANSLATIONS = photogeny_French.ts
 SOURCES += src/main.cpp \
     src/navimagewidget.cpp \

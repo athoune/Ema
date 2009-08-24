@@ -46,8 +46,6 @@ ImageInfo::~ImageInfo() {
 	purge();
 }
 void ImageInfo::init() {
-	memset(&m_info, 0, sizeof(t_image_info_struct ));
-
 	m_originalImage = NULL;
 
 	m_thumbImage = m_scaledImage = m_grayImage = m_HSHistoImage =
@@ -391,65 +389,6 @@ int ImageInfo::loadFile(char * filename) {
 	return 0;
 }
 
-void ImageInfo::readMetadata() {
-	// Read metadata
-	try {
-
-		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open((char *)fileName.ascii());
-		assert(image.get() != 0);
-		image->readMetadata();
-
-		Exiv2::ExifData &exifData = image->exifData();
-		if (exifData.empty()) {
-			std::string error(fileName);
-			error += ": No Exif data found in the file";
-			throw Exiv2::Error(1, error);
-		}
-		Exiv2::ExifData::const_iterator end = exifData.end();
-
-		QString displayStr;
-
-		Exiv2::Exifdatum& exifMaker = exifData["Exif.Image.Make"];
-		std::string str = exifMaker.toString();
-		displayStr = QString::fromStdString(str);
-		fprintf(stderr, "ExifDisplay::%s:%d : maker='%s'\n",
-				__func__, __LINE__, displayStr.ascii());
-		if(0)
-		for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i) {
-
-/*			str.sprintf("%d ", i->key());
-			displayStr += QString(i->key()) ;
-*/
-			QString str; str = (i->tag());
-
-			displayStr += str+ QString(" = ") + "\n";
-//			str.sprintf("%d ", i->value());
-
-			//displayStr += QString(i->value()) + "\n";
-
-			std::cout << std::setw(44) << std::setfill(' ') << std::left
-					<< i->key() << " "
-					<< "0x" << std::setw(4) << std::setfill('0') << std::right
-					<< std::hex << i->tag() << " "
-					<< std::setw(9) << std::setfill(' ') << std::left
-					<< i->typeName() << " "
-					<< std::dec << std::setw(3)
-					<< std::setfill(' ') << std::right
-					<< i->count() << "  "
-					<< std::dec << i->value()
-					<< "\n";
-		}
-
-
-//		m_ui->exifLabel->setText(displayStr);
-		//m_ui->exifDataLabel->setText(tr("Hello"));
-		return ;
-	}
-	catch (Exiv2::AnyError& e) {
-		std::cout << "Caught Exiv2 exception '" << e << "'\n";
-		return ;
-	}
-}
 int ImageInfo::processHSV() {
 	// Change to HSV
 	if(m_scaledImage->nChannels < 3) {

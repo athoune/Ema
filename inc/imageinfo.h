@@ -53,8 +53,8 @@ typedef struct {
 	unsigned char valid;		/*! Valid info flag */
 
 	// EXIF TAGS
-	std::string maker;	/*! Company wich produces this camera */
-	std::string model;	/*! Model of this camera */
+	char maker[MAX_EXIF_LEN];	/*! Company which produces this camera */
+	char model[MAX_EXIF_LEN];	/*! Model of this camera */
 
 	char datetime[MAX_EXIF_LEN];	/*! Date/time of the shot */
 
@@ -100,7 +100,6 @@ public:
 	/** @brief Get structure containing every image information needed for sorting */
 	t_image_info_struct getImageInfo() { return m_image_info_struct; };
 
-	t_image_info_struct getInfo() { return m_info; };
 
 private:
 	/** @brief Initialization function */
