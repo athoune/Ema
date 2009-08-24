@@ -24,3 +24,22 @@ void ThumbImageWidget::changeEvent(QEvent *e)
         break;
     }
 }
+
+// Forward mouse events
+void ThumbImageWidget::mouseDoubleClickEvent ( QMouseEvent * event ) {
+	// forward double click
+	emit signal_mouseDoubleClickEvent ( event );
+
+	// signal that we selected one item
+//	emit signal_mouseDoubleClickFile ( m_filename );
+}
+
+void ThumbImageWidget::mouseMoveEvent ( QMouseEvent * event ) {
+	emit signal_mouseMoveEvent ( event );
+}
+void ThumbImageWidget::mousePressEvent ( QMouseEvent * event ) {
+	emit signal_mousePressEvent ( event );
+}
+void ThumbImageWidget::mouseReleaseEvent ( QMouseEvent * event ) {
+	emit signal_mouseReleaseEvent ( event );
+}

@@ -122,6 +122,8 @@ private:
 
 	/** @brief Scaled version of original image */
 	IplImage * m_scaledImage;
+	/*! Thumb image for faster display */
+	IplImage * m_thumbImage;
 	/** @brief Scaled & grayscaled version of original image */
 	IplImage * m_grayImage;
 
@@ -137,6 +139,9 @@ private:
 
 	/** @brief Sharpness image */
 	IplImage * m_sharpnessImage;
+
+	/** @brief HSV output image */
+	IplImage * hsvOutImage;
 
 	/** @brief purge scaled images */
 	void purgeScaled();

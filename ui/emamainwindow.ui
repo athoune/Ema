@@ -287,6 +287,9 @@
              <property name="text">
               <string>G</string>
              </property>
+             <property name="shortcut">
+              <string>G, Ctrl+S</string>
+             </property>
              <property name="flat">
               <bool>true</bool>
              </property>
@@ -306,8 +309,18 @@
              <property name="text">
               <string>I</string>
              </property>
+             <property name="shortcut">
+              <string>I, Ctrl+S</string>
+             </property>
              <property name="flat">
               <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="filtersLabel">
+             <property name="text">
+              <string>Filters: </string>
              </property>
             </widget>
            </item>
@@ -329,10 +342,16 @@
          <item>
           <widget class="QStackedWidget" name="stackedWidget">
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
-           <widget class="QWidget" name="page_mainIMage">
+           <widget class="QWidget" name="page_mainImage">
             <layout class="QVBoxLayout" name="verticalLayout_11">
+             <property name="spacing">
+              <number>2</number>
+             </property>
+             <property name="margin">
+              <number>2</number>
+             </property>
              <item>
               <widget class="MainImageWidget" name="mainImageWidget" native="true"/>
              </item>
@@ -426,13 +445,10 @@
 >>>>>>> 0a2c56b48b75f89650f191f8ce67f19ca0cfce1a:ui/emamainwindow.ui
                  </rect>
                 </property>
-                <layout class="QFormLayout" name="formLayout">
-                 <property name="fieldGrowthPolicy">
-                  <enum>QFormLayout::ExpandingFieldsGrow</enum>
-                 </property>
-                 <property name="rowWrapPolicy">
-                  <enum>QFormLayout::WrapAllRows</enum>
-                 </property>
+                <layout class="QGridLayout" name="gridLayout_2">
+                 <item row="0" column="0">
+                  <layout class="QGridLayout" name="gridLayout" rowstretch="0"/>
+                 </item>
                 </layout>
                </widget>
               </widget>

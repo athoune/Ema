@@ -33,6 +33,8 @@ void MainImageWidget::setImageFile(const QString & imagePath)
 	//		imagePath);
 
 	m_fullImage.load(imagePath);
+	m_mouse_has_moved = false;
+	m_lastClick	= QPoint(-1, -1);
 
 	zoomOn(0,0, 0);
 
@@ -40,7 +42,6 @@ void MainImageWidget::setImageFile(const QString & imagePath)
 
 void  MainImageWidget::zoomOn(int x, int y, int scale) {
 	if(m_fullImage.isNull()) { return; }
-
 
 	int wdisp = m_ui->globalImageLabel->width()-2;
 	int hdisp = m_ui->globalImageLabel->height()-2;
@@ -68,7 +69,8 @@ void MainImageWidget::cropAbsolute(int x_crop, int y_crop, int scale)
 
 		m_displayImage = cropImage.scaled( wdisp, hdisp,
 							Qt::KeepAspectRatio );
-	} else if(scale == 1)
+	}
+	else if(scale == 1)
 	{
 		m_displayImage = m_fullImage.copy(
 			x_crop, y_crop,
@@ -87,7 +89,6 @@ void MainImageWidget::cropAbsolute(int x_crop, int y_crop, int scale)
 }
 
 void MainImageWidget::on_globalImageLabel_signalMousePressEvent(QMouseEvent * e) {
-
 
 	fprintf(stderr, "MainImageWidget::%s:%d : m_lastClick=%d,%d\n", __func__, __LINE__,
 			m_lastClick.x(), m_lastClick.y());
