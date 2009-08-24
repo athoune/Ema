@@ -88,13 +88,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-<<<<<<< HEAD:ui/emamainwindow.ui
-              <width>209</width>
-              <height>381</height>
-=======
               <width>210</width>
               <height>341</height>
->>>>>>> 0a2c56b48b75f89650f191f8ce67f19ca0cfce1a:ui/emamainwindow.ui
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -438,11 +433,7 @@
                   <x>0</x>
                   <y>0</y>
                   <width>310</width>
-<<<<<<< HEAD:ui/emamainwindow.ui
-                  <height>340</height>
-=======
                   <height>296</height>
->>>>>>> 0a2c56b48b75f89650f191f8ce67f19ca0cfce1a:ui/emamainwindow.ui
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_2">
