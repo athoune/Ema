@@ -67,6 +67,17 @@ typedef struct {
 	int ISO;					/*! ISO Sensitivity */
 
 	// IPTC TAGS
+// Ref: /usr/share/doc/libexiv2-doc/html/tags-iptc.html
+//0x005a 	90 	Iptc.Application2.City 	String 	No 	No 	0 	32 	Identifies city of object data origin according to guidelines established by the provider.
+	char iptc_city[MAX_EXIF_LEN];		/*! IPTC City name, field Iptc.Application2.City */
+//0x005c 	92 	Iptc.Application2.SubLocation 	String 	No 	No 	0 	32 	Identifies the location within a city from which the object data originates
+	char iptc_provincestate[MAX_EXIF_LEN];		/*! IPTC Province/State name, field Iptc.Application2.Provincestate */
+//0x005f 	95 	Iptc.Application2.ProvinceState 	String 	No 	No 	0 	32 	Identifies Province/State of origin according to guidelines established by the provider.
+	char iptc_provincestate[MAX_EXIF_LEN];		/*! IPTC Province/State name, field Iptc.Application2.Provincestate */
+//0x0064 	100 	Iptc.Application2.CountryCode 	String 	No 	No 	3 	3 	Indicates the code of the country/primary location where the intellectual property of the object data was created
+	char iptc_countrycode[MAX_EXIF_LEN];		/*! IPTC City name, field Iptc.Application2.City */
+//0x0065 	101 	Iptc.Application2.CountryName 	String 	No 	No 	0 	64 	Provides full
+	char iptc_countryname[MAX_EXIF_LEN];		/*! IPTC City name, field Iptc.Application2.City */
 
 	// Image processing data
 	bool grayscaled;

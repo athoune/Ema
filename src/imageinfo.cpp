@@ -32,6 +32,8 @@
 // Read metadata
 #include <exiv2/image.hpp>
 #include <exiv2/exif.hpp>
+#include <exiv2/iptc.hpp>
+
 #include <iostream>
 #include <iomanip>
 #include <cassert>
@@ -135,8 +137,6 @@ float rational_to_float(const QString & str) {
 
 void ImageInfo::purgeScaled() {
 	// purge info data
-	memset(&m_image_info_struct, 0, sizeof(t_image_info_struct ));
-
 	if(m_scaledImage == m_grayImage) {
 		m_grayImage = NULL;
 	} else {
@@ -179,23 +179,30 @@ int ImageInfo::readMetadata(char * filename) {
 		Exiv2::Exifdatum& exifMaker = exifData["Exif.Image.Make"];
 		std::string str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
+		strncpy(m_image_info_struct.maker, displayStr.ascii(), MAX_EXIF_LEN);
+
 		exifMaker = exifData["Exif.Image.Model"];str = exifMaker.toString();
-		displayStr += " / " + QString::fromStdString(str);
-		strcpy(m_image_info_struct.maker, displayStr.ascii());
+		displayStr = QString::fromStdString(str);
+		strncpy(m_image_info_struct.model, displayStr.ascii(), MAX_EXIF_LEN);
+
+		// DateTime
+		exifMaker = exifData["Exif.Photo.DateTimeOriginal"]; str = exifMaker.toString();
+		displayStr = QString::fromStdString(str);
+		strncpy(m_image_info_struct.datetime, displayStr.ascii(), MAX_EXIF_LEN);
+
 
 		// Orientation
 		exifMaker = exifData["Exif.Image.Orientation"]; str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
 		m_image_info_struct.orientation = (char)( displayStr.contains("0") ? 0 : 1);
 
-		// DateTime
-		exifMaker = exifData["Exif.Photo.DateTimeOriginal"]; str = exifMaker.toString();
-		displayStr = QString::fromStdString(str);
-		strcpy(m_image_info_struct.datetime, displayStr.ascii());
 
 		// Focal
-		exifMaker = exifData["Exif.Photo.FocalLengthIn35mmFilm"]; str = exifMaker.toString();
+		exifMaker = exifData["Exif.Photo.FocalLengthIn35mmFilm"];
+		str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
+
+		displayStr = "0";
 		if(QString::compare(displayStr, "0")) {
 			exifMaker = exifData["Exif.Photo.FocalLength"]; str = exifMaker.toString();
 			displayStr = QString::fromStdString(str);
@@ -216,6 +223,7 @@ int ImageInfo::readMetadata(char * filename) {
 				m_image_info_struct.focal_mm,
 				m_image_info_struct.focal_eq135_mm);
 		}
+
 		// Aperture
 		exifMaker = exifData["Exif.Photo.FNumber"]; str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
@@ -262,18 +270,45 @@ int ImageInfo::readMetadata(char * filename) {
 		}
 
 
+		// IPTC - IPTC - IPTC - IPTC - IPTC - IPTC - IPTC - IPTC - IPTC -
+		Exiv2::IptcData &iptcData = image->iptcData();
+		if (iptcData.empty()) {
+			std::string error(filename);
+			error += ": No IPTC data found in the file";
+			throw Exiv2::Error(1, error);
+		}
+
+		Exiv2::IptcData::iterator endIPTC = iptcData.end();
+		for (Exiv2::IptcData::iterator md = iptcData.begin(); md != endIPTC; ++md) {
+			std::cout << std::setw(44) << std::setfill(' ') << std::left
+					  << md->key() << " "
+					  << "0x" << std::setw(4) << std::setfill('0') << std::right
+					  << std::hex << md->tag() << " "
+					  << std::setw(9) << std::setfill(' ') << std::left
+					  << md->typeName() << " "
+					  << std::dec << std::setw(3)
+					  << std::setfill(' ') << std::right
+					  << md->count() << "  "
+					  << std::dec << md->value()
+					  << std::endl;
+		}
 		return 0;
 	}
 	catch (Exiv2::AnyError& e) {
 		std::cout << "Caught Exiv2 exception '" << e << "'\n";
+		fprintf(stderr, "ImageInfo::%s:%d : ERROR : caught exception => return -1;\n",
+				__func__, __LINE__);
 		return -1;
 	}
+
+	fprintf(stderr, "ImageInfo::%s:%d : ERROR : return -1;\n", __func__, __LINE__);
 
 	return -1;
 }
 int ImageInfo::loadFile(char * filename) {
 	m_image_info_struct.valid = 0;
 	tmReleaseImage(&m_originalImage);
+
 
 	// LOAD IMAGE METADATA
 	readMetadata(filename);
@@ -385,6 +420,7 @@ int ImageInfo::loadFile(char * filename) {
 		fprintf(stderr, "ImageInfo::%s:%d : process done (gray=%dx%d)\n", __func__, __LINE__,
 			m_grayImage->width, m_grayImage->height);fflush(stderr);
 	}
+
 	m_image_info_struct.valid = 1;
 	return 0;
 }

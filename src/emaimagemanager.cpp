@@ -10,7 +10,7 @@
 #include "imgutils.h"
 #include "emaimagemanager.h"
 
-int g_EMAImgMng_debug_mode = EMALOG_TRACE;
+int g_EMAImgMng_debug_mode = EMALOG_DEBUG;
 
 #define EMAIM_printf(a,...)  { \
 		if(g_EMAImgMng_debug_mode>=(a)) { \
