@@ -3,5 +3,7 @@
         <file>icons/japon054.jpg</file>
         <file>icons/ema-icon.png</file>
         <file>icons/ema-splash.png</file>
+        <file>icons/star_on.png</file>
+        <file>icons/star_off.png</file>
     </qresource>
 </RCC>

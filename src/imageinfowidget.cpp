@@ -12,6 +12,12 @@ ImageInfoWidget::ImageInfoWidget(QWidget *parent) :
 {
 	m_imgProc = NULL;
 	m_ui->setupUi(this);
+
+	m_starLabels[0] = m_ui->labelN0;
+	m_starLabels[1] = m_ui->labelN1;
+	m_starLabels[2] = m_ui->labelN2;
+	m_starLabels[3] = m_ui->labelN3;
+	m_starLabels[4] = m_ui->labelN4;
 }
 
 // Read metadata
@@ -379,6 +385,18 @@ void ImageInfoWidget::setImageInfo(t_image_info_struct * pinfo) {
 		return ;
 	}
 
+	// try tu use sharpness
+	int level = pinfo->sharpness * 5 / 100;
+	if(level > 4) level = 4;
+	QPixmap starOn(":/icons/icons/star_on.png");
+	QPixmap starOff(":/icons/icons/star_off.png");
+
+	for(int star = 0; star < level; star++) {
+		m_starLabels[star]->setPixmap(starOn);
+	}
+	for(int star = level; star < 5; star++) {
+		m_starLabels[star]->setPixmap(starOff);
+	}
 
 	// RGB Histogram
 	IplImage * histo =

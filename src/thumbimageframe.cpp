@@ -47,8 +47,12 @@ void ThumbImageFrame::setImageFile(const QString & imagePath, IplImage * img )
 
 	QPixmap fullImage;
 	if(img ) {
+
 		fullImage = iplImageToQImage(img);
 	} else {
+		fprintf(stderr, "ThumbImageWidget::%s:%d no IplImage => has to load '%s'\n",
+				__func__, __LINE__,
+				imagePath.ascii() );
 		fullImage.load(imagePath);
 	}
 
@@ -65,8 +69,11 @@ void ThumbImageFrame::setImageFile(const QString & imagePath, IplImage * img )
 	QToolTip::add(m_ui->globalImageLabel, imagePath);
 }
 
-void ThumbImageFrame::on_globalImageLabel_signalMousePressEvent(QMouseEvent * e) {
+void ThumbImageFrame::on_globalImageLabel_signalMousePressEvent(QMouseEvent * ) {
 	emit signalThumbClicked(m_imagePath);
+}
+void ThumbImageFrame::on_globalImageLabel_signalMouseMoveEvent(QMouseEvent * ) {
+	emit signalThumbSelected(m_imagePath);
 }
 
 

@@ -200,7 +200,7 @@ void EmaMainWindow::on_timer_timeout() {
 
 	int val = emaMngr()->getProgress();
 
-	EMAMW_printf(EMALOG_DEBUG, "Timeout => progress = %d", val)
+	EMAMW_printf(EMALOG_TRACE, "Timeout => progress = %d", val)
 
 	if(val < 100) {
 
@@ -209,7 +209,7 @@ void EmaMainWindow::on_timer_timeout() {
 
 		QString fileName;
 		int nb = m_appendFileList.count();
-		EMAMW_printf(EMALOG_DEBUG, "Test if we can append %d files...", nb)
+		EMAMW_printf(EMALOG_TRACE, "Test if we can append %d files...", nb)
 
 		while(it != m_appendFileList.end()) {
 			fileName = (*it);
@@ -218,6 +218,7 @@ void EmaMainWindow::on_timer_timeout() {
 
 			appendThumbImage(fileName);
 		}
+
 		ui->loadProgressBar->setValue(emaMngr()->getProgress());
 	}
 
@@ -225,7 +226,8 @@ void EmaMainWindow::on_timer_timeout() {
 		// next update in 500 ms
 		m_timer.start(500);
 	}
-	else {
+
+	if(emaMngr()->getProgress() == 100) {
 		ui->loadProgressBar->hide();
 		m_timer.stop();
 	}
@@ -253,7 +255,7 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 		EMAMW_printf(EMALOG_TRACE, "Image file '%s' is NOT YET  managed", fileName.ascii())
 	} else {
 		// image is already managed
-		EMAMW_printf(EMALOG_DEBUG, "Image file '%s' is now managed", fileName.ascii())
+		EMAMW_printf(EMALOG_TRACE, "Image file '%s' is now managed", fileName.ascii())
 
 		// Append to managed pictures
 		m_imageList.append(fileName);
@@ -287,9 +289,29 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 							rowpos, colpos, 0);
 		// connect this signal
 		connect(newThumb, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
+		connect(newThumb, SIGNAL(signalThumbSelected(QString)), this, SLOT(on_thumbImage_selected(QString)));
 		connect(newThumb2, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
 	}
 }
+
+void EmaMainWindow::on_thumbImage_selected(QString fileName)
+{
+	QFileInfo fi(fileName);
+	if(fi.exists()) {
+		t_image_info_struct * pinfo = emaMngr()->getInfo(fileName);
+		if(!pinfo) {
+			EMAMW_printf(EMALOG_WARNING, "File '%s' is not managed : reload and process file info\n", fileName.ascii())
+			ui->imageInfoWidget->setImageFile(fileName);
+		} else {
+			EMAMW_printf(EMALOG_DEBUG, "File '%s' is managed : use cache info\n", fileName.ascii())
+			ui->imageInfoWidget->setImageInfo(pinfo);
+			ui->exifScrollArea->setImageInfo(pinfo);
+		}
+	}
+}
+
+
+
 
 void EmaMainWindow::on_thumbImage_clicked(QString fileName)
 {

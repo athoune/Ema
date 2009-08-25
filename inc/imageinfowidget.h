@@ -2,6 +2,7 @@
 #define IMAGEINFOWIDGET_H
 
 #include <QtGui/QWidget>
+#include <QtGui/QLabel>
 #include <cv.h>
 #include <cv.hpp>
 #include "imageinfo.h"
@@ -35,7 +36,7 @@ protected:
 
 private:
 	Ui::ImageInfoWidget *m_ui;
-
+	QLabel * m_starLabels[5];
 	ImageInfo * m_imgProc;
 };
 

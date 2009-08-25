@@ -65,7 +65,6 @@ int EmaImageManager::appendFileList(QStringList list) {
 	int nb = list.count();
 	EMAIM_printf(EMALOG_DEBUG, "Appending %d files...", nb)
 
-	int cur = 0;
 	while(it != list.end()) {
 		fileName = (*it);
 		++it;
@@ -206,6 +205,7 @@ void EmaImageManager::run() {
 					m_managedInfo.append(new_info);
 				}
 
+				cur++;
 				m_progress = 100 * cur / nb;
 			}
 			m_appendFileList.clear(); // FIXME : protect with mutex or local copy

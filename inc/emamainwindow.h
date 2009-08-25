@@ -68,7 +68,7 @@ private:
 
 public slots:
 	void on_thumbImage_clicked(QString fileName);
-
+	void on_thumbImage_selected(QString);
 private slots:
 	void on_filesShowCheckBox_stateChanged(int);
 	void on_filesLoadButton_clicked();

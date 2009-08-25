@@ -202,7 +202,6 @@ int ImageInfo::readMetadata(char * filename) {
 		str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
 
-		displayStr = "0";
 		if(QString::compare(displayStr, "0")) {
 			exifMaker = exifData["Exif.Photo.FocalLength"]; str = exifMaker.toString();
 			displayStr = QString::fromStdString(str);
@@ -373,6 +372,7 @@ int ImageInfo::loadFile(char * filename) {
 
 #define IMGTHUMB_WIDTH	80
 #define IMGTHUMB_HEIGHT 80
+
 	// Scale rescaled to thumb size
 	if(!m_thumbImage) {
 		int th_w = IMGTHUMB_WIDTH;
@@ -381,9 +381,9 @@ int ImageInfo::loadFile(char * filename) {
 		float th_factor_h = (float)m_originalImage->height / (float)IMGTHUMB_HEIGHT;
 		if(th_factor_w > th_factor_h) {
 			// limit w
-			th_w = m_originalImage->width * IMGTHUMB_HEIGHT/m_originalImage->height;
+			th_w = m_originalImage->width * IMGTHUMB_HEIGHT/ m_originalImage->height;
 		} else {
-			th_h = m_originalImage->height * IMGTHUMB_WIDTH/m_originalImage->width;
+			th_h = m_originalImage->height * IMGTHUMB_WIDTH/ m_originalImage->width;
 		}
 
 		while((th_w % 4) != 0) { th_w++; }

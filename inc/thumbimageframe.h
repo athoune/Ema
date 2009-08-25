@@ -33,8 +33,10 @@ private:
 
 private slots:
 	void on_globalImageLabel_signalMousePressEvent(QMouseEvent * e);
+	void on_globalImageLabel_signalMouseMoveEvent(QMouseEvent * e);
 signals:
 	void signalThumbClicked(QString);
+	void signalThumbSelected(QString);
 
 private:
 	QString m_filename;
