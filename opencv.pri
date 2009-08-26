@@ -47,39 +47,38 @@ win32: {
 		-lcv
 }
 unix: {
-	# Test if libtiff is installed ==============================
-	exists( /usr/local/include/tiffio.h ) {
+        # Test if libexiv2 is installed ==============================
+        exists( /usr/local/include/exiv2/exif.hpp ) {
 		INCLUDEPATH += /usr/local/include
 		DYN_LIBS += -L/usr/local/lib \
-			-ltiff
-		#SOURCES += src/cv2tiff.cpp
-		DEFINES += HAVE_LIBTIFF
-		STATIC_LIBS += /usr/local/lib/libtiff.a
+                        -lexiv2
+                #SOURCES += src/cv2exiv2.cpp
+                DEFINES += HAVE_LIBEXIV2
+                STATIC_LIBS += /usr/local/lib/libexiv2.a
 	}
 	else {
-		exists( /opt/local/include/tiffio.h ) {
+                exists( /opt/local/include/exiv2/exif.hpp ) {
 			INCLUDEPATH += /opt/local/include
 			DYN_LIBS += -L/opt/local/lib \
-				-ltiff
-			#SOURCES += src/cv2tiff.cpp
-			DEFINES += HAVE_LIBTIFF
-			STATIC_LIBS += /opt/local/lib/libtiff.a
+                                -lexiv2
+                        DEFINES += HAVE_LIBEXIV2
+                        STATIC_LIBS += /opt/local/lib/libexiv2.a
 		}
 		else {
-			exists( /sw/include/tiffio.h ) {
+                        exists( /sw/include/exiv2/exif.hpp ) {
 				INCLUDEPATH += /sw/include
 				DYN_LIBS += -L/sw/lib \
-					-ltiff
-				#SOURCES += src/cv2tiff.cpp
-				DEFINES += HAVE_LIBTIFF
-				STATIC_LIBS += /sw/lib/libtiff.a
+                                        -lexiv2
+                                #SOURCES += src/cv2exiv2.cpp
+                                DEFINES += HAVE_LIBEXIV2
+                                STATIC_LIBS += /sw/lib/libexiv2.a
 			}
-			else:exists( /usr/include/tiffio.h ) {
+                        else:exists( /usr/include/exiv2/exif.hpp ) {
 				INCLUDEPATH += /usr/include
-				DYN_LIBS += -ltiff
-				#SOURCES += src/cv2tiff.cpp
-				DEFINES += HAVE_LIBTIFF
-				STATIC_LIBS += /usr/lib/libtiff.a
+                                DYN_LIBS += -lexiv2
+                                #SOURCES += src/cv2exiv2.cpp
+                                DEFINES += HAVE_LIBEXIV2
+                                STATIC_LIBS += /usr/lib/libexiv2.a
 			}
 		}
 	}
@@ -162,17 +161,17 @@ unix: {
 	}
 }
 
-# libtool --mode=link g++ -o Tamanoir .obj-simple/imgproc.o .obj-simple/imgutils.o .obj-simple/main.o .obj-simple/tamanoir.o .obj-simple/qimagedisplay.o .obj-simple/cv2tiff.o .obj-simple/moc_tamanoir.o .obj-simple/moc_qimagedisplay.o .obj-simple/qrc_tamanoir.o -L/usr/lib /usr/lib/libtiff.a /usr/local/lib/libcxcore.la /usr/local/lib/libcv.la /usr/local/lib/libcvaux.la /usr/local/lib/libhighgui.la -lQtGui -lQtCore -lpthread
+# libtool --mode=link g++ -o Tamanoir .obj-simple/imgproc.o .obj-simple/imgutils.o .obj-simple/main.o .obj-simple/tamanoir.o .obj-simple/qimagedisplay.o .obj-simple/cv2exiv2.o .obj-simple/moc_tamanoir.o .obj-simple/moc_qimagedisplay.o .obj-simple/qrc_tamanoir.o -L/usr/lib /usr/lib/libexiv2.a /usr/local/lib/libcxcore.la /usr/local/lib/libcv.la /usr/local/lib/libcvaux.la /usr/local/lib/libhighgui.la -lQtGui -lQtCore -lpthread
 DYN_LIBS += -lcvaux \
 	-lhighgui
 STATIC_LIBS += $$OPENCV_STATIC_LIBDIR/lib_cv.a \
 	$$OPENCV_STATIC_LIBDIR/lib_cvaux.a \
-	$$OPENCV_STATIC_LIBDIR/libtiff.a \
+        $$OPENCV_STATIC_LIBDIR/libexiv2.a \
 	$$OPENCV_STATIC_LIBDIR/lib_highgui.a
 
 # $$OPENCV_STATIC_LIBDIR/libjpeg.a
-# Build static if linked statically with a patched version of OpenCV for 16bit TIFF pictures
-# ./configure --with-ffmpeg=no --with-tiff=yes --with-v4l=no --with-v4l2=no --with-gtk=no
+# Build static if linked statically with a patched version of OpenCV for 16bit exiv2 pictures
+# ./configure --with-ffmpeg=no --with-exiv2=yes --with-v4l=no --with-v4l2=no --with-gtk=no
 BUILD_STATIC = $$(BUILD_STATIC)
 
 # contains(BUILD_STATIC, true)
