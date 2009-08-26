@@ -386,16 +386,20 @@ void ImageInfoWidget::setImageInfo(t_image_info_struct * pinfo) {
 	}
 
 	// try tu use sharpness
-	int level = pinfo->sharpness * 5 / 100;
+	int level = roundf(pinfo->score * 5.f / 100.f);
 	if(level > 4) level = 4;
-	QPixmap starOn(":/icons/icons/star_on.png");
-	QPixmap starOff(":/icons/icons/star_off.png");
 
-	for(int star = 0; star < level; star++) {
-		m_starLabels[star]->setPixmap(starOn);
+	if(level > 0) {// don't load picture if not necessary
+		QPixmap starOn(":/icons/icons/star_on.png");
+		for(int star = 0; star < level; star++) {
+			m_starLabels[star]->setPixmap(starOn);
+		}
 	}
-	for(int star = level; star < 5; star++) {
-		m_starLabels[star]->setPixmap(starOff);
+	if(level < 4) {
+		QPixmap starOff(":/icons/icons/star_off.png");
+		for(int star = level; star < 5; star++) {
+			m_starLabels[star]->setPixmap(starOff);
+		}
 	}
 
 	// RGB Histogram

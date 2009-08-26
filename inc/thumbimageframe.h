@@ -22,7 +22,7 @@ public:
 	explicit ThumbImageFrame(QWidget *parent = 0);
 	virtual ~ThumbImageFrame();
 	/** @brief Set the background image */
-	void setImageFile(const QString &  imagePath, IplImage * img = NULL);
+	void setImageFile(const QString &  imagePath, IplImage * img = NULL, int score = -1);
 
 protected:
 	virtual void changeEvent(QEvent *e);

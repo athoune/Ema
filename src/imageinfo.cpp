@@ -421,6 +421,16 @@ int ImageInfo::loadFile(char * filename) {
 			m_grayImage->width, m_grayImage->height);fflush(stderr);
 	}
 
+	/* Compute the final score
+		Score is the combination of several criteria :
+		- sharpness : proportioanl, and best if superior to 50 %
+	*/
+	float score_sharpness = tmmin(1.f, 2.f * m_image_info_struct.sharpness / 100.f);
+
+	m_image_info_struct.score = score_sharpness
+								* 100.f ; // in percent finally
+
+	// Activate the validation flag
 	m_image_info_struct.valid = 1;
 	return 0;
 }

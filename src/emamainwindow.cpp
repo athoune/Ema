@@ -276,7 +276,8 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 		ThumbImageFrame * newThumb2 = new ThumbImageFrame(
 				//ui->imageScrollArea);
 				ui->gridScrollAreaWidgetContents);
-		newThumb2->setImageFile(fileName, pinfo->thumbImage);
+		newThumb2->setImageFile(fileName, pinfo->thumbImage,
+							   (int)roundf(pinfo->score * 5.f/100.f));
 /*
 		ui->gridScrollAreaWidgetContents->layout()->addWidget((QWidget *)newThumb2,
 															  rowpos, colpos, 0);
@@ -291,6 +292,7 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 		connect(newThumb, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
 		connect(newThumb, SIGNAL(signalThumbSelected(QString)), this, SLOT(on_thumbImage_selected(QString)));
 		connect(newThumb2, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
+		connect(newThumb2, SIGNAL(signalThumbSelected(QString)), this, SLOT(on_thumbImage_selected(QString)));
 	}
 }
 

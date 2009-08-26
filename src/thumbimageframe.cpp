@@ -35,7 +35,7 @@ void ThumbImageFrame::changeEvent(QEvent *e)
 	}
 }
 
-void ThumbImageFrame::setImageFile(const QString & imagePath, IplImage * img )
+void ThumbImageFrame::setImageFile(const QString & imagePath, IplImage * img, int score )
 {
 	// "NavImageWidget::%s:%d ('%s')\n",
 	//		__func__, __LINE__,
@@ -45,6 +45,20 @@ void ThumbImageFrame::setImageFile(const QString & imagePath, IplImage * img )
 	int wdisp = m_ui->globalImageLabel->width()-2;
 	int hdisp = m_ui->globalImageLabel->height()-2;
 
+	if(score < 0) { // hide
+		m_ui->starsLabel->hide();
+	} else {
+		if(score > 4) score = 4;
+		QString stars = "";
+		for(int star = 0; star < score; star++) {
+			stars += "*";
+		}
+		for(int star = score; star < 5; star++) {
+			stars += ".";
+		}
+
+		m_ui->starsLabel->setText(stars);
+	}
 	QPixmap fullImage;
 	if(img ) {
 
@@ -65,6 +79,7 @@ void ThumbImageFrame::setImageFile(const QString & imagePath, IplImage * img )
 								Qt::KeepAspectRatio );
 	}
 	m_ui->globalImageLabel->setPixmap( l_displayImage );
+
 
 	QToolTip::add(m_ui->globalImageLabel, imagePath);
 }

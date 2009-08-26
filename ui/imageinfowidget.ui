@@ -17,12 +17,22 @@
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
       <property name="topMargin">
        <number>1</number>
       </property>
       <property name="bottomMargin">
        <number>1</number>
       </property>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Score:</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QLabel" name="labelN0">
         <property name="text">

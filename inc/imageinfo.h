@@ -89,6 +89,9 @@ typedef struct {
 
 	float log_histogram[3][256];	/*! Log histogram */
 
+	// Image judgement
+	float score;			/*! Final score factor in [0..100] */
+
 } t_image_info_struct;
 
 
