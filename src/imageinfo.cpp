@@ -38,7 +38,7 @@
 #include <iomanip>
 #include <cassert>
 
-u8 g_debug_ImageInfo = 0;
+u8 g_debug_ImageInfo = EMALOG_DEBUG;
 
 /******************************************************************************/
 ImageInfo::ImageInfo() {
@@ -57,6 +57,8 @@ void ImageInfo::init() {
 		rgb_plane[rgb] = 0;
 
 	memset(&m_image_info_struct, 0, sizeof(t_image_info_struct ));
+
+	m_sharp32fImage = m_sobelImage = NULL;
 
 	m_sharpnessImage = NULL;
 }
@@ -149,6 +151,8 @@ void ImageInfo::purgeScaled() {
 		tmReleaseImage(&rgb_plane[rgb]);
 
 	tmReleaseImage(&m_sharpnessImage);
+	tmReleaseImage(&m_sharp32fImage);
+	tmReleaseImage(&m_sobelImage);
 	tmReleaseImage(&m_HSHistoImage);
 	tmReleaseImage(&m_HistoImage);
 	tmReleaseImage(&hsvImage);
@@ -425,9 +429,13 @@ int ImageInfo::loadFile(char * filename) {
 		Score is the combination of several criteria :
 		- sharpness : proportioanl, and best if superior to 50 %
 	*/
-	float score_sharpness = tmmin(1.f, 2.f * m_image_info_struct.sharpness / 100.f);
+	float sharpness_score = tmmin(1.f,
+								  2.f * m_image_info_struct.sharpness_score / 100.f);
+	float histo_score = tmmin(1.f,
+								  2.f * m_image_info_struct.histo_score / 100.f);
 
-	m_image_info_struct.score = score_sharpness
+	m_image_info_struct.score = sharpness_score
+								* histo_score
 								* 100.f ; // in percent finally
 
 	// Activate the validation flag
@@ -490,10 +498,18 @@ The values are then converted to the destination data type:
 	if(g_debug_ImageInfo) {
 		tmSaveImage(TMP_DIRECTORY "HSVimage.ppm", hsvImage);
 	}
+
+#define HSVHISTO_WIDTH	90
+#define HSVHISTO_HEIGHT	64
+
+	float h_scale = (float)HSVHISTO_WIDTH / (float)H_MAX;
+	float s_scale = (float)HSVHISTO_HEIGHT / (float)S_MAX;
+
 	if(!m_HSHistoImage) {
-		m_HSHistoImage = tmCreateImage(cvSize(H_MAX, S_MAX), IPL_DEPTH_8U, 1);
-	} else
+		m_HSHistoImage = tmCreateImage(cvSize(HSVHISTO_WIDTH , HSVHISTO_HEIGHT), IPL_DEPTH_8U, 1);
+	} else {
 		cvZero(m_HSHistoImage);
+	}
 
 	// Then process histogram
 	for(int r=0; r<hsvImage->height; r++) {
@@ -504,12 +520,16 @@ The values are then converted to the destination data type:
 		for(int c = 0; c<s_plane->width; c++) {
 			int h = (int)(hline[c]);
 			int s = (int)(sline[c]);
-			if(h<m_HSHistoImage->widthStep
-			   && s<m_HSHistoImage->height) {
+
+			// Accumulate in scaled image for saving time
+			int histo_h = (int)roundf(h * h_scale);
+			int histo_s = (int)roundf(s * s_scale);
+			if(histo_h<m_HSHistoImage->widthStep
+			   && histo_s<m_HSHistoImage->height) {
 				// Increase image
 				u8 * pHisto = // H as columns, S as line
-					(u8 *)(m_HSHistoImage->imageData + s * m_HSHistoImage->widthStep)
-					+ h;
+					(u8 *)(m_HSHistoImage->imageData + histo_s * m_HSHistoImage->widthStep)
+					+ histo_h;
 				u8 val = *pHisto;
 				if(val < 255) {
 					*pHisto = val+1;
@@ -525,7 +545,7 @@ The values are then converted to the destination data type:
 
 	if(!hsvOutImage) {
 		hsvOutImage = tmCreateImage(
-			cvSize(H_MAX, S_MAX),
+			cvSize(m_HSHistoImage->width, m_HSHistoImage->height),
 			IPL_DEPTH_8U,
 			3);
 	}
@@ -533,21 +553,22 @@ The values are then converted to the destination data type:
 	// Fill with H,S and use Value for highlighting colors
 	for(int r=0; r<hsvOutImage->height; r++) {
 		u8 * outline = (u8 *)(hsvOutImage->imageData
-										+ r * hsvOutImage->widthStep);
+						+ r * hsvOutImage->widthStep);
 		u8 * histoline = (u8 *)(m_HSHistoImage->imageData
-										+ r * m_HSHistoImage->widthStep);
+						+ r * m_HSHistoImage->widthStep);
 		int c1 = 0;
-		for(int c = 0; c1<H_MAX;
+		for(int c = 0; c1<HSVHISTO_WIDTH;
 			c1++, c+=hsvOutImage->nChannels) {
-			outline[c] = c1; // H
-			outline[c+1] = r; // S
+			outline[c] = roundf(c1 / h_scale); // H
+			outline[c+1] = roundf(r / h_scale); // S
 			outline[c+2] = 64 + (int)tmmin( (float)histoline[c1]*2.f, 191.f);
 					//histoline[c1]>1 ? 255 : 64; //histoline[c1];
 		}
 	}
+
 	if(!m_ColorHistoImage) {
 		m_ColorHistoImage = tmCreateImage(
-			cvSize(H_MAX, S_MAX),
+			cvSize(hsvOutImage->width, hsvOutImage->height),
 			IPL_DEPTH_8U,
 			3);
 	} // else cvZero(m_ColorHistoImage); // don't need to clear, because always the same size
@@ -579,6 +600,7 @@ int ImageInfo::processRGB() {
 		cvCopy(	m_scaledImage, rgb_plane[0]);
 
 
+	u32 histo_score = 0;
 	u32 hmax = 0;
 	u32 grayHisto[3][256];
 	for(int rgb=0; rgb<m_scaledImage->nChannels; rgb++)  {
@@ -590,21 +612,37 @@ int ImageInfo::processRGB() {
 				grayHisto[rgb][ grayline[c] ]++;
 			}
 		}
+
+		// Store in info structure
 		for(int h=0; h<256; h++) {
-			if(grayHisto[rgb][h]>hmax) { hmax = grayHisto[rgb][h] ; }
+			if(grayHisto[rgb][h]>hmax) {
+				hmax = grayHisto[rgb][h] ; }
 			if(grayHisto[rgb][h]>0)
 				m_image_info_struct.log_histogram[rgb][h] = log(grayHisto[rgb][h]);
 			else
 				m_image_info_struct.log_histogram[rgb][h] = 0.f;
 		}
+
+		// compute the score for histogram
+		float log_hmax = log((float)hmax) / 8.f;
+		for(int h=0; h<256; h++) {
+			if(grayHisto[rgb][h]>0) {
+				if(log(grayHisto[rgb][h])>log_hmax) {
+					histo_score++;
+				}
+			}
+		}
+
 	}
 
+	m_image_info_struct.histo_score = (float)histo_score /
+									  (float)m_scaledImage->nChannels
+									  * 100.f / 256.f;
 	return 0;
 }
 
 
 int ImageInfo::processSharpness() {
-	tmReleaseImage(&m_sharpnessImage);
 
 	// Process sobel
 	CvSize size = cvGetSize(m_grayImage);
@@ -627,10 +665,28 @@ int ImageInfo::processSharpness() {
 				scaledSize.width, scaledSize.height,
 				scale_x, scale_y); fflush(stderr);
 	}
-	m_sharpnessImage = tmCreateImage( scaledSize, IPL_DEPTH_8U, 1 );
 
-	IplImage * sobelImage = tmCreateImage( size, IPL_DEPTH_16S, 1 );
-	if(!sobelImage) {
+	if(m_sharpnessImage
+	   && (m_sharpnessImage->width != scaledSize.width
+		   || m_sharpnessImage->height != scaledSize.height) ) {
+		tmReleaseImage(&m_sharpnessImage);
+	}
+
+	if(!m_sharpnessImage) {
+		m_sharpnessImage = tmCreateImage( scaledSize, IPL_DEPTH_8U, 1 );
+	}
+
+	if(m_sobelImage
+	   && (m_sobelImage->width != m_grayImage->width
+		   || m_sobelImage->height != m_grayImage->height) ) {
+		tmReleaseImage(&m_sobelImage);
+	}
+
+	if(!m_sobelImage) {
+		m_sobelImage = tmCreateImage( size, IPL_DEPTH_16S, 1 );
+	}
+
+	if(!m_sobelImage) {
 		fprintf(stderr, "ImageInfo::%s:%d : cannot create sobelImage ( size=%dx%d => scaledSize = %dx%d => scale factor=%dx%d)\n",
 				__func__, __LINE__,
 				size.width, size.height,
@@ -639,8 +695,17 @@ int ImageInfo::processSharpness() {
 		return -1;
 	}
 
-	IplImage * sharpImage = tmCreateImage( scaledSize, IPL_DEPTH_32F, 1 );
-	if(!sharpImage) {
+	if(m_sharp32fImage
+	   && (m_sharp32fImage->width != scaledSize.width
+		   || m_sharp32fImage->height != scaledSize.height) ) {
+		tmReleaseImage(&m_sharp32fImage);
+	}
+
+	if(!m_sharp32fImage) {
+		m_sharp32fImage = tmCreateImage( scaledSize, IPL_DEPTH_32F, 1 );
+	}
+
+	if(!m_sharp32fImage) {
 		fprintf(stderr, "ImageInfo::%s:%d : cannot create sharpImage ( size=%dx%d => scaledSize = %dx%d => scale factor=%dx%d)\n",
 				__func__, __LINE__,
 				size.width, size.height,
@@ -656,24 +721,24 @@ int ImageInfo::processSharpness() {
 				__func__, __LINE__, pass); fflush(stderr);
 		}
 
-		cvSobel(m_grayImage, sobelImage, pass, 1-pass, 3);
+		cvSobel(m_grayImage, m_sobelImage, pass, 1-pass, 3);
 
 
-		for(int r=0; r< sobelImage->height; r++) {
-			short * sobelline = (short *)(sobelImage->imageData +
-									r * sobelImage->widthStep);
+		for(int r=0; r< m_sobelImage->height; r++) {
+			short * sobelline = (short *)(m_sobelImage->imageData +
+									r * m_sobelImage->widthStep);
 			int sc_r = r / scale_y;
-			if(sc_r>=sharpImage->height)
-				sc_r = sharpImage->height - 1;
+			if(sc_r>= m_sharp32fImage->height)
+				sc_r = m_sharp32fImage->height - 1;
 
-			float * sharpline32f = (float *)(sharpImage->imageData +
-									sc_r * sharpImage->widthStep);
+			float * sharpline32f = (float *)(m_sharp32fImage->imageData +
+									sc_r * m_sharp32fImage->widthStep);
 
-			for(int c=0; c<sobelImage->width; c++) {
+			for(int c=0; c<m_sobelImage->width; c++) {
 				if(abs(sobelline[c])>80) {
 					int sc_c = c/scale_x;
 
-					if(sc_c<sharpImage->width) {
+					if(sc_c<m_sharp32fImage->width) {
 						sharpline32f[ sc_c ] ++;
 						if(sharpline32f[ sc_c ] > valmax) valmax = sharpline32f[ sc_c ];
 					}
@@ -682,41 +747,59 @@ int ImageInfo::processSharpness() {
 		}
 	}
 
+
+
+
 	// Scale image
 	//float scale = 255.f / valmax;
 	float scale = 1.f; //255.f / 64.f;
-	m_image_info_struct.sharpness = 0.f;
-	for(int sc_r=0; sc_r< sharpImage->height; sc_r++) {
-		float * sharpline32f = (float *)(sharpImage->imageData +
-								sc_r * sharpImage->widthStep);
+	m_image_info_struct.sharpness_score = 0.f;
+	for(int sc_r=0; sc_r< m_sharp32fImage->height; sc_r++) {
+		float * sharpline32f = (float *)(m_sharp32fImage->imageData +
+								sc_r * m_sharp32fImage->widthStep);
 		u8 * sharpline = (u8 *)(m_sharpnessImage->imageData +
 								sc_r * m_sharpnessImage->widthStep);
-		for(int sc_c=0; sc_c<sharpImage->width; sc_c++) {
+		for(int sc_c=0; sc_c<m_sharp32fImage->width; sc_c++) {
 			float val = scale * sharpline32f[sc_c];
 			if(val >= 255.f) val = 255.f;
-			m_image_info_struct.sharpness += sharpline32f[sc_c];
+			m_image_info_struct.sharpness_score += sharpline32f[sc_c];
 			sharpline[sc_c] = (u8)( val );
 		}
 	}
 
-	m_image_info_struct.sharpness = m_image_info_struct.sharpness * 100.f/255.f
+	m_image_info_struct.sharpness_score = m_image_info_struct.sharpness_score * 100.f/255.f
 				  / (float)(m_sharpnessImage->width * m_sharpnessImage->height);
 	m_image_info_struct.sharpnessImage = m_sharpnessImage;
 
-	if(g_debug_ImageInfo) {
-		tmSaveImage(TMP_DIRECTORY "sharpImage.pgm", m_sharpnessImage);
-	}
+	// Process region growing
+/*	void tmGrowRegion(unsigned char * growIn, unsigned char * growOut,
+		int swidth, int sheight,
+		int c, int r,
+		unsigned char threshold,
+		unsigned char fillValue,
+		CvConnectedComp * areaOut);
+*/
+	IplImage * growImage = tmCreateImage(cvSize(m_sharpnessImage->width,m_sharpnessImage->height),
+										 IPL_DEPTH_8U, 1);
+	// clear is done
+	int r = 0, c=0;
+	CvConnectedComp areaOut;
+	tmGrowRegion(
+			(u8 *)m_sharpnessImage->imageData, //unsigned char * growIn,
+			(u8 *)growImage->imageData, //unsigned char * growOut,
+			m_sharpnessImage->widthStep, m_sharpnessImage->height,
+			c, r,
+			180, //unsigned char threshold,
+			255, //unsigned char fillValue,
+			&areaOut);
+
 
 	if(g_debug_ImageInfo) {
-		fprintf(stderr, "ImageInfo::%s:%d : purge sharpImage=%p sobelImage=%p\n",
-				__func__, __LINE__, sharpImage, sobelImage); fflush(stderr);
+		tmSaveImage(TMP_DIRECTORY "growImage.pgm", growImage);
+		tmSaveImage(TMP_DIRECTORY "sharpImage.pgm", m_sharpnessImage);
 	}
-	tmReleaseImage(&sharpImage);
-	if(g_debug_ImageInfo) {
-		fprintf(stderr, "ImageInfo::%s:%d : purge sharpImage=%p sobelImage=%p\n",
-				__func__, __LINE__, sharpImage, sobelImage); fflush(stderr);
-	}
-	tmReleaseImage(&sobelImage);
+	//
+	tmReleaseImage(&growImage);
 
 	return 0;
 }

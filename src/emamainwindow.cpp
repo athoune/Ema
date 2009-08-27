@@ -202,25 +202,25 @@ void EmaMainWindow::on_timer_timeout() {
 
 	EMAMW_printf(EMALOG_TRACE, "Timeout => progress = %d", val)
 
-	if(val < 100) {
+	// update known files : appended files
+	QStringList::Iterator it = m_appendFileList.begin();
 
-		// update known files : appended files
-		QStringList::Iterator it = m_appendFileList.begin();
+	QString fileName;
+	int nb = m_appendFileList.count();
+	EMAMW_printf(EMALOG_TRACE, "Test if we can append %d files...", nb)
 
-		QString fileName;
-		int nb = m_appendFileList.count();
-		EMAMW_printf(EMALOG_TRACE, "Test if we can append %d files...", nb)
-
-		while(it != m_appendFileList.end()) {
-			fileName = (*it);
-			++it;
-			ui->loadProgressBar->setValue(emaMngr()->getProgress());
-
+	while( (it != m_appendFileList.end()) ) {
+		fileName = (*it);
+		++it;
+		ui->loadProgressBar->setValue(emaMngr()->getProgress());
+		//if(!m_managedFileList.contains(fileName))
+// FIXME : there's a problem when suppressing data in m_appendFileList and removing then in the same loop
+		{
 			appendThumbImage(fileName);
 		}
-
-		ui->loadProgressBar->setValue(emaMngr()->getProgress());
 	}
+
+	ui->loadProgressBar->setValue(emaMngr()->getProgress());
 
 	if(!m_appendFileList.isEmpty()) {
 		// next update in 500 ms

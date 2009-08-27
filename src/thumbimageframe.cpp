@@ -48,11 +48,16 @@ void ThumbImageFrame::setImageFile(const QString & imagePath, IplImage * img, in
 	if(score < 0) { // hide
 		m_ui->starsLabel->hide();
 	} else {
+		score --;
 		if(score > 4) score = 4;
 		QString stars = "";
-		for(int star = 0; star < score; star++) {
-			stars += "*";
-		}
+		if(score > 0)
+			for(int star = 0; star < score; star++) {
+				stars += "*";
+			}
+		else
+			score = 0;// for adding 5 x .
+
 		for(int star = score; star < 5; star++) {
 			stars += ".";
 		}

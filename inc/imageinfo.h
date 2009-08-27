@@ -81,8 +81,8 @@ typedef struct {
 
 	// Image processing data
 	bool grayscaled;
-	float sharpness;			/*! Sharpness factor in [0..100] */
-
+	float sharpness_score;			/*! Sharpness factor in [0..100] */
+	float histo_score;
 	IplImage * thumbImage;		/*! Thumb image for faster display */
 	IplImage * sharpnessImage;	/*! Sharpness image for faster display */
 	IplImage * hsvImage;		/*! HSV histogram image for faster display */
@@ -110,7 +110,7 @@ public:
 	IplImage * getColorHistogram() { return m_ColorHistoImage; };
 	IplImage * getSharpnessImage() { return m_sharpnessImage; };
 
-	float getSharpness() { return m_image_info_struct.sharpness; };
+	float getSharpness() { return m_image_info_struct.sharpness_score; };
 	/** @brief Get structure containing every image information needed for sorting */
 	t_image_info_struct getImageInfo() { return m_image_info_struct; };
 
@@ -139,6 +139,11 @@ private:
 	IplImage * m_thumbImage;
 	/** @brief Scaled & grayscaled version of original image */
 	IplImage * m_grayImage;
+	/** @brief Scaled Sobel image */
+	IplImage * m_sobelImage;
+
+	/** @brief Scaled sharp image */
+	IplImage * m_sharp32fImage;
 
 	/** @brief Scaled & HSV version of original image */
 	IplImage * hsvImage;

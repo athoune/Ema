@@ -364,16 +364,18 @@ void ImageInfoWidget::setImageFile(const QString &  imagePath) {
 				);
 		m_ui->sharpnessImageLabel->setPixmap(QPixmap::fromImage(img));
 		int sh = tmmin(100, m_imgProc->getSharpness());
-		QString percent;
-		m_ui->sharpnessLabel->setText(tr("Sharpness ") + percent.sprintf("%3d %%", sh));
 	}
 
 	// Then process HSV histogram
 	IplImage * colHisto = m_imgProc->getColorHistogram();
 	if(colHisto) {
 		// Display in label
-		QImage img = iplImageToQImage(colHisto);
-		m_ui->globalImageLabel->setPixmap(QPixmap::fromImage(img));
+		QImage img = iplImageToQImage(colHisto).scaled(
+				m_ui->hsvImageLabel->width(),
+				m_ui->hsvImageLabel->height(),
+				Qt::KeepAspectRatio
+				);
+		m_ui->hsvImageLabel->setPixmap(QPixmap::fromImage(img));
 	}
 }
 
@@ -413,6 +415,8 @@ void ImageInfoWidget::setImageInfo(t_image_info_struct * pinfo) {
 				m_ui->sharpnessImageLabel->height(),
 				Qt::KeepAspectRatio
 				);
+		int sh = tmmin(100, (int)pinfo->histo_score);
+		m_ui->histoDial->setValue(sh);
 		m_ui->histoImageLabel->setPixmap(QPixmap::fromImage(img));
 	}
 
@@ -426,18 +430,20 @@ void ImageInfoWidget::setImageInfo(t_image_info_struct * pinfo) {
 				Qt::KeepAspectRatio
 				);
 		m_ui->sharpnessImageLabel->setPixmap(QPixmap::fromImage(img));
-		int sh = tmmin(100, (int)pinfo->sharpness);
-		QString percent;
-		m_ui->sharpnessLabel->setText(tr("Sharpness ")
-									  + percent.sprintf("%3d %%", sh));
+		int sh = tmmin(100, (int)pinfo->sharpness_score);
+		m_ui->sharpnessDial->setValue(sh);
 	}
 
 	// Then process HSV histogram
 	IplImage * colHisto = pinfo->hsvImage;
 	if(colHisto) {
 		// Display in label
-		QImage img = iplImageToQImage(colHisto);
-		m_ui->globalImageLabel->setPixmap(QPixmap::fromImage(img));
+		QImage img = iplImageToQImage(colHisto).scaled(
+				m_ui->hsvImageLabel->width(),
+				m_ui->hsvImageLabel->height(),
+				Qt::KeepAspectRatio
+				);
+		m_ui->hsvImageLabel->setPixmap(QPixmap::fromImage(img));
 	}
 }
 

@@ -147,11 +147,35 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="sharpnessLabel">
-     <property name="text">
-      <string>Sharpness : -- %</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="Line" name="line_4">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QProgressBar" name="histoDial">
+       <property name="value">
+        <number>24</number>
+       </property>
+       <property name="format">
+        <string>Histo:%p%</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QProgressBar" name="sharpnessDial">
+       <property name="value">
+        <number>24</number>
+       </property>
+       <property name="format">
+        <string>Sharp:%p%</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QLabel" name="sharpnessImageLabel">
@@ -186,7 +210,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="globalImageLabel">
+    <widget class="QLabel" name="hsvImageLabel">
      <property name="minimumSize">
       <size>
        <width>182</width>
