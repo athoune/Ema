@@ -29,15 +29,14 @@
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>1</number>
+    </property>
+    <property name="margin">
+     <number>1</number>
+    </property>
     <item>
      <widget class="MetadataWidget" name="metadataWidget" native="true"/>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="groupBox_IPTC">
-      <property name="title">
-       <string>IPTC</string>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>

@@ -363,7 +363,6 @@ void ImageInfoWidget::setImageFile(const QString &  imagePath) {
 				Qt::KeepAspectRatio
 				);
 		m_ui->sharpnessImageLabel->setPixmap(QPixmap::fromImage(img));
-		int sh = tmmin(100, m_imgProc->getSharpness());
 	}
 
 	// Then process HSV histogram

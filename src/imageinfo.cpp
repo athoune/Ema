@@ -38,7 +38,7 @@
 #include <iomanip>
 #include <cassert>
 
-u8 g_debug_ImageInfo = EMALOG_DEBUG;
+u8 g_debug_ImageInfo = 0; //EMALOG_DEBUG;
 
 /******************************************************************************/
 ImageInfo::ImageInfo() {

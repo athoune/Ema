@@ -174,7 +174,6 @@ void EmaMainWindow::appendFileList(QStringList list) {
 	// Append to list
 	QStringList::Iterator it = list.begin();
 	QString fileName;
-	int nb = list.count();
 
 	while(it != list.end()) {
 		fileName = (*it);
@@ -341,55 +340,4 @@ void EmaMainWindow::on_globalNavImageWidget_signalZoomOn(int x, int y, int scale
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-static u32 * grayToBGR32 = NULL;
-static u32 * grayToBGR32False = NULL;
-static u32 * grayToBGR32Red = NULL;
-
-static void init_grayToBGR32()
-{
-	if(grayToBGR32) {
-		return;
-	}
-
-	grayToBGR32 = new u32 [256];
-	grayToBGR32False = new u32 [256];
-	grayToBGR32Red = new u32 [256];
-	for(int c = 0; c<256; c++) {
-		int Y = c;
-		u32 B = Y;// FIXME
-		u32 G = Y;
-		u32 R = Y;
-		grayToBGR32[c] = grayToBGR32Red[c] =
-			grayToBGR32False[c] = (R << 16) | (G<<8) | (B<<0);
-	}
-
-	// Add false colors
-	grayToBGR32[COLORMARK_CORRECTED] = // GREEN
-		grayToBGR32False[COLORMARK_CORRECTED] = (255 << 8);
-		//mainImage.setColor(COLORMARK_CORRECTED, qRgb(0,255,0));
-	// YELLOW
-	grayToBGR32False[COLORMARK_REFUSED] = (255 << 8) | (255 << 16);
-				//mainImage.setColor(COLORMARK_REFUSED, qRgb(255,255,0));
-	grayToBGR32False[COLORMARK_FAILED] =
-			grayToBGR32Red[COLORMARK_FAILED] = (255 << 16);
-				//mainImage.setColor(COLORMARK_FAILED, qRgb(255,0,0));
-	grayToBGR32False[COLORMARK_CURRENT] = // BLUE
-	//		grayToBGR32Red[COLORMARK_CURRENT] =
-										(255 << 0);
-				//mainImage.setColor(COLORMARK_CURRENT, qRgb(0,0,255));
-}
 
