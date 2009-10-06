@@ -202,22 +202,36 @@ void EmaMainWindow::on_timer_timeout() {
 	EMAMW_printf(EMALOG_TRACE, "Timeout => progress = %d", val)
 
 	// update known files : appended files
-	QStringList::Iterator it = m_appendFileList.begin();
 
 	QString fileName;
 	int nb = m_appendFileList.count();
 	EMAMW_printf(EMALOG_TRACE, "Test if we can append %d files...", nb)
 
-	while( (it != m_appendFileList.end()) ) {
+	QStringList::Iterator it = m_appendFileList.begin();
+	while( !m_appendFileList.isEmpty() &&
+			(it != m_appendFileList.end()) ) {
 		fileName = (*it);
-		++it;
 		ui->loadProgressBar->setValue(emaMngr()->getProgress());
 		//if(!m_managedFileList.contains(fileName))
 // FIXME : there's a problem when suppressing data in m_appendFileList and removing then in the same loop
 		{
 			appendThumbImage(fileName);
 		}
+		++it;
+
 	}
+
+	// Delete the files which have been added
+	it = m_imageList.begin();
+	while( (it != m_imageList.end()) ) {
+		fileName = (*it);
+		if(	m_appendFileList.contains(fileName) )
+		{
+			m_appendFileList.remove(fileName);
+		}
+		++it;
+	}
+
 
 	ui->loadProgressBar->setValue(emaMngr()->getProgress());
 
@@ -260,7 +274,8 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 		m_imageList.append(fileName);
 
 		// And remove it from files being waited for
-		m_appendFileList.remove(fileName);
+		// m_appendFileList.remove(fileName);
+		// removed after because itmakes the iterator crash the app
 
 		// And display it
 		ThumbImageFrame * newThumb = new ThumbImageFrame(

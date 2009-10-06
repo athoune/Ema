@@ -561,7 +561,7 @@ The values are then converted to the destination data type:
 			c1++, c+=hsvOutImage->nChannels) {
 			outline[c] = roundf(c1 / h_scale); // H
 			outline[c+1] = roundf(r / h_scale); // S
-			outline[c+2] = 64 + (int)tmmin( (float)histoline[c1]*2.f, 191.f);
+			outline[c+2] = 64 + (int)tmmin( (float)histoline[c1], 170.f);
 					//histoline[c1]>1 ? 255 : 64; //histoline[c1];
 		}
 	}
@@ -674,7 +674,10 @@ int ImageInfo::processSharpness() {
 
 	if(!m_sharpnessImage) {
 		m_sharpnessImage = tmCreateImage( scaledSize, IPL_DEPTH_8U, 1 );
+	} else {
+		cvZero(m_sharpnessImage);
 	}
+
 
 	if(m_sobelImage
 	   && (m_sobelImage->width != m_grayImage->width
@@ -684,6 +687,8 @@ int ImageInfo::processSharpness() {
 
 	if(!m_sobelImage) {
 		m_sobelImage = tmCreateImage( size, IPL_DEPTH_16S, 1 );
+	} else {
+		// no need, because recomputed : cvZero(m_sobelImage);
 	}
 
 	if(!m_sobelImage) {
@@ -703,6 +708,8 @@ int ImageInfo::processSharpness() {
 
 	if(!m_sharp32fImage) {
 		m_sharp32fImage = tmCreateImage( scaledSize, IPL_DEPTH_32F, 1 );
+	} else {
+		cvZero(m_sharp32fImage);
 	}
 
 	if(!m_sharp32fImage) {
@@ -722,7 +729,6 @@ int ImageInfo::processSharpness() {
 		}
 
 		cvSobel(m_grayImage, m_sobelImage, pass, 1-pass, 3);
-
 
 		for(int r=0; r< m_sobelImage->height; r++) {
 			short * sobelline = (short *)(m_sobelImage->imageData +
