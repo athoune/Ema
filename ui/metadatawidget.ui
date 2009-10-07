@@ -29,9 +29,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>254</width>
-        <height>318</height>
+        <y>-26</y>
+        <width>239</width>
+        <height>344</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -43,6 +43,9 @@
        </property>
        <item row="2" column="0">
         <widget class="QLabel" name="label">
+         <property name="toolTip">
+          <string>Camera maker and model</string>
+         </property>
          <property name="text">
           <string>Maker</string>
          </property>
@@ -50,6 +53,9 @@
        </item>
        <item row="4" column="0">
         <widget class="QLabel" name="label_2">
+         <property name="toolTip">
+          <string>ISO Sensitivity</string>
+         </property>
          <property name="text">
           <string>ISO</string>
          </property>
@@ -57,6 +63,9 @@
        </item>
        <item row="5" column="0">
         <widget class="QLabel" name="label_3">
+         <property name="toolTip">
+          <string>Real focal length in millimeters</string>
+         </property>
          <property name="text">
           <string>f (mm)</string>
          </property>
@@ -64,6 +73,9 @@
        </item>
        <item row="6" column="0">
         <widget class="QLabel" name="label_4">
+         <property name="toolTip">
+          <string>Aperture value</string>
+         </property>
          <property name="text">
           <string>F/D</string>
          </property>
@@ -71,6 +83,9 @@
        </item>
        <item row="7" column="0">
         <widget class="QLabel" name="label_5">
+         <property name="toolTip">
+          <string>Shutter speed</string>
+         </property>
          <property name="text">
           <string>Pause</string>
          </property>
@@ -78,6 +93,9 @@
        </item>
        <item row="4" column="1">
         <widget class="QLineEdit" name="isoLineEdit">
+         <property name="toolTip">
+          <string>ISO Sensitivity</string>
+         </property>
          <property name="readOnly">
           <bool>true</bool>
          </property>
@@ -85,6 +103,9 @@
        </item>
        <item row="5" column="1">
         <widget class="QLineEdit" name="focalLineEdit">
+         <property name="toolTip">
+          <string>Real focal length in millimeters</string>
+         </property>
          <property name="readOnly">
           <bool>true</bool>
          </property>
@@ -92,6 +113,9 @@
        </item>
        <item row="6" column="1">
         <widget class="QLineEdit" name="apertureLineEdit">
+         <property name="toolTip">
+          <string>Aperture value</string>
+         </property>
          <property name="readOnly">
           <bool>true</bool>
          </property>
@@ -99,6 +123,9 @@
        </item>
        <item row="7" column="1">
         <widget class="QLineEdit" name="speedLineEdit">
+         <property name="toolTip">
+          <string>Shutter speed</string>
+         </property>
          <property name="readOnly">
           <bool>true</bool>
          </property>
@@ -106,6 +133,9 @@
        </item>
        <item row="3" column="1">
         <widget class="QLineEdit" name="orientationLineEdit">
+         <property name="toolTip">
+          <string>Orientation</string>
+         </property>
          <property name="readOnly">
           <bool>true</bool>
          </property>
@@ -113,6 +143,9 @@
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_6">
+         <property name="toolTip">
+          <string>Orientatio</string>
+         </property>
          <property name="text">
           <string>Orient</string>
          </property>
@@ -120,6 +153,9 @@
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_7">
+         <property name="toolTip">
+          <string>Shooting date</string>
+         </property>
          <property name="text">
           <string>Date</string>
          </property>
@@ -127,6 +163,9 @@
        </item>
        <item row="1" column="1">
         <widget class="QLineEdit" name="dateLineEdit">
+         <property name="toolTip">
+          <string>Shooting date</string>
+         </property>
          <property name="readOnly">
           <bool>true</bool>
          </property>
@@ -147,10 +186,17 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QLineEdit" name="makerLineEdit"/>
+        <widget class="QLineEdit" name="makerLineEdit">
+         <property name="toolTip">
+          <string>Camera maker and model</string>
+         </property>
+        </widget>
        </item>
        <item row="8" column="0">
         <widget class="QLabel" name="label_9">
+         <property name="toolTip">
+          <string>IPTC fields : they can be edited in Ema</string>
+         </property>
          <property name="text">
           <string>IPTC</string>
          </property>
@@ -178,6 +224,9 @@
        </item>
        <item row="9" column="0">
         <widget class="QLabel" name="label_10">
+         <property name="toolTip">
+          <string>Country field</string>
+         </property>
          <property name="text">
           <string>Country</string>
          </property>
@@ -185,6 +234,9 @@
        </item>
        <item row="10" column="0">
         <widget class="QLabel" name="label_11">
+         <property name="toolTip">
+          <string>Province field</string>
+         </property>
          <property name="text">
           <string>Province</string>
          </property>
@@ -192,19 +244,34 @@
        </item>
        <item row="11" column="0">
         <widget class="QLabel" name="label_12">
+         <property name="toolTip">
+          <string>City field</string>
+         </property>
          <property name="text">
           <string>City</string>
          </property>
         </widget>
        </item>
        <item row="9" column="1">
-        <widget class="QLineEdit" name="iptcCountryLineEdit"/>
+        <widget class="QLineEdit" name="iptcCountryLineEdit">
+         <property name="toolTip">
+          <string>Country field (editable)</string>
+         </property>
+        </widget>
        </item>
        <item row="11" column="1">
-        <widget class="QLineEdit" name="iptcCityLineEdit"/>
+        <widget class="QLineEdit" name="iptcCityLineEdit">
+         <property name="toolTip">
+          <string>City field (editable)</string>
+         </property>
+        </widget>
        </item>
        <item row="10" column="1">
-        <widget class="QLineEdit" name="iptcProvinceLineEdit"/>
+        <widget class="QLineEdit" name="iptcProvinceLineEdit">
+         <property name="toolTip">
+          <string>Province field (editable)</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

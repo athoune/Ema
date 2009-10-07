@@ -58,6 +58,9 @@ EmaMainWindow::EmaMainWindow(QWidget *parent)
 
 	connect(&m_timer, SIGNAL(timeout()),
 			this, SLOT(on_timer_timeout()));
+
+	// For the moment, collections are not implemented
+	ui->collecShowCheckBox->setChecked(false);
 }
 
 EmaMainWindow::~EmaMainWindow()
@@ -272,6 +275,10 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 
 		// Append to managed pictures
 		m_imageList.append(fileName);
+
+		// append to file display list
+		QFileInfo fi(fileName);
+		//filesTreeWidget
 
 		// And remove it from files being waited for
 		// m_appendFileList.remove(fileName);
