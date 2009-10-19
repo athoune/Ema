@@ -1,6 +1,7 @@
 #ifndef MAINIMAGEWIDGET_H
 #define MAINIMAGEWIDGET_H
 
+#include "imageinfo.h"
 #include <QtGui/QWidget>
 
 namespace Ui {
@@ -14,7 +15,7 @@ public:
 	explicit MainImageWidget(QWidget *parent = 0);
 	virtual ~MainImageWidget();
 	/** @brief Set the background image */
-	void setImageFile(const QString &  imagePath);
+	void setImageFile(const QString &  imagePath, t_image_info_struct * pinfo = NULL);
 	/** @brief Zoom on a part of input image at a specified scale */
 	void zoomOn(int unscaled_x, int unscaled_y, int scale);
 	/** @brief crop absolute part of image for display */

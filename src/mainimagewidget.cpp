@@ -26,7 +26,8 @@ void MainImageWidget::changeEvent(QEvent *e)
 	}
 }
 
-void MainImageWidget::setImageFile(const QString & imagePath)
+void MainImageWidget::setImageFile(const QString & imagePath,
+								   t_image_info_struct * pinfo )
 {
 	// "NavImageWidget::%s:%d ('%s')\n",
 	//		__func__, __LINE__,
@@ -38,10 +39,34 @@ void MainImageWidget::setImageFile(const QString & imagePath)
 
 	zoomOn(0,0, 0);
 
+	if(!m_fullImage.isNull()) {
+		char info[512];
+		if(!pinfo) {
+			sprintf(info, "%s\n%d x %d x %d\n",
+					imagePath.ascii(),
+					m_fullImage.width(),
+					m_fullImage.height(),
+					m_fullImage.depth()/8);
+		} else {
+			sprintf(info, "%s\n%d x %d x %d\n%d ISO\n%s",
+					imagePath.ascii(),
+					m_fullImage.width(),
+					m_fullImage.height(),
+					m_fullImage.depth()/8,
+					pinfo->ISO,
+					pinfo->datetime
+					);
+
+		}
+		QString strInfo(info);
+		m_ui->globalImageLabel->setToolTip(strInfo);
+	}
 }
 
 void  MainImageWidget::zoomOn(int x, int y, int scale) {
 	if(m_fullImage.isNull()) { return; }
+
+
 
 	int wdisp = m_ui->globalImageLabel->width()-2;
 	int hdisp = m_ui->globalImageLabel->height()-2;

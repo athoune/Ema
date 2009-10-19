@@ -42,6 +42,8 @@ ImageInfoWidget::ImageInfoWidget(QWidget *parent) :
 	m_starLabels[2] = m_ui->labelN2;
 	m_starLabels[3] = m_ui->labelN3;
 	m_starLabels[4] = m_ui->labelN4;
+
+	m_curInfo = NULL;
 }
 
 // Read metadata
@@ -404,12 +406,17 @@ void ImageInfoWidget::setImageFile(const QString &  imagePath) {
 
 
 void ImageInfoWidget::setImageInfo(t_image_info_struct * pinfo) {
-	if(!pinfo) {
+	if(!pinfo
+	   ) {
 		// FIXME : clear display
 
 		return ;
 	}
-
+	if(pinfo == m_curInfo) {
+		// same
+		return;
+	}
+	m_curInfo = pinfo;
 	// try tu use sharpness
 	int level = roundf(pinfo->score * 5.f / 100.f);
 	if(level > 4) level = 4;

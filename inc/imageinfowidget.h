@@ -62,6 +62,8 @@ private:
 	Ui::ImageInfoWidget *m_ui;
 	QLabel * m_starLabels[5];
 	ImageInfo * m_imgProc;
+	/// Current info displayed
+	t_image_info_struct * m_curInfo;
 };
 
 #endif // IMAGEINFOWIDGET_H

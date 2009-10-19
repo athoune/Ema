@@ -145,6 +145,9 @@
                   <property name="text">
                    <string>+</string>
                   </property>
+                  <property name="shortcut">
+                   <string>Ctrl+O</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -535,12 +538,18 @@
         <property name="toolTip">
          <string>Show information about picture</string>
         </property>
+        <property name="tabPosition">
+         <enum>QTabWidget::South</enum>
+        </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabSearch">
          <attribute name="title">
           <string>Search</string>
+         </attribute>
+         <attribute name="toolTip">
+          <string>Search by criterions</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_8">
           <property name="margin">
@@ -707,6 +716,9 @@
         <widget class="QWidget" name="tab_metadata">
          <attribute name="title">
           <string>Data</string>
+         </attribute>
+         <attribute name="toolTip">
+          <string>Metadata</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <property name="margin">

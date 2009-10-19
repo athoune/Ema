@@ -341,9 +341,11 @@ void EmaMainWindow::on_thumbImage_clicked(QString fileName)
 	QFileInfo fi(fileName);
 	if(fi.exists()) {
 		ui->globalNavImageWidget->setImageFile(fileName);
-		ui->mainImageWidget->setImageFile(fileName);
-
 		t_image_info_struct * pinfo = emaMngr()->getInfo(fileName);
+
+		ui->mainImageWidget->setImageFile(fileName, pinfo);
+
+
 		if(!pinfo) {
 			EMAMW_printf(EMALOG_WARNING, "File '%s' is not managed : reload and process file info\n", fileName.ascii())
 			ui->imageInfoWidget->setImageFile(fileName);
