@@ -299,14 +299,14 @@ int ImageInfo::readMetadata(char * filename) {
 	}
 	catch (Exiv2::AnyError& e) {
 		std::cout << "Caught Exiv2 exception '" << e << "'\n";
-		fprintf(stderr, "ImageInfo::%s:%d : ERROR : caught exception => return -1;\n",
+		fprintf(stderr, "ImageInfo::%s:%d : ERROR : caught exception => return 0 (no metadata);\n",
 				__func__, __LINE__);
-		return -1;
+		return 0;
 	}
 
-	fprintf(stderr, "ImageInfo::%s:%d : ERROR : return -1;\n", __func__, __LINE__);
+	fprintf(stderr, "ImageInfo::%s:%d : ERROR : return 0;\n", __func__, __LINE__);
 
-	return -1;
+	return 0;
 }
 int ImageInfo::loadFile(char * filename) {
 	m_image_info_struct.valid = 0;
