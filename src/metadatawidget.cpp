@@ -37,8 +37,6 @@ void MetadataWidget::changeEvent(QEvent *e)
 
 void MetadataWidget::setImageFile(const QString & fileName) {
 	m_fileName = fileName;
-
-
 }
 
 void MetadataWidget::setImageInfo(t_image_info_struct * p_image_info_struct)
@@ -46,7 +44,7 @@ void MetadataWidget::setImageInfo(t_image_info_struct * p_image_info_struct)
 	if(!p_image_info_struct) return;
 	QString displayStr;
 
-	displayStr.sprintf("%s", p_image_info_struct->maker);
+	displayStr.sprintf("%s", p_image_info_struct->model);
 	m_ui->makerLineEdit->setText(displayStr);
 //	strcpy(m_image_info_struct.maker, displayStr.ascii());
 

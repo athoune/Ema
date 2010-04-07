@@ -97,8 +97,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>246</width>
-              <height>477</height>
+              <width>210</width>
+              <height>479</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -118,6 +118,10 @@
                  <widget class="QCheckBox" name="filesShowCheckBox">
                   <property name="text">
                    <string>Files</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../ema.qrc">
+                    <normaloff>:/icons/icons/16x16/view-list-tree.png</normaloff>:/icons/icons/16x16/view-list-tree.png</iconset>
                   </property>
                   <property name="checked">
                    <bool>true</bool>
@@ -143,7 +147,11 @@
                    <string>Add a list of picture files</string>
                   </property>
                   <property name="text">
-                   <string>+</string>
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../ema.qrc">
+                    <normaloff>:/icons/icons/16x16/list-add.png</normaloff>:/icons/icons/16x16/list-add.png</iconset>
                   </property>
                   <property name="shortcut">
                    <string>Ctrl+O</string>
@@ -156,7 +164,11 @@
                    <string>Clear the files</string>
                   </property>
                   <property name="text">
-                   <string>C</string>
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../ema.qrc">
+                    <normaloff>:/icons/icons/16x16/list-remove.png</normaloff>:/icons/icons/16x16/list-remove.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -171,6 +183,10 @@
                <column>
                 <property name="text">
                  <string>Path</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../ema.qrc">
+                  <normaloff>:/icons/icons/16x16/view-list-tree.png</normaloff>:/icons/icons/16x16/view-list-tree.png</iconset>
                 </property>
                </column>
                <column>
@@ -218,7 +234,11 @@
                    <string>Create a new collection</string>
                   </property>
                   <property name="text">
-                   <string>+</string>
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../ema.qrc">
+                    <normaloff>:/icons/icons/16x16/list-add.png</normaloff>:/icons/icons/16x16/list-add.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -228,7 +248,11 @@
                    <string>Clear the list of collections</string>
                   </property>
                   <property name="text">
-                   <string>C</string>
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../ema.qrc">
+                    <normaloff>:/icons/icons/16x16/list-remove.png</normaloff>:/icons/icons/16x16/list-remove.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -312,7 +336,17 @@
               <string>Show grid</string>
              </property>
              <property name="text">
-              <string>G</string>
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../ema.qrc">
+               <normaloff>:/icons/icons/22x22/view-list-icons.png</normaloff>:/icons/icons/22x22/view-list-icons.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>22</width>
+               <height>22</height>
+              </size>
              </property>
              <property name="shortcut">
               <string>G, Ctrl+S</string>
@@ -335,6 +369,16 @@
              </property>
              <property name="text">
               <string>I</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../ema.qrc">
+               <normaloff>:/icons/icons/22x22/view-preview.png</normaloff>:/icons/icons/22x22/view-preview.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>22</width>
+               <height>16</height>
+              </size>
              </property>
              <property name="shortcut">
               <string>I, Ctrl+S</string>
@@ -499,7 +543,7 @@
                   <x>0</x>
                   <y>0</y>
                   <width>440</width>
-                  <height>432</height>
+                  <height>429</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_2">
@@ -542,7 +586,7 @@
          <enum>QTabWidget::South</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tabSearch">
          <attribute name="title">
@@ -607,7 +651,7 @@
           <item>
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>&lt;b&gt;Exif&lt;/b&gt;</string>
+             <string>EXIF</string>
             </property>
            </widget>
           </item>
@@ -738,7 +782,7 @@
                <x>0</x>
                <y>0</y>
                <width>308</width>
-               <height>519</height>
+               <height>520</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -803,7 +847,7 @@
      <x>0</x>
      <y>0</y>
      <width>1020</width>
-     <height>26</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

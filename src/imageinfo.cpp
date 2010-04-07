@@ -321,7 +321,7 @@ int ImageInfo::loadFile(char * filename) {
 	// LOAD IMAGE PIXMAP
 	m_originalImage = cvLoadImage(filename);
 	if(!m_originalImage) {
-		fprintf(stderr, "ImageInfo::%s:%d: cannot load image '%s'\n",
+		fprintf(stderr, "ImageInfo::%s:%d: cannot load image '%s' (with openCV)\n",
 				__func__, __LINE__, filename);
 		return -1;
 	}

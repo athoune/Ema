@@ -1,9 +1,74 @@
 <RCC>
-    <qresource prefix="/icons" >
+    <qresource prefix="/icons">
         <file>icons/japon054.jpg</file>
         <file>icons/ema-icon.png</file>
         <file>icons/ema-splash.png</file>
         <file>icons/star_on.png</file>
         <file>icons/star_off.png</file>
+        <file>icons/16x16/application-exit.png</file>
+        <file>icons/16x16/arrow-down-double.png</file>
+        <file>icons/16x16/arrow-down.png</file>
+        <file>icons/16x16/arrow-left-double.png</file>
+        <file>icons/16x16/arrow-left.png</file>
+        <file>icons/16x16/arrow-right-double.png</file>
+        <file>icons/16x16/arrow-right.png</file>
+        <file>icons/16x16/arrow-up-double.png</file>
+        <file>icons/16x16/arrow-up.png</file>
+        <file>icons/16x16/chronometer.png</file>
+        <file>icons/16x16/color-picker.png</file>
+        <file>icons/16x16/dialog-close.png</file>
+        <file>icons/16x16/dialog-ok-apply.png</file>
+        <file>icons/16x16/dialog-ok.png</file>
+        <file>icons/16x16/document-open-folder.png</file>
+        <file>icons/16x16/document-revert.png</file>
+        <file>icons/16x16/draw-freehand.png</file>
+        <file>icons/16x16/edit-clear-history.png</file>
+        <file>icons/16x16/edit-delete.png</file>
+        <file>icons/16x16/edit-redo.png</file>
+        <file>icons/16x16/edit-undo.png</file>
+        <file>icons/16x16/feed-subscribe.png</file>
+        <file>icons/16x16/flag-black.png</file>
+        <file>icons/16x16/flag-blue.png</file>
+        <file>icons/16x16/flag-green.png</file>
+        <file>icons/16x16/flag-red.png</file>
+        <file>icons/16x16/flag-yellow.png</file>
+        <file>icons/16x16/flag.png</file>
+        <file>icons/16x16/folder-new.png</file>
+        <file>icons/16x16/go-bottom.png</file>
+        <file>icons/16x16/go-first.png</file>
+        <file>icons/16x16/go-last.png</file>
+        <file>icons/16x16/go-next.png</file>
+        <file>icons/16x16/go-previous.png</file>
+        <file>icons/16x16/go-top.png</file>
+        <file>icons/16x16/go-up.png</file>
+        <file>icons/16x16/help-about.png</file>
+        <file>icons/16x16/help-hint.png</file>
+        <file>icons/16x16/insert-image.png</file>
+        <file>icons/16x16/list-add.png</file>
+        <file>icons/16x16/list-remove.png</file>
+        <file>icons/16x16/object-rotate-left.png</file>
+        <file>icons/16x16/object-rotate-right.png</file>
+        <file>icons/16x16/page-zoom.png</file>
+        <file>icons/16x16/status_unknown.png</file>
+        <file>icons/16x16/system-restart.png</file>
+        <file>icons/16x16/system-run.png</file>
+        <file>icons/16x16/system-shutdown.png</file>
+        <file>icons/16x16/tools-wizard.png</file>
+        <file>icons/16x16/transform-move.png</file>
+        <file>icons/16x16/trash-empty.png</file>
+        <file>icons/16x16/view-filter.png</file>
+        <file>icons/16x16/view-fullscreen.png</file>
+        <file>icons/16x16/view-list-tree.png</file>
+        <file>icons/16x16/view-media-equalizer.png</file>
+        <file>icons/16x16/view-pim-calendar.png</file>
+        <file>icons/16x16/view-preview.png</file>
+        <file>icons/16x16/view-refresh.png</file>
+        <file>icons/16x16/view-restore.png</file>
+        <file>icons/16x16/zoom-fit-best.png</file>
+        <file>icons/16x16/zoom-in.png</file>
+        <file>icons/16x16/zoom-original.png</file>
+        <file>icons/16x16/zoom-out.png</file>
+        <file>icons/22x22/view-list-icons.png</file>
+        <file>icons/22x22/view-preview.png</file>
     </qresource>
 </RCC>

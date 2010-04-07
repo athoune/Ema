@@ -35,10 +35,17 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Rotate ClockWise</string>
+      <string>Rotate Counter-ClockWise</string>
      </property>
      <property name="text">
-      <string>R</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../ema.qrc">
+       <normaloff>:/icons/icons/16x16/object-rotate-left.png</normaloff>:/icons/icons/16x16/object-rotate-left.png</iconset>
+     </property>
+     <property name="shortcut">
+      <string>]</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -69,7 +76,14 @@
       <string>Rotate ClockWise</string>
      </property>
      <property name="text">
-      <string>L</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../ema.qrc">
+       <normaloff>:/icons/icons/16x16/object-rotate-right.png</normaloff>:/icons/icons/16x16/object-rotate-right.png</iconset>
+     </property>
+     <property name="shortcut">
+      <string>[</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -138,6 +152,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../ema.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -85,6 +85,8 @@ void MainImageWidget::cropAbsolute(int x_crop, int y_crop, int scale)
 {
 	int wdisp = m_ui->globalImageLabel->width()-2;
 	int hdisp = m_ui->globalImageLabel->height()-2;
+fprintf(stderr, "MainImageWidget::%s:%d : crop %d,%d  sc=%d\n",
+		__func__, __LINE__, x_crop, y_crop, scale);
 
 	// Crop on center of image
 	if(scale > 1) {

@@ -29,9 +29,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-26</y>
-        <width>239</width>
-        <height>344</height>
+        <y>0</y>
+        <width>254</width>
+        <height>318</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">

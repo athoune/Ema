@@ -29,12 +29,14 @@ void NavImageWidget::changeEvent(QEvent *e)
 
 void NavImageWidget::on_zoomFitButton_clicked()
 {
+	m_zoom_scale = 0;
 	if(m_displayImage.isNull()) { return; }
 	emit signalZoomOn(0, 0, 0);
 }
 
 void NavImageWidget::on_zoomx1Button_released()
 {
+	m_zoom_scale = 1;
 	emit signalZoomOn( m_fullRect.width()/2,
 			m_fullRect.height()/2,
 			1);
@@ -42,6 +44,7 @@ void NavImageWidget::on_zoomx1Button_released()
 
 void NavImageWidget::on_zoomx2Button_released()
 {
+	m_zoom_scale = 2;
 	emit signalZoomOn(m_fullRect.width()/2,
 			m_fullRect.height()/2,
 			2);
@@ -93,6 +96,8 @@ void NavImageWidget::on_globalImageLabel_signalMousePressEvent(QMouseEvent * e) 
 
 	if(m_zoom_scale == 0) // toggle view
 	{
+		// Select the zoomx1button
+//		m_ui->zoomx1Button->set
 		m_zoom_scale = 1;
 	}
 
