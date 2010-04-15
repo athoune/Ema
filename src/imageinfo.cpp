@@ -372,6 +372,7 @@ int ImageInfo::loadFile(char * filename) {
 								  IPL_DEPTH_8U, m_originalImage->nChannels);
 	}
 
+	// Scale original image to processing image
 	cvResize(m_originalImage, m_scaledImage);
 
 #define IMGTHUMB_WIDTH	80
@@ -407,6 +408,7 @@ int ImageInfo::loadFile(char * filename) {
 		fprintf(stderr, "\nImageInfo::%s:%d : processHSV(m_scaledImage=%dx%d)\n", __func__, __LINE__,
 			m_scaledImage->width, m_scaledImage->height);fflush(stderr);
 	}
+
 	// process RGB histogram
 	processRGB();
 
@@ -440,6 +442,7 @@ int ImageInfo::loadFile(char * filename) {
 
 	// Activate the validation flag
 	m_image_info_struct.valid = 1;
+
 	return 0;
 }
 

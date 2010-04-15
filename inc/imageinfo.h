@@ -31,7 +31,8 @@
 #define MAX_PATH_LEN	512
 #endif
 
-#define MAX_EXIF_LEN	32
+/// Max length of an EXIF field
+#define MAX_EXIF_LEN	64
 
 // Debug modes
 #define EMALOG_TRACE	5
@@ -41,7 +42,7 @@
 #define EMALOG_ERROR	-3
 
 #include <QImage>
-
+#include "imgutils.h"
 
 /** @breif Convert an OpenCV IplIMage to a QImage */
 QImage iplImageToQImage(IplImage * iplImage);
@@ -83,9 +84,11 @@ typedef struct {
 	bool grayscaled;
 	float sharpness_score;			/*! Sharpness factor in [0..100] */
 	float histo_score;
-	IplImage * thumbImage;		/*! Thumb image for faster display */
-	IplImage * sharpnessImage;	/*! Sharpness image for faster display */
-	IplImage * hsvImage;		/*! HSV histogram image for faster display */
+	IplImage * thumbImage;			/*! Thumb image for faster display */
+	u8 * compressedThumbImage;		/*! Pointer to compressed thumb image */
+	u8 * compressedThumbImage_size;	/*! Size of compressed thumb image */
+	IplImage * sharpnessImage;		/*! Sharpness image for faster display */
+	IplImage * hsvImage;			/*! HSV histogram image for faster display */
 
 	float log_histogram[3][256];	/*! Log histogram */
 

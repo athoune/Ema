@@ -335,6 +335,9 @@
              <property name="toolTip">
               <string>Show grid</string>
              </property>
+             <property name="statusTip">
+              <string>Show a grid of managed pictures</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -367,8 +370,11 @@
              <property name="toolTip">
               <string>Show a single picture</string>
              </property>
+             <property name="statusTip">
+              <string>Show one single picture</string>
+             </property>
              <property name="text">
-              <string>I</string>
+              <string/>
              </property>
              <property name="icon">
               <iconset resource="../ema.qrc">
@@ -385,6 +391,13 @@
              </property>
              <property name="flat">
               <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="Line" name="line_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
              </property>
             </widget>
            </item>
@@ -446,12 +459,26 @@
                  <number>2</number>
                 </property>
                 <item>
+                 <widget class="QLabel" name="label">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../ema.qrc">:/icons/icons/16x16/view-filter.png</pixmap>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QToolButton" name="addCriterionButton">
                   <property name="toolTip">
                    <string>Add this criterion</string>
                   </property>
                   <property name="text">
-                   <string>+</string>
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../ema.qrc">
+                    <normaloff>:/icons/icons/16x16/list-add.png</normaloff>:/icons/icons/16x16/list-add.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -461,7 +488,11 @@
                    <string>Exclude this criterion</string>
                   </property>
                   <property name="text">
-                   <string>X</string>
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../ema.qrc">
+                    <normaloff>:/icons/icons/16x16/list-remove.png</normaloff>:/icons/icons/16x16/list-remove.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -471,7 +502,11 @@
                    <string>Remove this criterion</string>
                   </property>
                   <property name="text">
-                   <string>-</string>
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../ema.qrc">
+                    <normaloff>:/icons/icons/16x16/trash-empty.png</normaloff>:/icons/icons/16x16/trash-empty.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -543,7 +578,7 @@
                   <x>0</x>
                   <y>0</y>
                   <width>440</width>
-                  <height>429</height>
+                  <height>430</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_2">
@@ -586,7 +621,7 @@
          <enum>QTabWidget::South</enum>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tabSearch">
          <attribute name="title">
