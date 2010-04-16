@@ -37,11 +37,12 @@ ImageInfoWidget::ImageInfoWidget(QWidget *parent) :
 	m_imgProc = NULL;
 	m_ui->setupUi(this);
 
-	m_starLabels[0] = m_ui->labelN0;
-	m_starLabels[1] = m_ui->labelN1;
-	m_starLabels[2] = m_ui->labelN2;
-	m_starLabels[3] = m_ui->labelN3;
-	m_starLabels[4] = m_ui->labelN4;
+	m_starButtons[0] = m_ui->scoreButton0;
+	m_starButtons[1] = m_ui->scoreButton1;
+	m_starButtons[2] = m_ui->scoreButton2;
+	m_starButtons[3] = m_ui->scoreButton3;
+	m_starButtons[4] = m_ui->scoreButton4;
+	m_starButtons[5] = m_ui->scoreButton5;
 
 	m_curInfo = NULL;
 }
@@ -419,18 +420,18 @@ void ImageInfoWidget::setImageInfo(t_image_info_struct * pinfo) {
 	m_curInfo = pinfo;
 	// try tu use sharpness
 	int level = roundf(pinfo->score * 5.f / 100.f);
-	if(level > 4) level = 4;
+	if(level > 5) { level = 5; }
 
 	if(level > 0) {// don't load picture if not necessary
 		QPixmap starOn(":/icons/icons/star_on.png");
-		for(int star = 0; star < level; star++) {
-			m_starLabels[star]->setPixmap(starOn);
+		for(int star = 1; star <= level; star++) {
+			m_starButtons[star]->setPixmap(starOn);
 		}
 	}
-	if(level < 4) {
+	if(level < 5) {
 		QPixmap starOff(":/icons/icons/star_off.png");
-		for(int star = level; star < 5; star++) {
-			m_starLabels[star]->setPixmap(starOff);
+		for(int star = level+1; star < 6; star++) {
+			m_starButtons[star]->setPixmap(starOff);
 		}
 	}
 
@@ -490,8 +491,37 @@ void ImageInfoWidget::changeEvent(QEvent *e)
 	}
 }
 
+/* Manually force score of a picture */
+void ImageInfoWidget::forceScore(int percent) {
+	if(!m_curInfo) return;
+
+	m_curInfo->score = percent;
+	t_image_info_struct * pinfo = m_curInfo;
+	m_curInfo = 0; // to force update
+	setImageInfo(pinfo);
+}
 
 
+void ImageInfoWidget::on_scoreButton0_clicked() {
+	forceScore(0);
+}
+void ImageInfoWidget::on_scoreButton1_clicked() {
+	forceScore(20);
+}
+
+void ImageInfoWidget::on_scoreButton2_clicked() {
+	forceScore(40);
+}
+void ImageInfoWidget::on_scoreButton3_clicked() {
+	forceScore(60);
+}
+void ImageInfoWidget::on_scoreButton4_clicked() {
+	forceScore(80);
+}
+
+void ImageInfoWidget::on_scoreButton5_clicked() {
+	forceScore(100);
+}
 
 
 

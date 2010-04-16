@@ -43,67 +43,111 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="labelN0">
+       <widget class="QPushButton" name="scoreButton0">
         <property name="text">
          <string/>
         </property>
-        <property name="pixmap">
-         <pixmap resource="../ema.qrc">:/icons/icons/star_off.png</pixmap>
+        <property name="icon">
+         <iconset resource="../ema.qrc">
+          <normaloff>:/icons/icons/16x16/flag-black.png</normaloff>:/icons/icons/16x16/flag-black.png</iconset>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+        <property name="shortcut">
+         <string>0</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="labelN1">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="pixmap">
-         <pixmap resource="../ema.qrc">:/icons/icons/star_off.png</pixmap>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+       <widget class="Line" name="line_4">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="labelN2">
+       <widget class="QPushButton" name="scoreButton1">
         <property name="text">
          <string/>
         </property>
-        <property name="pixmap">
-         <pixmap resource="../ema.qrc">:/icons/icons/star_off.png</pixmap>
+        <property name="icon">
+         <iconset resource="../ema.qrc">
+          <normaloff>:/icons/icons/star_off.png</normaloff>:/icons/icons/star_off.png</iconset>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+        <property name="shortcut">
+         <string>1</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="labelN3">
+       <widget class="QPushButton" name="scoreButton2">
         <property name="text">
          <string/>
         </property>
-        <property name="pixmap">
-         <pixmap resource="../ema.qrc">:/icons/icons/star_off.png</pixmap>
+        <property name="icon">
+         <iconset resource="../ema.qrc">
+          <normaloff>:/icons/icons/star_off.png</normaloff>:/icons/icons/star_off.png</iconset>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+        <property name="shortcut">
+         <string>2</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="labelN4">
+       <widget class="QPushButton" name="scoreButton3">
         <property name="text">
          <string/>
         </property>
-        <property name="pixmap">
-         <pixmap resource="../ema.qrc">:/icons/icons/star_off.png</pixmap>
+        <property name="icon">
+         <iconset resource="../ema.qrc">
+          <normaloff>:/icons/icons/star_off.png</normaloff>:/icons/icons/star_off.png</iconset>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+        <property name="shortcut">
+         <string>3</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="scoreButton4">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../ema.qrc">
+          <normaloff>:/icons/icons/star_off.png</normaloff>:/icons/icons/star_off.png</iconset>
+        </property>
+        <property name="shortcut">
+         <string>4</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="scoreButton5">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../ema.qrc">
+          <normaloff>:/icons/icons/star_off.png</normaloff>:/icons/icons/star_off.png</iconset>
+        </property>
+        <property name="shortcut">
+         <string>5</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

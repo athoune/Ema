@@ -1,3 +1,11 @@
+/***************************************************************************
+ *      Main image display in middle of GUI
+ *
+ *  Sun Aug 16 19:32:41 2009
+ *  Copyright  2009  Christophe Seyve
+ *  Email cseyve@free.fr
+ ****************************************************************************/
+
 #ifndef MAINIMAGEWIDGET_H
 #define MAINIMAGEWIDGET_H
 

@@ -1,5 +1,24 @@
+/***************************************************************************
+ *      Main image display in middle of GUI
+ *
+ *  Sun Aug 16 19:32:41 2009
+ *  Copyright  2009  Christophe Seyve
+ *  Email cseyve@free.fr
+ ****************************************************************************/
+
 #include "mainimagewidget.h"
 #include "ui_mainimagewidget.h"
+
+int g_EMAMainImgW_debug_mode = EMALOG_DEBUG;
+
+#define EMAMIW_printf(a,...)  { \
+		if(g_EMAMainImgW_debug_mode>=(a)) { \
+			fprintf(stderr,"EmaMainImageW::%s:%d : ",__func__,__LINE__); \
+			fprintf(stderr,__VA_ARGS__); \
+			fprintf(stderr,"\n"); \
+		} \
+	}
+
 
 MainImageWidget::MainImageWidget(QWidget *parent) :
 	QWidget(parent),
@@ -116,20 +135,42 @@ fprintf(stderr, "MainImageWidget::%s:%d : crop %d,%d  sc=%d\n",
 }
 
 void MainImageWidget::on_globalImageLabel_signalMousePressEvent(QMouseEvent * e) {
+	int x = e->pos().x(), y =  e->pos().y();
 
-	fprintf(stderr, "MainImageWidget::%s:%d : m_lastClick=%d,%d\n", __func__, __LINE__,
-			m_lastClick.x(), m_lastClick.y());
+	EMAMIW_printf(EMALOG_DEBUG, "m_lastClick=%d,%d zoom=%d click=%d,%d "
+				  "/ display img=%dx%d / orig=%dx%d /widget=%dx%d",
+			m_lastClick.x(), m_lastClick.y(),
+			m_zoom_scale,
+			x, y,
+
+			m_displayImage.width(), m_displayImage.height(),
+			m_fullImage.width(), m_fullImage.height(),
+			width(), height()
+			);
+
 	m_mouse_has_moved = false;
 
-	if(m_zoom_scale == 0) // toggle view
+	if(m_zoom_scale == 0) // toggle view to zoom 1:1
 	{
 		m_zoom_scale = 1;
 		m_mouse_has_moved = true;
+		float fx = e->pos().x() - (width()-m_displayImage.width())/2
+				   , fy =  e->pos().y() - (height()-m_displayImage.height())/2;
 
-		int x = e->pos().x(), y =  e->pos().y();
-		x *= m_fullImage.width() / m_displayImage.width();
-		y *= m_fullImage.height() / m_displayImage.height();
-		m_lastClick = QPoint(x,y);
+		fx *= (float)m_fullImage.width() / (float)m_displayImage.width();
+		fy *= (float)m_fullImage.height() / (float)m_displayImage.height();
+
+		EMAMIW_printf(EMALOG_DEBUG, "click=%d,%d => in full=%g,%g"
+					  "/ display img=%dx%d / orig=%dx%d",
+					  x, y,
+					  fx, fy,
+					  m_displayImage.width(), m_displayImage.height(),
+					  m_fullImage.width(), m_fullImage.height()
+					  );
+
+		x = (int)roundf(fx);
+		y = (int)roundf(fy);
+		m_lastClick = QPoint( x, y );
 
 		zoomOn(x, y, m_zoom_scale);
 	}

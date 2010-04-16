@@ -27,8 +27,10 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 #include <cv.h>
 #include <cv.hpp>
+
 #include "imageinfo.h"
 
 namespace Ui {
@@ -60,10 +62,21 @@ protected:
 
 private:
 	Ui::ImageInfoWidget *m_ui;
-	QLabel * m_starLabels[5];
+	QPushButton * m_starButtons[6];
 	ImageInfo * m_imgProc;
 	/// Current info displayed
 	t_image_info_struct * m_curInfo;
+
+	/** @brief Manually force score of a picture */
+	void forceScore(int percent);
+private slots:
+	/// Black flag => score 0
+	void on_scoreButton0_clicked();
+	void on_scoreButton1_clicked();
+	void on_scoreButton2_clicked();
+	void on_scoreButton3_clicked();
+	void on_scoreButton4_clicked();
+	void on_scoreButton5_clicked();
 };
 
 #endif // IMAGEINFOWIDGET_H

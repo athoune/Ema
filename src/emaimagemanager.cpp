@@ -190,6 +190,7 @@ void EmaImageManager::run() {
 
 					memcpy(new_info, &l_info, sizeof(t_image_info_struct));
 
+
 					// Copy thumb
 					new_info->thumbImage = tmClone(l_info.thumbImage);
 					// Copy HSV histo
