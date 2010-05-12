@@ -46,6 +46,36 @@
     </widget>
    </item>
   </layout>
+  <action name="actionZoomIn">
+   <property name="icon">
+    <iconset resource="../ema.qrc">
+     <normaloff>:/icons/icons/16x16/zoom-in.png</normaloff>:/icons/icons/16x16/zoom-in.png</iconset>
+   </property>
+   <property name="text">
+    <string>ZoomIn</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom in</string>
+   </property>
+   <property name="shortcut">
+    <string>+</string>
+   </property>
+  </action>
+  <action name="actionZoom_out">
+   <property name="icon">
+    <iconset resource="../ema.qrc">
+     <normaloff>:/icons/icons/16x16/zoom-out.png</normaloff>:/icons/icons/16x16/zoom-out.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom out</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom out</string>
+   </property>
+   <property name="shortcut">
+    <string>-</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -54,6 +84,8 @@
    <header location="global">qimagedisplay.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../ema.qrc"/>
+ </resources>
  <connections/>
 </ui>

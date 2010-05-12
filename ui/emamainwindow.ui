@@ -14,7 +14,7 @@
    <string>Ema - Sort your pictures</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../ema.qrc">
     <normaloff>:/icons/icons/ema-icon.png</normaloff>:/icons/icons/ema-icon.png</iconset>
   </property>
   <property name="toolTip">
@@ -120,7 +120,7 @@
                    <string>Files</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="../ema.qrc">
                     <normaloff>:/icons/icons/16x16/view-list-tree.png</normaloff>:/icons/icons/16x16/view-list-tree.png</iconset>
                   </property>
                   <property name="checked">
@@ -150,7 +150,7 @@
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="../ema.qrc">
                     <normaloff>:/icons/icons/16x16/list-add.png</normaloff>:/icons/icons/16x16/list-add.png</iconset>
                   </property>
                   <property name="shortcut">
@@ -167,7 +167,7 @@
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="../ema.qrc">
                     <normaloff>:/icons/icons/16x16/list-remove.png</normaloff>:/icons/icons/16x16/list-remove.png</iconset>
                   </property>
                  </widget>
@@ -185,7 +185,7 @@
                  <string>Path</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="../ema.qrc">
                   <normaloff>:/icons/icons/16x16/view-list-tree.png</normaloff>:/icons/icons/16x16/view-list-tree.png</iconset>
                 </property>
                </column>
@@ -237,7 +237,7 @@
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="../ema.qrc">
                     <normaloff>:/icons/icons/16x16/list-add.png</normaloff>:/icons/icons/16x16/list-add.png</iconset>
                   </property>
                  </widget>
@@ -251,7 +251,7 @@
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="../ema.qrc">
                     <normaloff>:/icons/icons/16x16/list-remove.png</normaloff>:/icons/icons/16x16/list-remove.png</iconset>
                   </property>
                  </widget>
@@ -342,7 +342,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="../ema.qrc">
                <normaloff>:/icons/icons/22x22/view-list-icons.png</normaloff>:/icons/icons/22x22/view-list-icons.png</iconset>
              </property>
              <property name="iconSize">
@@ -377,7 +377,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="../ema.qrc">
                <normaloff>:/icons/icons/22x22/view-preview.png</normaloff>:/icons/icons/22x22/view-preview.png</iconset>
              </property>
              <property name="iconSize">
@@ -420,6 +420,22 @@
               </size>
              </property>
             </spacer>
+           </item>
+           <item>
+            <widget class="QListWidget" name="listWidget">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>40</height>
+              </size>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -464,7 +480,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap>:/icons/icons/16x16/view-filter.png</pixmap>
+                   <pixmap resource="../ema.qrc">:/icons/icons/16x16/view-filter.png</pixmap>
                   </property>
                  </widget>
                 </item>
@@ -477,7 +493,7 @@
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="../ema.qrc">
                     <normaloff>:/icons/icons/16x16/list-add.png</normaloff>:/icons/icons/16x16/list-add.png</iconset>
                   </property>
                  </widget>
@@ -491,7 +507,7 @@
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="../ema.qrc">
                     <normaloff>:/icons/icons/16x16/list-remove.png</normaloff>:/icons/icons/16x16/list-remove.png</iconset>
                   </property>
                  </widget>
@@ -505,7 +521,7 @@
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="../ema.qrc">
                     <normaloff>:/icons/icons/16x16/trash-empty.png</normaloff>:/icons/icons/16x16/trash-empty.png</iconset>
                   </property>
                  </widget>
@@ -578,7 +594,7 @@
                   <x>0</x>
                   <y>0</y>
                   <width>440</width>
-                  <height>430</height>
+                  <height>422</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_2">
@@ -945,6 +961,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../ema.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -428,6 +428,7 @@ void ImageInfoWidget::setImageInfo(t_image_info_struct * pinfo) {
 			m_starButtons[star]->setPixmap(starOn);
 		}
 	}
+
 	if(level < 5) {
 		QPixmap starOff(":/icons/icons/star_off.png");
 		for(int star = level+1; star < 6; star++) {

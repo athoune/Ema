@@ -229,3 +229,11 @@ void MainImageWidget::on_globalImageLabel_signalWheelEvent( QWheelEvent * e )
 
 	zoomOn(e->x(), e->y(), m_zoom_scale);
 }
+void MainImageWidget::on_actionZoomIn_activated( ) {
+	fprintf(stderr, "MainImageW::%s:%d : zoom=%d",
+			__func__, __LINE__, m_zoom_scale);
+	m_zoom_scale ++;
+
+	zoomOn(width()/2, height()/2, m_zoom_scale);
+
+}

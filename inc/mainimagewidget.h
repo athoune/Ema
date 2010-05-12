@@ -48,6 +48,9 @@ private slots:
 	void on_globalImageLabel_signalMouseReleaseEvent(QMouseEvent * e);
 	void on_globalImageLabel_signalMouseMoveEvent(QMouseEvent * e);
 	void on_globalImageLabel_signalWheelEvent( QWheelEvent * e );
+
+	void on_actionZoomIn_activated( );
+
 private:
 	Ui::MainImageWidget *m_ui;
 };
