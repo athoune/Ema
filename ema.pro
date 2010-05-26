@@ -11,7 +11,7 @@ CONFIG += debug
 # reference : file:///usr/share/qt4/doc/html/appicon.html
 # mac::ICON = icon/Ema.icns
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
-mac::ICON = icons/ema-icon.icns
+mac: ICON = icons/ema-icon.icns
 
 # and an uppercase first letter for Mac & Windows
 mac::TARGET = Ema
