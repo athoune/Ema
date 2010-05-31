@@ -261,6 +261,13 @@ void EmaMainWindow::on_collecShowCheckBox_stateChanged(int state) {
 
 
 
+void EmaMainWindow::on_filesTreeWidget_itemClicked ( QTreeWidgetItem * item, int column ) {
+	if(!item) return;
+
+	// read image file
+	QString fileName = item->text(0); // col 0 has the full path
+	on_thumbImage_selected( fileName );
+}
 
 
 void EmaMainWindow::appendThumbImage(QString fileName) {
@@ -279,6 +286,11 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 		// append to file display list
 		QFileInfo fi(fileName);
 		//filesTreeWidget
+
+		QTreeWidgetItem * newtreeItem = new QTreeWidgetItem(
+				ui->filesTreeWidget );
+		newtreeItem->setText(0, fileName);
+		newtreeItem->setText(1, fi.fileName());
 
 		// And remove it from files being waited for
 		// m_appendFileList.remove(fileName);

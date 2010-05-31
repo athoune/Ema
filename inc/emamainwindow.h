@@ -28,6 +28,7 @@
 #include <QtCore/QTimer>
 
 #include <QtGui/QMainWindow>
+#include <QtGui/QTreeWidgetItem>
 
 namespace Ui
 {
@@ -92,6 +93,7 @@ private slots:
 
 	void on_appendNewPictureThumb(const QString & );
 
+	void on_filesTreeWidget_itemClicked ( QTreeWidgetItem * item, int column );
 };
 
 #endif // EmaMAINWINDOW_H
