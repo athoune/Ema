@@ -83,9 +83,9 @@ static void init_grayToBGR32()
 }
 
 QImage iplImageToQImage(IplImage * iplImage) {
-	if(!iplImage)
+	if(!iplImage) {
 		return QImage();
-
+	}
 
 	int depth = iplImage->nChannels;
 

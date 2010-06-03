@@ -47,9 +47,22 @@
 /** @breif Convert an OpenCV IplIMage to a QImage */
 QImage iplImageToQImage(IplImage * iplImage);
 
+typedef struct {
+	IplImage * iplImage;			/*! raw image for faster display */
+	u8 * compressed;				/*! compressed image data as JPEG */
+	int compressed_size;			/*! Size of compressed image data */
+} t_cached_image;
+
+/** @brief Compress raw IplImage to JPEG */
+void compressCachedImage(t_cached_image *);
+
+/** @brief Uncompress JPEG buffer to raw IplImage */
+void uncompressCachedImage(t_cached_image *);
+
+
 /** @brief Useful information for sorting pictures*/
 typedef struct {
-	char filepath[MAX_PATH_LEN];	/*! Full path of image file */
+	char filepath[MAX_PATH_LEN*2];	/*! Full path of image file */
 
 	unsigned char valid;		/*! Valid info flag */
 
@@ -84,9 +97,8 @@ typedef struct {
 	bool grayscaled;
 	float sharpness_score;			/*! Sharpness factor in [0..100] */
 	float histo_score;
-	IplImage * thumbImage;			/*! Thumb image for faster display */
-	u8 * compressedThumbImage;		/*! Pointer to compressed thumb image */
-	u8 * compressedThumbImage_size;	/*! Size of compressed thumb image */
+
+	t_cached_image thumbImage;	/*! Thumb image for faster display */
 	IplImage * sharpnessImage;		/*! Sharpness image for faster display */
 	IplImage * hsvImage;			/*! HSV histogram image for faster display */
 

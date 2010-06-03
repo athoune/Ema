@@ -54,6 +54,9 @@ private:
 	QStringList m_appendFileList;
 	QStringList m_removeFileList;
 
+	// Thumbnails sorter
+	int m_sorter_nbitems_per_row;
+
 
 	/** @brief append a list of files to displayed files */
 	void appendFileList(QStringList list);
@@ -78,6 +81,8 @@ private slots:
 	void on_zoomx1Button_clicked();
 	void on_groupBox_7_clicked();
 
+	void on_gridWidget_signal_resizeEvent(QResizeEvent *);
+
 	// Collections
 	void on_collecShowCheckBox_stateChanged(int);
 
@@ -86,6 +91,7 @@ private slots:
 	void on_gridButton_clicked();
 	void on_imgButton_clicked();
 
+	void on_mainGroupBox_resizeEvent(QResizeEvent *);
 	//
 	void on_globalNavImageWidget_signalZoomOn(int, int, int);
 
@@ -94,6 +100,7 @@ private slots:
 	void on_appendNewPictureThumb(const QString & );
 
 	void on_filesTreeWidget_itemClicked ( QTreeWidgetItem * item, int column );
+	void on_filesTreeWidget_itemDoubleClicked ( QTreeWidgetItem * item, int column );
 };
 
 #endif // EmaMAINWINDOW_H

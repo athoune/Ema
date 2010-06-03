@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FilterManagerForm</class>
+ <widget class="QWidget" name="FilterManagerForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>320</width>
+    <height>240</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QLabel" name="filterLabel">
+     <property name="minimumSize">
+      <size>
+       <width>22</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="../ema.qrc">:/icons/icons/16x16/view-filter.png</pixmap>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="addCriterionButton">
+     <property name="toolTip">
+      <string>Add this criterion</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../ema.qrc">
+       <normaloff>:/icons/icons/16x16/list-add.png</normaloff>:/icons/icons/16x16/list-add.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="excludeCriterionButton">
+     <property name="toolTip">
+      <string>Exclude this criterion</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../ema.qrc">
+       <normaloff>:/icons/icons/16x16/list-remove.png</normaloff>:/icons/icons/16x16/list-remove.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="removeCriterionButton">
+     <property name="toolTip">
+      <string>Remove this criterion</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../ema.qrc">
+       <normaloff>:/icons/icons/16x16/trash-empty.png</normaloff>:/icons/icons/16x16/trash-empty.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="horizontalSpacer_4">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>41</width>
+       <height>22</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QComboBox" name="criterionComboBox">
+     <property name="toolTip">
+      <string>Sorting filters</string>
+     </property>
+     <item>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>By focus</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="subCriterionComboBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>Sub-category sorting filter</string>
+     </property>
+     <item>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../ema.qrc"/>
+ </resources>
+ <connections/>
+</ui>

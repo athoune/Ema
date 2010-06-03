@@ -24,6 +24,7 @@
 
 #include <QString>
 #include <QStringList>
+#include <QBuffer>
 
 #include "imageinfo.h"
 
@@ -47,6 +48,7 @@ ImageInfo::ImageInfo() {
 ImageInfo::~ImageInfo() {
 	purge();
 }
+
 void ImageInfo::init() {
 	m_originalImage = NULL;
 
@@ -135,6 +137,40 @@ float rational_to_float(const QString & str) {
 	return val; //fract.sprintf("1/%g", val);
 }
 
+/* Compress raw IplImage to JPEG */
+void compressCachedImage(t_cached_image * img) {
+	if(img->compressed) { return ; }
+
+	// Compressed directly in RAM
+	QImage image = iplImageToQImage(img->iplImage);
+
+	QByteArray ba;
+	QBuffer buffer(&ba);
+	buffer.open(QIODevice::WriteOnly);
+	//
+	image.save(&buffer, "JPEG", 90);
+
+	// Copy into buffer
+	img->compressed_size = ba.size();
+	img->compressed = new u8 [ ba.size() ];
+	buffer.read((char *)img->compressed, img->compressed_size);
+
+	//
+	fprintf(stderr, "[imageinfo] %s:%d: DEBUG : save '/dev/shm/toto.jpg' %p / %d\n",
+			__func__, __LINE__,
+			img->compressed, img->compressed_size);
+	FILE * f=fopen("/dev/shm/toto.jpg", "wb");
+	if(f) {
+		fwrite(img->compressed, 1, img->compressed_size, f);
+		fclose(f);
+	}
+}
+
+/* Uncompress JPEG buffer to raw IplImage */
+void uncompressCachedImage(t_cached_image * img) {
+	if(img->iplImage) { return ; }
+
+}
 
 
 void ImageInfo::purgeScaled() {
@@ -210,7 +246,7 @@ int ImageInfo::readMetadata(char * filename) {
 			exifMaker = exifData["Exif.Photo.FocalLength"]; str = exifMaker.toString();
 			displayStr = QString::fromStdString(str);
 
-			bool ok;
+			//bool ok;
 			//displayStr = rational(displayStr);
 			m_image_info_struct.focal_mm = rational_to_float(displayStr);
 			m_image_info_struct.focal_eq135_mm = -1.f;
@@ -397,7 +433,10 @@ int ImageInfo::loadFile(char * filename) {
 	}
 
 	cvResize(m_scaledImage, m_thumbImage);
-	m_image_info_struct.thumbImage = m_thumbImage;
+
+	m_image_info_struct.thumbImage.iplImage = m_thumbImage;
+
+	compressCachedImage(&m_image_info_struct.thumbImage);
 
 	if(g_debug_ImageInfo) {
 		fprintf(stderr, "ImageInfo::%s:%d : scaled to %dx%d\n", __func__, __LINE__,

@@ -192,7 +192,7 @@ void EmaImageManager::run() {
 
 
 					// Copy thumb
-					new_info->thumbImage = tmClone(l_info.thumbImage);
+					new_info->thumbImage.iplImage = tmClone(l_info.thumbImage.iplImage);
 					// Copy HSV histo
 					new_info->hsvImage = tmClone(l_info.hsvImage);
 					// Copy sharpness

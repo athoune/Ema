@@ -11,14 +11,12 @@ CONFIG += debug
 # reference : file:///usr/share/qt4/doc/html/appicon.html
 # mac::ICON = icon/Ema.icns
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
-mac: ICON = icons/ema-icon.icns
+mac:ICON = icons/ema-icon.icns
 
 # and an uppercase first letter for Mac & Windows
 mac::TARGET = Ema
 win32::TARGET = Ema
-
 include(opencv.pri)
-
 LIBS += -lexiv2
 DEPENDPATH += . \
     inc \
@@ -41,9 +39,10 @@ SOURCES += src/main.cpp \
     src/thumbimageframe.cpp \
     src/imageinfo.cpp \
     src/imgutils.cpp \
-	src/exifdisplayscrollarea.cpp \
-	src/metadatawidget.cpp \
-	src/emaimagemanager.cpp
+    src/exifdisplayscrollarea.cpp \
+    src/metadatawidget.cpp \
+    src/emaimagemanager.cpp \
+	src/filtermanagerform.cpp
 HEADERS += inc/navimagewidget.h \
     inc/thumbimagewidget.h \
     inc/searchcriterionwidget.h \
@@ -54,9 +53,10 @@ HEADERS += inc/navimagewidget.h \
     inc/thumbimageframe.h \
     inc/imageinfo.h \
     inc/imgutils.h \
-	inc/exifdisplayscrollarea.h \
-	inc/metadatawidget.h \
-	inc/emaimagemanager.h
+    inc/exifdisplayscrollarea.h \
+    inc/metadatawidget.h \
+    inc/emaimagemanager.h \
+	inc/filtermanagerform.h
 FORMS += ui/navimagewidget.ui \
     ui/thumbimagewidget.ui \
     ui/searchcriterionwidget.ui \
@@ -64,8 +64,9 @@ FORMS += ui/navimagewidget.ui \
     ui/mainimagewidget.ui \
     ui/emamainwindow.ui \
     ui/thumbimageframe.ui \
-	ui/exifdisplayscrollarea.ui \
-	ui/metadatawidget.ui
+    ui/exifdisplayscrollarea.ui \
+    ui/metadatawidget.ui \
+	ui/filtermanagerform.ui
 RESOURCES += ema.qrc
 
 # # INSTALLATION

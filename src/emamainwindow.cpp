@@ -31,9 +31,9 @@
 
 #include "emaimagemanager.h"
 
-#include "thumbimageframe.h"
 #include "imgutils.h"
 #include "imageinfo.h"
+#include "thumbimageframe.h"
 
 #include <QFileDialog>
 #include <QSplashScreen>
@@ -58,6 +58,10 @@ EmaMainWindow::EmaMainWindow(QWidget *parent)
 
 	connect(&m_timer, SIGNAL(timeout()),
 			this, SLOT(on_timer_timeout()));
+	connect(ui->filterManagerForm,
+			SIGNAL(signal_resizeEvent(QResizeEvent *)),
+			this,
+			SLOT(on_gridWidget_signal_resizeEvent(QResizeEvent *)));
 
 	// For the moment, collections are not implemented
 	ui->collecShowCheckBox->setChecked(false);
@@ -215,6 +219,7 @@ void EmaMainWindow::on_timer_timeout() {
 			(it != m_appendFileList.end()) ) {
 		fileName = (*it);
 		ui->loadProgressBar->setValue(emaMngr()->getProgress());
+
 		//if(!m_managedFileList.contains(fileName))
 // FIXME : there's a problem when suppressing data in m_appendFileList and removing then in the same loop
 		{
@@ -250,7 +255,72 @@ void EmaMainWindow::on_timer_timeout() {
 
 }
 
+void EmaMainWindow::on_gridWidget_signal_resizeEvent(QResizeEvent * e)
+{
+	if(!e) { return ; }
 
+	QGridLayout * grid = (QGridLayout *)ui->gridWidget->layout();
+	QLayoutItem * item0 = grid->itemAt(0);
+	if(!item0) {
+		EMAMW_printf(EMALOG_ERROR, "not item at 0,0");
+		return; }
+
+	int thumb_count = m_imageList.count();
+
+	QList<QLayoutItem *> itemList;
+
+	// Add a slide to sorter
+	int items_per_row = e->size().width() / item0->widget()->width();
+	EMAMW_printf(EMALOG_DEBUG, "ResizeEvent e=%dx%d "
+				 "=> %d/%d = %d items/row"
+				 " %d items in whole scrollarea",
+				 e->size().width(), e->size().height(),
+				 e->size().width(), item0->widget()->width(),
+				 items_per_row, thumb_count
+				 );
+
+	for(int thumb_idx = 0; thumb_idx<thumb_count; ) {
+		QLayoutItem * item = grid->itemAt(0);
+//		grid->itemAtPosition(row, col);
+
+		if(item) { // Move item
+			EMAMW_printf(EMALOG_DEBUG, "Removing thumb [%d] :"
+					 " item=%p",
+					 thumb_idx,
+					 item);
+			grid->removeItem(item);
+
+			itemList.append(item);
+
+//			grid->addItem(item, row2, col2);
+			thumb_idx++;
+		}
+	}
+
+	for(int thumb_idx = 0; thumb_idx<thumb_count; thumb_idx++) {
+		int row2 = thumb_idx / items_per_row;
+		int col2 = thumb_idx % items_per_row;
+
+		QLayoutItem * item = itemList.at(thumb_idx);
+		EMAMW_printf(EMALOG_DEBUG, "Moving thumb [%d] :"
+				 " item=%p => %d,%d %% %d/row",
+				 thumb_idx,
+				 item,
+				 row2, col2, items_per_row
+				 );
+		grid->addItem(item, row2, col2);
+	}
+	m_sorter_nbitems_per_row = items_per_row;
+
+/*
+	ThumbImageFrame * newThumb2 = new ThumbImageFrame(ui->gridWidget);
+	newThumb2->setImageFile(fileName, pinfo->thumbImage.iplImage);
+
+	QGridLayout * grid_layout = (QGridLayout *)ui->gridWidget->layout();
+	grid_layout->addWidget( newThumb2, row, col );
+*/
+
+}
 
 void EmaMainWindow::on_collecShowCheckBox_stateChanged(int state) {
 	if(state == Qt::Checked)
@@ -261,12 +331,23 @@ void EmaMainWindow::on_collecShowCheckBox_stateChanged(int state) {
 
 
 
-void EmaMainWindow::on_filesTreeWidget_itemClicked ( QTreeWidgetItem * item, int column ) {
+void EmaMainWindow::on_filesTreeWidget_itemClicked (
+		QTreeWidgetItem * item, int column ) {
 	if(!item) return;
 
 	// read image file
 	QString fileName = item->text(0); // col 0 has the full path
 	on_thumbImage_selected( fileName );
+}
+
+void EmaMainWindow::on_filesTreeWidget_itemDoubleClicked (
+		QTreeWidgetItem * item, int column ) {
+	if(!item) return;
+
+	// read image file
+	QString fileName = item->text(0); // col 0 has the full path
+	on_thumbImage_clicked( fileName );
+
 }
 
 
@@ -299,35 +380,50 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 		// And display it
 		ThumbImageFrame * newThumb = new ThumbImageFrame(
 				//ui->imageScrollArea);
-				ui->scrollAreaWidgetContents);
-		newThumb->setImageFile(fileName, pinfo->thumbImage);
+				ui->scrollAreaWidgetContents );
+		newThumb->setImageFile(fileName, pinfo->thumbImage.iplImage);
+
 		ui->scrollAreaWidgetContents->layout()->addWidget(newThumb);
 
-		static int nb_item = 0;
-		int rowpos = nb_item / 3, colpos = nb_item % 3;
-		nb_item++;
-		ThumbImageFrame * newThumb2 = new ThumbImageFrame(
-				//ui->imageScrollArea);
-				ui->gridScrollAreaWidgetContents);
-		newThumb2->setImageFile(fileName, pinfo->thumbImage,
-							   (int)roundf(pinfo->score * 5.f/100.f));
-/*
-		ui->gridScrollAreaWidgetContents->layout()->addWidget((QWidget *)newThumb2,
-															  rowpos, colpos, 0);
-*/
+		newThumb->update();
 
-//		ui->gridScrollAreaWidgetContents->layout()->addWidget(newThumb2);
+		// Add a slide to sorter
+		int items_per_row = ui->gridWidget->width()
+							/ newThumb->width();
+		int thumb_idx = m_imageList.count() - 1;
+		int row = thumb_idx / items_per_row;
+		int col = thumb_idx % items_per_row;
 
-		QGridLayout * grid = (QGridLayout *)ui->gridScrollAreaWidgetContents->layout();
-		grid->addWidget(	newThumb2,
-							rowpos, colpos, 0);
+		m_sorter_nbitems_per_row = thumb_idx;
+
+		EMAMW_printf(EMALOG_DEBUG, "Adding thumb '%s' at %d,%d / %d items/row",
+					 fileName.ascii(),
+					 row, col, items_per_row
+					 );
+
+		ThumbImageFrame * newThumb2 = new ThumbImageFrame(ui->gridWidget);
+		newThumb2->setImageFile(fileName, pinfo->thumbImage.iplImage);
+
+		QGridLayout * grid_layout = (QGridLayout *)ui->gridWidget->layout();
+		grid_layout->addWidget( newThumb2, row, col );
+
 		// connect this signal
 		connect(newThumb, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
 		connect(newThumb, SIGNAL(signalThumbSelected(QString)), this, SLOT(on_thumbImage_selected(QString)));
-		connect(newThumb2, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
-		connect(newThumb2, SIGNAL(signalThumbSelected(QString)), this, SLOT(on_thumbImage_selected(QString)));
+		if(newThumb2) {
+			connect(newThumb2, SIGNAL(signalThumbClicked(QString)), this, SLOT(on_thumbImage_clicked(QString)));
+			connect(newThumb2, SIGNAL(signalThumbSelected(QString)), this, SLOT(on_thumbImage_selected(QString)));
+		}
 	}
 }
+
+void EmaMainWindow::on_mainGroupBox_resizeEvent(QResizeEvent * e) {
+	if(!e) { return ; }
+	
+	EMAMW_printf(EMALOG_DEBUG, "Resize event : %dx%d\n", e->size().width(), e->size().height())
+	
+}
+
 
 void EmaMainWindow::on_thumbImage_selected(QString fileName)
 {
@@ -338,7 +434,7 @@ void EmaMainWindow::on_thumbImage_selected(QString fileName)
 			EMAMW_printf(EMALOG_WARNING, "File '%s' is not managed : reload and process file info\n", fileName.ascii())
 			ui->imageInfoWidget->setImageFile(fileName);
 		} else {
-			EMAMW_printf(EMALOG_DEBUG, "File '%s' is managed : use cache info\n", fileName.ascii())
+			EMAMW_printf(EMALOG_TRACE, "File '%s' is managed : use cache info", fileName.ascii())
 			ui->imageInfoWidget->setImageInfo(pinfo);
 			ui->exifScrollArea->setImageInfo(pinfo);
 		}
