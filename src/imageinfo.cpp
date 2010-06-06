@@ -219,16 +219,16 @@ int ImageInfo::readMetadata(char * filename) {
 		Exiv2::Exifdatum& exifMaker = exifData["Exif.Image.Make"];
 		std::string str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
-		strncpy(m_image_info_struct.maker, displayStr.ascii(), MAX_EXIF_LEN);
+		strncpy(m_image_info_struct.maker, displayStr.toUtf8().data(), MAX_EXIF_LEN);
 
 		exifMaker = exifData["Exif.Image.Model"];str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
-		strncpy(m_image_info_struct.model, displayStr.ascii(), MAX_EXIF_LEN);
+		strncpy(m_image_info_struct.model, displayStr.toUtf8().data(), MAX_EXIF_LEN);
 
 		// DateTime
 		exifMaker = exifData["Exif.Photo.DateTimeOriginal"]; str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
-		strncpy(m_image_info_struct.datetime, displayStr.ascii(), MAX_EXIF_LEN);
+		strncpy(m_image_info_struct.datetime, displayStr.toUtf8().data(), MAX_EXIF_LEN);
 
 
 		// Orientation
@@ -258,7 +258,7 @@ int ImageInfo::readMetadata(char * filename) {
 		}
 		if(g_debug_ImageInfo) {
 			fprintf(stderr, "Focal : '%s' => %g s %g 35mm\n",
-				displayStr.ascii(),
+				displayStr.toUtf8().data(),
 				m_image_info_struct.focal_mm,
 				m_image_info_struct.focal_eq135_mm);
 		}
@@ -274,7 +274,7 @@ int ImageInfo::readMetadata(char * filename) {
 		m_image_info_struct.speed_s = rational_to_float(displayStr);
 		if(g_debug_ImageInfo) {
 			fprintf(stderr, "Exposure time : '%s' => %g s\n",
-				displayStr.ascii(), m_image_info_struct.speed_s);
+				displayStr.toUtf8().data(), m_image_info_struct.speed_s);
 		}
 
 		// Speed

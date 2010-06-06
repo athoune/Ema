@@ -34,6 +34,7 @@
 #include "imgutils.h"
 #include "imageinfo.h"
 #include "thumbimageframe.h"
+#include "thumbimagewidget.h"
 
 #include <QFileDialog>
 #include <QSplashScreen>
@@ -235,7 +236,7 @@ void EmaMainWindow::on_timer_timeout() {
 		fileName = (*it);
 		if(	m_appendFileList.contains(fileName) )
 		{
-			m_appendFileList.remove(fileName);
+			m_appendFileList.removeOne(fileName);
 		}
 		++it;
 	}
@@ -356,10 +357,11 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 	t_image_info_struct * pinfo = emaMngr()->getInfo(fileName);
 
 	if(!pinfo) {
-		EMAMW_printf(EMALOG_TRACE, "Image file '%s' is NOT YET  managed", fileName.ascii())
+		EMAMW_printf(EMALOG_TRACE, "Image file '%s' is NOT YET  managed",
+					 fileName.toUtf8().data())
 	} else {
 		// image is already managed
-		EMAMW_printf(EMALOG_TRACE, "Image file '%s' is now managed", fileName.ascii())
+		EMAMW_printf(EMALOG_TRACE, "Image file '%s' is now managed", fileName.toUtf8().data())
 
 		// Append to managed pictures
 		m_imageList.append(fileName);
@@ -391,17 +393,19 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 		int items_per_row = ui->gridWidget->width()
 							/ newThumb->width();
 		int thumb_idx = m_imageList.count() - 1;
+		if(items_per_row < 3) items_per_row = 3;
 		int row = thumb_idx / items_per_row;
 		int col = thumb_idx % items_per_row;
 
 		m_sorter_nbitems_per_row = thumb_idx;
 
 		EMAMW_printf(EMALOG_DEBUG, "Adding thumb '%s' at %d,%d / %d items/row",
-					 fileName.ascii(),
+					 fileName.toUtf8().data(),
 					 row, col, items_per_row
 					 );
 
 		ThumbImageFrame * newThumb2 = new ThumbImageFrame(ui->gridWidget);
+	//	ThumbImageWidget * newThumb2 = new ThumbImageWidget(ui->gridWidget);
 		newThumb2->setImageFile(fileName, pinfo->thumbImage.iplImage);
 
 		QGridLayout * grid_layout = (QGridLayout *)ui->gridWidget->layout();
@@ -431,10 +435,10 @@ void EmaMainWindow::on_thumbImage_selected(QString fileName)
 	if(fi.exists()) {
 		t_image_info_struct * pinfo = emaMngr()->getInfo(fileName);
 		if(!pinfo) {
-			EMAMW_printf(EMALOG_WARNING, "File '%s' is not managed : reload and process file info\n", fileName.ascii())
+			EMAMW_printf(EMALOG_WARNING, "File '%s' is not managed : reload and process file info\n", fileName.toUtf8().data())
 			ui->imageInfoWidget->setImageFile(fileName);
 		} else {
-			EMAMW_printf(EMALOG_TRACE, "File '%s' is managed : use cache info", fileName.ascii())
+			EMAMW_printf(EMALOG_TRACE, "File '%s' is managed : use cache info", fileName.toUtf8().data())
 			ui->imageInfoWidget->setImageInfo(pinfo);
 			ui->exifScrollArea->setImageInfo(pinfo);
 		}
@@ -455,10 +459,10 @@ void EmaMainWindow::on_thumbImage_clicked(QString fileName)
 
 
 		if(!pinfo) {
-			EMAMW_printf(EMALOG_WARNING, "File '%s' is not managed : reload and process file info\n", fileName.ascii())
+			EMAMW_printf(EMALOG_WARNING, "File '%s' is not managed : reload and process file info\n", fileName.toUtf8().data())
 			ui->imageInfoWidget->setImageFile(fileName);
 		} else {
-			EMAMW_printf(EMALOG_DEBUG, "File '%s' is managed : use cache info\n", fileName.ascii())
+			EMAMW_printf(EMALOG_DEBUG, "File '%s' is managed : use cache info\n", fileName.toUtf8().data())
 			ui->imageInfoWidget->setImageInfo(pinfo);
 			ui->exifScrollArea->setImageInfo(pinfo);
 		}

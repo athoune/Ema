@@ -26,8 +26,11 @@ INCLUDEPATH += . \
     inc \
     ui
 OBJECTS_DIR = .obj-simple
-DEFINES += QT3_SUPPORT
+
+#DEFINES += QT3_SUPPORT
+
 TRANSLATIONS = photogeny_French.ts
+
 SOURCES += src/main.cpp \
     src/navimagewidget.cpp \
     src/thumbimagewidget.cpp \
@@ -43,6 +46,7 @@ SOURCES += src/main.cpp \
     src/metadatawidget.cpp \
     src/emaimagemanager.cpp \
 	src/filtermanagerform.cpp
+
 HEADERS += inc/navimagewidget.h \
     inc/thumbimagewidget.h \
     inc/searchcriterionwidget.h \
@@ -57,6 +61,7 @@ HEADERS += inc/navimagewidget.h \
     inc/metadatawidget.h \
     inc/emaimagemanager.h \
 	inc/filtermanagerform.h
+
 FORMS += ui/navimagewidget.ui \
     ui/thumbimagewidget.ui \
     ui/searchcriterionwidget.ui \
@@ -67,6 +72,7 @@ FORMS += ui/navimagewidget.ui \
     ui/exifdisplayscrollarea.ui \
     ui/metadatawidget.ui \
 	ui/filtermanagerform.ui
+
 RESOURCES += ema.qrc
 
 # # INSTALLATION

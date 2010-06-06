@@ -6,6 +6,22 @@
  *  Email cseyve@free.fr
  ****************************************************************************/
 
+/*
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
 
 #include "thumbimageframe.h"
 #include "ui_thumbimageframe.h"
@@ -35,11 +51,18 @@ void ThumbImageFrame::changeEvent(QEvent *e)
 	}
 }
 
-void ThumbImageFrame::setImageFile(const QString & imagePath, IplImage * img, int score )
+void ThumbImageFrame::setImageFile(const QString & imagePath,
+								   IplImage * img, int score )
 {
-	// "NavImageWidget::%s:%d ('%s')\n",
-	//		__func__, __LINE__,
-	//		imagePath);
+	fprintf(stderr, "ThumbImageFrame::%s:%d ('%s', img=%p %dx%dx%d, score=%d)\n",
+			__func__, __LINE__,
+			imagePath.toUtf8().data(),
+			img,
+			img?img->width : -1,
+			img?img->height : -1,
+			img?img->nChannels : -1,
+			score);
+
 	QPixmap l_displayImage;// local only
 	m_imagePath = "";
 	int wdisp = m_ui->globalImageLabel->width()-2;
@@ -64,18 +87,30 @@ void ThumbImageFrame::setImageFile(const QString & imagePath, IplImage * img, in
 
 		m_ui->starsLabel->setText(stars);
 	}
-	QPixmap fullImage;
-	if(img ) {
 
-		fullImage = iplImageToQImage(img);
-	} else {
-		fprintf(stderr, "ThumbImageWidget::%s:%d no IplImage => has to load '%s'\n",
+	QPixmap fullImage;
+	if( img ) {
+		QImage qImg = iplImageToQImage(img);
+		fullImage = QPixmap::fromImage( qImg );
+		fprintf(stderr, "ThumbImageFrame::%s:%d : load '%s' : "
+				"iplImageToQImage(%dx%d) => qImg=%dx%d => pixmap=%dx%d\n",
 				__func__, __LINE__,
-				imagePath.ascii() );
+				imagePath.toUtf8().data(),
+				img->width, img->height,
+				qImg.width(), qImg.height(),
+				fullImage.width(), fullImage.height()
+				);
+	} else {
+		fprintf(stderr, "ThumbImageFrame::%s:%d no IplImage => has to load '%s'\n",
+				__func__, __LINE__,
+				imagePath.toUtf8().data() );
 		fullImage.load(imagePath);
 	}
 
-	if(fullImage.isNull()) {
+	if(fullImage.isNull()
+		|| fullImage.width() == 0
+		|| fullImage.height() == 0
+		) {
 		l_displayImage.fill(127);
 	}
 	else {
@@ -83,10 +118,18 @@ void ThumbImageFrame::setImageFile(const QString & imagePath, IplImage * img, in
 		l_displayImage = fullImage.scaled( wdisp, hdisp,
 								Qt::KeepAspectRatio );
 	}
+
+	fprintf(stderr, "ThumbImageFrame::%s:%d : load '%s' : %dx%d => %dx%d\n",
+			__func__, __LINE__,
+			imagePath.toUtf8().data(),
+			fullImage.width(), fullImage.height(),
+			l_displayImage.width(), l_displayImage.height()
+			);
+
 	m_ui->globalImageLabel->setPixmap( l_displayImage );
 
 
-	QToolTip::add(m_ui->globalImageLabel, imagePath);
+	QToolTip::showText(QPoint(0,0), imagePath, m_ui->globalImageLabel);
 }
 
 void ThumbImageFrame::on_globalImageLabel_signalMousePressEvent(QMouseEvent * ) {

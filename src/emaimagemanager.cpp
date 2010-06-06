@@ -6,6 +6,21 @@
  *  Copyright  2009  Christophe Seyve
  *  Email cseyve@free.fr
  ****************************************************************************/
+/*
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #include "imgutils.h"
 #include "emaimagemanager.h"
@@ -82,13 +97,13 @@ int EmaImageManager::appendFileList(QStringList list) {
 t_image_info_struct * EmaImageManager::getInfo(QString filename)
 {
 	if(!m_managedFileList.contains(filename)) {
-		EMAIM_printf(EMALOG_TRACE, "File '%s' not found", filename.ascii());
+		EMAIM_printf(EMALOG_TRACE, "File '%s' not found", filename.toUtf8().data());
 		return NULL;
 	}
 	// Fill with managed
 	int idx = m_managedFileList.indexOf(filename);
 	if(idx < 0) {
-		EMAIM_printf(EMALOG_TRACE, "File '%s' not found", filename.ascii())
+		EMAIM_printf(EMALOG_TRACE, "File '%s' not found", filename.toUtf8().data())
 		return NULL;
 	}
 
@@ -98,7 +113,7 @@ t_image_info_struct * EmaImageManager::getInfo(QString filename)
 	// Security : check filename
 	if(!filename.contains(pinfo->filepath)) {
 		EMAIM_printf(EMALOG_TRACE, "File '%s' mismatches pinfo ('%s')",
-					 filename.ascii(),
+					 filename.toUtf8().data(),
 					 pinfo->filepath)
 		return NULL;
 	}
@@ -112,7 +127,7 @@ int EmaImageManager::appendFile(QString filename) {
 
 	// if not already managed
 	if(m_managedFileList.contains(filename)) {
-		EMAIM_printf(EMALOG_DEBUG, "Already managed : '%s'", filename.ascii());
+		EMAIM_printf(EMALOG_DEBUG, "Already managed : '%s'", filename.toUtf8().data());
 		return 0;
 	}
 
@@ -132,7 +147,7 @@ int EmaImageManager::removeFile(QString filename) {
 
 	// if not already managed
 	if(!m_managedFileList.contains(filename)) {
-		EMAIM_printf(EMALOG_DEBUG, "Unknown / not managed : '%s'", filename.ascii());
+		EMAIM_printf(EMALOG_DEBUG, "Unknown / not managed : '%s'", filename.toUtf8().data());
 		return 0;
 	}
 
@@ -178,10 +193,10 @@ void EmaImageManager::run() {
 			while(it != m_appendFileList.end()) {
 				fileName = (*it);
 				++it;
-				EMAIM_printf(EMALOG_DEBUG, "\tAdding file '%s'...", fileName.ascii())
+				EMAIM_printf(EMALOG_DEBUG, "\tAdding file '%s'...", fileName.toUtf8().data())
 
 				// Process info extraction
-				m_imgProc.loadFile((char *)fileName.ascii());
+				m_imgProc.loadFile((char *)fileName.toUtf8().data());
 
 				// Create a new storage
 				t_image_info_struct l_info = m_imgProc.getImageInfo();

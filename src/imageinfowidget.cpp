@@ -84,6 +84,8 @@ static void init_grayToBGR32()
 
 QImage iplImageToQImage(IplImage * iplImage) {
 	if(!iplImage) {
+		fprintf(stderr, "%s %s:%d : no IplImage",
+				__FILE__, __func__ ,__LINE__);
 		return QImage();
 	}
 
@@ -103,15 +105,16 @@ QImage iplImageToQImage(IplImage * iplImage) {
 		gray_to_bgr32 = true;
 
 		init_grayToBGR32();
+
 		grayToBGR32palette = grayToBGR32;
 	}
 
 	int orig_width = iplImage->width;
+	int orig_height = iplImage->height;
 
-	QImage qImage(orig_width, iplImage->height,
-				  8 * depth);
-				//  depth > 1 ? QImage::Format_RGB32 : QImage::Format_Indexed8);
-	memset(qImage.bits(), 0, orig_width*iplImage->height*depth);
+	QImage qImage(orig_width, orig_height,
+				   depth > 1 ? QImage::Format_RGB32 : QImage::Format_Indexed8);
+	memset(qImage.bits(), 127, orig_width*iplImage->height*depth);
 
 	switch(iplImage->depth) {
 	default:
@@ -343,6 +346,7 @@ QImage iplImageToQImage(IplImage * iplImage) {
 			qImage.setColor(c, qRgb(c,c,c));
 		}
 	}
+
 	return qImage;
 }
 
@@ -423,16 +427,16 @@ void ImageInfoWidget::setImageInfo(t_image_info_struct * pinfo) {
 	if(level > 5) { level = 5; }
 
 	if(level > 0) {// don't load picture if not necessary
-		QPixmap starOn(":/icons/icons/star_on.png");
+		QIcon starOn(":/icons/icons/star_on.png");
 		for(int star = 1; star <= level; star++) {
-			m_starButtons[star]->setPixmap(starOn);
+			m_starButtons[star]->setIcon(starOn);
 		}
 	}
 
 	if(level < 5) {
-		QPixmap starOff(":/icons/icons/star_off.png");
+		QIcon starOff(":/icons/icons/star_off.png");
 		for(int star = level+1; star < 6; star++) {
-			m_starButtons[star]->setPixmap(starOff);
+			m_starButtons[star]->setIcon(starOff);
 		}
 	}
 

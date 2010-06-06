@@ -52,8 +52,11 @@
      <property name="toolTip">
       <string>Image display</string>
      </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="text">
       <string>Image</string>

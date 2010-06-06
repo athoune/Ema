@@ -1,5 +1,5 @@
 /***************************************************************************
- *            filtermanagerform.h
+ *            filtermanagerform.cpp
  *
  *  Wed Jun 2 23:47:41 2010
  *  Copyright  2010  Christophe Seyve
