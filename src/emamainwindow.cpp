@@ -383,6 +383,7 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 		ThumbImageFrame * newThumb = new ThumbImageFrame(
 				//ui->imageScrollArea);
 				ui->scrollAreaWidgetContents );
+
 		newThumb->setImageFile(fileName, pinfo->thumbImage.iplImage);
 
 		ui->scrollAreaWidgetContents->layout()->addWidget(newThumb);
@@ -406,7 +407,8 @@ void EmaMainWindow::appendThumbImage(QString fileName) {
 
 		ThumbImageFrame * newThumb2 = new ThumbImageFrame(ui->gridWidget);
 	//	ThumbImageWidget * newThumb2 = new ThumbImageWidget(ui->gridWidget);
-		newThumb2->setImageFile(fileName, pinfo->thumbImage.iplImage);
+		newThumb2->setImageFile(fileName, pinfo->thumbImage.iplImage,
+								pinfo->score);
 
 		QGridLayout * grid_layout = (QGridLayout *)ui->gridWidget->layout();
 		grid_layout->addWidget( newThumb2, row, col );

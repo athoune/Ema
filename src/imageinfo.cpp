@@ -264,12 +264,14 @@ int ImageInfo::readMetadata(char * filename) {
 		}
 
 		// Aperture
-		exifMaker = exifData["Exif.Photo.FNumber"]; str = exifMaker.toString();
+		exifMaker = exifData["Exif.Photo.FNumber"];
+		str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
 		m_image_info_struct.aperture = rational_to_float(displayStr);
 
 		// Speed
-		exifMaker = exifData["Exif.Photo.ExposureTime"]; str = exifMaker.toString();
+		exifMaker = exifData["Exif.Photo.ExposureTime"];
+		str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
 		m_image_info_struct.speed_s = rational_to_float(displayStr);
 		if(g_debug_ImageInfo) {
@@ -277,7 +279,7 @@ int ImageInfo::readMetadata(char * filename) {
 				displayStr.toUtf8().data(), m_image_info_struct.speed_s);
 		}
 
-		// Speed
+		// ISO
 		exifMaker = exifData["Exif.Photo.ISOSpeedRatings"]; str = exifMaker.toString();
 		displayStr = QString::fromStdString(str);
 		m_image_info_struct.ISO = (int)rational_to_float(displayStr);
@@ -336,7 +338,7 @@ int ImageInfo::readMetadata(char * filename) {
 	catch (Exiv2::AnyError& e) {
 		std::cout << "Caught Exiv2 exception '" << e << "'\n";
 		fprintf(stderr, "ImageInfo::%s:%d : ERROR : caught exception => return 0 (no metadata);\n",
-				__func__, __LINE__);
+				__func__, __LINE__); fflush(stderr);
 		return 0;
 	}
 

@@ -49,9 +49,6 @@
      <property name="mouseTracking">
       <bool>true</bool>
      </property>
-     <property name="toolTip">
-      <string>Image display</string>
-     </property>
      <property name="styleSheet">
       <string notr="true"/>
      </property>

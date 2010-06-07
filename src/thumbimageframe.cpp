@@ -127,9 +127,7 @@ void ThumbImageFrame::setImageFile(const QString & imagePath,
 			);
 
 	m_ui->globalImageLabel->setPixmap( l_displayImage );
-
-
-	QToolTip::showText(QPoint(0,0), imagePath, m_ui->globalImageLabel);
+	m_ui->globalImageLabel->setToolTip(imagePath);
 }
 
 void ThumbImageFrame::on_globalImageLabel_signalMousePressEvent(QMouseEvent * ) {
