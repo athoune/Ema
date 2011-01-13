@@ -28,8 +28,6 @@
 #include <QtGui/QWidget>
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
-#include <cv.h>
-#include <cv.hpp>
 
 #include "imageinfo.h"
 

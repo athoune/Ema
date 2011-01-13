@@ -23,9 +23,8 @@
  */
 #ifndef IMAGEINFO_H
 #define IMAGEINFO_H
-#include <cv.h>
-#include <cv.hpp>
-#include <highgui.h>
+
+#include "imgutils.h"
 
 #ifndef MAX_PATH_LEN
 #define MAX_PATH_LEN	512

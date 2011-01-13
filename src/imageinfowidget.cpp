@@ -25,8 +25,6 @@
 #include "imageinfowidget.h"
 #include "ui_imageinfowidget.h"
 
-#include <cv.h>
-#include <cv.hpp>
 #include "imgutils.h"
 
 

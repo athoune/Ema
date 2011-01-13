@@ -24,6 +24,7 @@
  
 #include "qimagedisplay.h"
 #include <qevent.h>
+#include <stdio.h>
 
 unsigned char g_debug_QImageDisplay = 0;
 

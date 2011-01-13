@@ -333,7 +333,7 @@ void EmaMainWindow::on_collecShowCheckBox_stateChanged(int state) {
 
 
 void EmaMainWindow::on_filesTreeWidget_itemClicked (
-		QTreeWidgetItem * item, int column ) {
+		QTreeWidgetItem * item, int /*unused column */) {
 	if(!item) return;
 
 	// read image file
@@ -342,7 +342,7 @@ void EmaMainWindow::on_filesTreeWidget_itemClicked (
 }
 
 void EmaMainWindow::on_filesTreeWidget_itemDoubleClicked (
-		QTreeWidgetItem * item, int column ) {
+		QTreeWidgetItem * item, int /*unused column */) {
 	if(!item) return;
 
 	// read image file

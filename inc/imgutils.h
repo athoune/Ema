@@ -39,9 +39,15 @@
 
 
 // For Open CV Functions
+#ifndef OPENCV_22
 #include <cv.h>
-#include <cv.hpp>
 #include <cvaux.h>
+#include <highgui.h>
+#else
+#include <opencv.hpp>
+#include <legacy/compat.hpp>
+#endif
+
 
 #ifndef tmmin
 #define tmmin(a,b) ((a)<(b)?(a):(b))

@@ -7,6 +7,15 @@ TEMPLATE = app
 TARGET = ema
 CONFIG += debug
 
+
+unix::DEFINES += VERSION_YY="`date +%Y`" \
+    VERSION_MM="`date +%m | sed 's/0//'`" \
+    VERSION_DD="`date +%d | sed 's/0//'`" \
+    __LINUX__
+win32:DEFINES += VERSION_YY="2010" \
+	VERSION_MM="03" \
+	VERSION_DD="13"
+
 # icon
 # reference : file:///usr/share/qt4/doc/html/appicon.html
 # mac::ICON = icon/Ema.icns

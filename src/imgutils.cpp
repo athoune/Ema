@@ -30,7 +30,6 @@
 
 #include "imgutils.h"
 
-#include <highgui.h>
 
 
 FILE * logfile = stderr;
